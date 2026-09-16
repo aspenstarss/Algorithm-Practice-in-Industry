@@ -1,0 +1,70 @@
+name: update_confs
+
+env:
+  PYTHON_VERSION: "3.8" # set this to the Python version to use
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on:
+  workflow_dispatch:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  update-conf-list:
+    if: github.event.label.name == 'require to update confs'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+    steps:
+      - name: Debug time
+        run: |
+          echo "UTC:"
+          date -u
+          echo "Local:"
+          date
+          echo "Beijing:"
+          TZ=Asia/Shanghai date
+
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Set up Python version
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+
+      - name: Update conference data from the issue
+        env:
+          ISSUE_BODY: ${{ toJson(github.event.issue.body) }}
+        run: |
+          python paperBotV2/conf_summary/update_from_issue.py --issue "$ISSUE_BODY"
+          cd paperBotV2/conf_summary
+          python convert_to_md.py
+          python update_readme_papers.py
+        
+        
+      - name: Commit files
+        id: commit
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "github-actions"
+          git add --all
+          if [ -z "$(git status --porcelain)" ]; then
+             echo "push=false" >> "$GITHUB_OUTPUT"
+          else
+             git commit -m "chore: update confs" -a
+             echo "push=true" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
+      - name: Push changes
+        if: steps.commit.outputs.push == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
