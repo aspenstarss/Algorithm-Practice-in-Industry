@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
+  # 与 arxiv_daily_full 共用一组，新任务排队而非取消在跑任务，避免互相抢 main
+  group: arxiv-daily
+  cancel-in-progress: false
 
 env:
   PYTHON_VERSION: "3.8"
@@ -154,9 +155,16 @@ jobs:
 
       - name: Push changes
         if: steps.recovery_check.outputs.needs_recovery == 'true' && steps.commit.outputs.push == 'true'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "⏳ push 第 ${i}/3 次失败，30s 后重试"
+            git rebase --abort 2>/dev/null || true
+            sleep 30
+          done
+          exit 1
 
       - name: Deploy to GitHub Pages
         if: steps.recovery_check.outputs.needs_recovery == 'true'
@@ -198,6 +206,13 @@ jobs:
 
       - name: Push status on failure
         if: failure() && steps.failure_status_commit.outputs.push == 'true'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "⏳ status push 第 ${i}/3 次失败，30s 后重试"
+            git rebase --abort 2>/dev/null || true
+            sleep 30
+          done
+          exit 1
