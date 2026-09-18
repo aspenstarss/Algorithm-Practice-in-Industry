@@ -114,6 +114,8 @@ jobs:
         run: |
           cd paperBotV2/arxiv_daily
           python generate_arxiv_html.py
+          # 生成脚本内部可能吞掉异常并以 0 退出；无 HTML 时在这里显式失败，避免空部署
+          ls output/arxiv_*.html >/dev/null
         env:
           PYTHONPATH: ${{ github.workspace }}
 
