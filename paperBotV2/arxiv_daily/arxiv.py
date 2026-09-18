@@ -13,9 +13,7 @@ from .status import ArxivDailyStatus
 from . import daily_store as _store
 from .. import llm as _llm
 
-# 从环境变量获取配置，同时提供默认值
-# 支持多个飞书URL，用逗号分隔
-FEISHU_URLS = [url.strip() for url in os.environ.get("FEISHU_URL", "").split(',') if url.strip()]
+# LLM 与飞书通知的配置见 paperBotV2/llm.py 与 paperBotV2/notify.py（env 驱动）
 # TARGET_CATEGORYS 使用逗号分隔的字符串格式
 TARGET_CATEGORYS = os.environ.get("TARGET_CATEGORYS", "cs.IR,cs.CL,cs.CV")
 TARGET_CATEGORYS = [cat.strip() for cat in TARGET_CATEGORYS.split(',')]
@@ -391,81 +389,22 @@ def fine_rank_papers(papers, max_workers=10, paper_count=5):
     return analyzed_papers
 
 
-def send_papers_to_feishu(papers, feishu_urls=None):
-    # 如果没有指定URL列表，使用默认的FEISHU_URLS
-    if feishu_urls is None:
-        feishu_urls = FEISHU_URLS
-    
-    # 如果没有设置飞书URL，跳过发送
-    if not feishu_urls:
-        print("[-] 没有设置飞书URL，跳过发送消息")
-        return
-    
-    date = datetime.now().strftime('%Y-%m-%d')
-    
-    card_data = {
-        "type": "template",
-        "data": {
-            "template_id": "AAqxH62u1uNko",
-            "template_version_name": "1.0.5",
-            "template_variable": {
-                "loop": [],
-                "date": date
-            }
-        }
-    }
-
-    for paper in papers:
-        title = paper['title']
-        translation = paper.get('translation', 'N/A')
-        score = paper.get('rerank_relevance_score', 'N/A')
-        summary = paper.get('summary', 'N/A')
-        url = paper['url']
-        
-        paper_formatted = f"[{title}]({url})"
-        score_formatted = "⭐️" * score + f" <text_tag color='blue'>{score}分</text_tag>" if isinstance(score, int) else "N/A"
-        
-        card_data['data']['template_variable']['loop'].append({
-            "paper": paper_formatted,
-            "translation": translation,
-            "score": score_formatted,
-            "summary": summary
-        })
-        
-    card = json.dumps(card_data)
-    body = json.dumps({"msg_type": "interactive", "card": card})
-    headers = {"Content-Type": "application/json"}
-    
-    # 循环发送到所有飞书URL
-    for idx, url in enumerate(feishu_urls):
-        try:
-            # 设置超时时间为10秒
-            ret = requests.post(url=url, data=body, headers=headers, timeout=10)
-            print(f"✉️ 飞书推送[{idx+1}/{len(feishu_urls)}]返回状态: {ret.status_code}")
-        except Exception as e:
-            print(f"❌ 飞书推送[{idx+1}/{len(feishu_urls)}]失败: {e}")
-
 def get_papers_from_all_categories(run_status=None):
     """从所有指定分类获取论文并初始化状态标记，去除与前一天重复的论文"""
     all_papers = {}
-    
-    # 获取当前脚本所在目录（paperBotV2目录）
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 获取前一天的日期
-    yesterday = datetime.now() - timedelta(days=1)
-    yesterday_file = os.path.join(current_dir, "data", f"{yesterday.strftime('%Y%m%d')}.json")
-    
+
+    # 获取前一个业务日的日期（与写侧同一口径）
+    yesterday = _store.business_date(datetime.now() - timedelta(days=1))
+
     # 读取前一天的论文ID集合（用于去重）
     yesterday_paper_ids = set()
-    if os.path.exists(yesterday_file):
-        try:
-            with open(yesterday_file, 'r', encoding='utf-8') as f:
-                yesterday_data = json.load(f)
-                yesterday_paper_ids = set(yesterday_data.keys())
-            print(f"📋 已加载前一天的论文ID集合，共 {len(yesterday_paper_ids)} 篇论文。")
-        except Exception as e:
-            print(f"❌ 读取前一天论文文件失败: {e}")
+    try:
+        yesterday_paper_ids = set(_store.load_raw(yesterday).keys())
+        print(f"📋 已加载前一天的论文ID集合，共 {len(yesterday_paper_ids)} 篇论文。")
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print(f"❌ 读取前一天论文文件失败: {e}")
     
     # 获取当前日期的所有分类论文
     for index, category in enumerate(TARGET_CATEGORYS):

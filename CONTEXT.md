@@ -10,6 +10,7 @@ paperBotV2 的领域词汇与既定决策。架构改动应使用这里的名词
 - **status 队列**：`status/` 下的运行状态（当日 JSON + runs.csv），只保留最近 30 天，status.py 在每次写入后自动清理。
 - **粗排/精排**：LLM 两级筛选。粗排按标题打相关性分（阈值 `ROUGH_SCORE_THRESHOLD`）淘汰；精排对幸存者产出评分、推荐理由与中文翻译，取前 `RETURN_PAPERS` 篇。
 - **LLM adapter**：`paperBotV2/llm.py` 是所有 LLM 调用的唯一入口（`json_call` 结构化输出 / `translate` 摘要翻译）。提供商由环境变量在调用时决定：`LLM_API_KEY`（回落 `DEEPSEEK_API_KEY`）、`LLM_BASE_URL`、`LLM_MODEL`，缺省 DeepSeek。
+- **notify**：`paperBotV2/notify.py` 是所有飞书通知的唯一入口（`send` 多 URL 发送 + `papers_card`/`markdown_card`/`text_post` 卡片构建）。失败一律收集后上抛；专职推送脚本（arxiv_feishu_msg）让它标红任务，副产物场景（conf_daily/maintain）自行捕获降级。
 
 ## 既定决策（不要回退）
 

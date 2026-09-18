@@ -16,6 +16,11 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 获取项目根目录（向上两层）
 PROJECT_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
+# 仓库根加入 sys.path，复用包级飞书通知模块（paperBotV2/notify.py）
+sys.path.insert(0, PROJECT_ROOT)
+from paperBotV2 import notify
+
+# 直接定义配置项
 DATA_DIR = os.path.join(BASE_DIR, "data")
 ARTICLE_CSV_FILE = os.path.join(DATA_DIR, "article.csv")
 ARTICLE_JSON_FILE = os.path.join(DATA_DIR, "article.json")
@@ -23,9 +28,7 @@ ARTICLE_JSON_FILE = os.path.join(DATA_DIR, "article.json")
 README_FILE = os.path.join(PROJECT_ROOT, "README.md")
 
 # 支持多个飞书URL，使用逗号分隔
-FEISHU_URLS = os.environ.get("FEISHU_URL", "").split(',')
-# 去除空字符串和空格
-FEISHU_URLS = [url.strip() for url in FEISHU_URLS if url.strip()]
+FEISHU_URLS = notify.parse_urls(os.environ.get("FEISHU_URL", ""))
 
 def set_args():
     parser = argparse.ArgumentParser()
@@ -303,33 +306,14 @@ def send_feishu_message(title, content, urls=None):
     # 如果没有指定URL列表，使用默认的FEISHU_URLS
     if urls is None:
         urls = FEISHU_URLS
-    
+
     # 如果没有有效的飞书URL，直接返回
     if not urls:
         print("⚠️ 没有有效的飞书URL，跳过发送消息")
         return
-    
-    raw_data = {
-        "msg_type": "post",
-        "content": {
-            "post": {
-                "zh_cn": {
-                    "title": title,
-                    "content": content
-                }
-            }
-        }
-    }  
-    body = json.dumps(raw_data)
-    headers = {"Content-Type":"application/json"}
-    
-    # 向每个飞书URL发送消息
-    for idx, url in enumerate(urls):
-        try:
-            ret = requests.post(url=url, data=body, headers=headers, timeout=10)
-            print(f"✉️ 飞书推送[{idx+1}/{len(urls)}]返回: {ret.text}")
-        except Exception as e:
-            print(f"❌ 飞书推送[{idx+1}/{len(urls)}]失败: {e}")
+
+    # notify.send 失败（任一URL）会上抛，由调用方 update_message 捕获打印
+    notify.send(urls, notify.text_post(title, content))
 
 
 

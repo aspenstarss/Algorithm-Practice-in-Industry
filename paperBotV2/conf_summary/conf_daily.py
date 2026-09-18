@@ -9,9 +9,9 @@ from pathlib import Path
 import requests
 from tqdm import tqdm
 
-# 仓库根加入 sys.path，复用包级 LLM adapter（提供商由 env 决定，见 paperBotV2/llm.py）
+# 仓库根加入 sys.path，复用包级 LLM adapter 与飞书通知模块
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from paperBotV2 import llm
+from paperBotV2 import llm, notify
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -290,24 +290,11 @@ def send_feishu_message(title, content, urls, dry_run):
     if not urls:
         print("没有有效的 FEISHU_URL，跳过发送消息")
         return
-
-    card_data = {
-        "config": {"wide_screen_mode": True},
-        "header": {
-            "template": "green",
-            "title": {"tag": "plain_text", "content": title},
-        },
-        "elements": [{"tag": "markdown", "content": content}],
-    }
-    body = json.dumps({"msg_type": "interactive", "card": json.dumps(card_data)})
-    headers = {"Content-Type": "application/json"}
-
-    for idx, url in enumerate(urls):
-        try:
-            response = requests.post(url=url, data=body, headers=headers, timeout=10)
-            print(f"飞书推送[{idx + 1}/{len(urls)}]返回状态: {response.status_code}")
-        except requests.RequestException as exc:
-            print(f"飞书推送[{idx + 1}/{len(urls)}]失败: {exc}")
+    try:
+        notify.send(urls, notify.markdown_card(title, content))
+    except Exception as exc:
+        # 通知是 best-effort 副产物：数据已落盘，不因推送失败让整个日推失败
+        print(f"❌ 飞书推送失败: {exc}")
 
 
 def run(args):
@@ -331,7 +318,7 @@ def run(args):
     if not args.dry_run:
         save_results(results, args.results)
 
-    feishu_urls = parse_csv_env("FEISHU_URL", [])
+    feishu_urls = notify.parse_urls(os.environ.get("FEISHU_URL", ""))
     for index, (key, paper_index, _) in enumerate(tqdm(selected, desc="会议论文推送进度")):
         paper = results[key][paper_index]
         title, content = build_message(key, paper, index, args.model_type)

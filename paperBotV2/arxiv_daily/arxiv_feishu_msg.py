@@ -1,103 +1,15 @@
 import os
-import json
 import sys
-import requests
-from datetime import datetime
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# 同级模块（daily_store）与包级模块（notify）都需要在 sys.path 上
+_HERE = os.path.dirname(os.path.abspath(__file__))
+for _path in (_HERE, os.path.dirname(_HERE)):
+    if _path not in sys.path:
+        sys.path.insert(0, _path)
 import daily_store
+import notify
 
-# 从环境变量获取配置，同时提供默认值
-# 支持多个飞书URL，使用逗号分隔
-FEISHU_URLS = os.environ.get("FEISHU_URL", "").split(',')
-# 去除空字符串和空格
-FEISHU_URLS = [url.strip() for url in FEISHU_URLS if url.strip()]
 RETURN_PAPERS = int(os.environ.get("RETURN_PAPERS", "20"))
-
-
-def send_papers_to_feishu(papers, feishu_urls=None):
-    # 如果没有指定URL列表，使用默认的FEISHU_URLS
-    if feishu_urls is None:
-        feishu_urls = FEISHU_URLS
-
-    feishu_urls = [url.strip() for url in feishu_urls if url and url.strip()]
-
-    # 如果没有有效的飞书URL，直接返回
-    if not feishu_urls:
-        print("⚠️ 没有有效的飞书URL，跳过发送消息")
-        return
-    
-    date = datetime.now().strftime('%Y-%m-%d')
-    
-    card_data = {
-        "type": "template",
-        "data": {
-            "template_id": "AAqxH62u1uNko",
-            "template_version_name": "1.0.8",
-            "template_variable": {
-                "loop": [],
-                "date": date
-            }
-        }
-    }
-
-    for paper in papers:
-        title = paper['title']
-        translation = paper.get('translation', 'N/A')
-        score = paper.get('rerank_relevance_score', 'N/A')
-        summary = paper.get('summary', 'N/A')
-        url = paper['url']
-        
-        paper = f"[{title}]({url})"
-        score = "⭐️" * score + f" <text_tag color='blue'>{score}分</text_tag>" if isinstance(score, int) else "N/A"
-        
-        card_data['data']['template_variable']['loop'].append({
-            "paper": paper,
-            "translation": translation,
-            "score": score,
-            "summary": summary
-        })
-        
-    card = json.dumps(card_data)
-    body = json.dumps({"msg_type": "interactive", "card": card})
-    headers = {"Content-Type": "application/json"}
-    failures = []
-    
-    # 向每个飞书URL发送消息
-    for idx, url in enumerate(feishu_urls):
-        send_label = f"[{idx+1}/{len(feishu_urls)}]"
-        try:
-            ret = requests.post(url=url, data=body, headers=headers, timeout=10)
-            print(f"✉️ 飞书推送{send_label}返回状态: {ret.status_code}")
-            response_body = ret.text[:500]
-            if not ret.ok:
-                failures.append(f"{send_label} HTTP失败: {ret.status_code}; body={response_body}")
-                continue
-
-            try:
-                ret_data = ret.json()
-            except ValueError as e:
-                failures.append(
-                    f"{send_label} 响应不是有效JSON: {e}; "
-                    f"HTTP {ret.status_code}; body={response_body}"
-                )
-                continue
-
-            status_code = ret_data.get("StatusCode", ret_data.get("code"))
-            if status_code != 0:
-                status_msg = ret_data.get("StatusMessage", ret_data.get("msg", ""))
-                failures.append(
-                    f"{send_label} 业务失败: code={status_code}, "
-                    f"msg={status_msg}; body={response_body}"
-                )
-                continue
-        except requests.RequestException as e:
-            failures.append(f"{send_label} 请求失败: {e}")
-
-    if failures:
-        for failure in failures:
-            print(f"❌ 飞书推送失败: {failure}")
-        raise RuntimeError("飞书推送存在失败:\n" + "\n".join(failures))
 
 
 def main():
@@ -125,15 +37,17 @@ def main():
     selected_papers = papers_with_score[:RETURN_PAPERS]
     
     # 检查是否有有效的飞书URL
-    if not FEISHU_URLS:
+    feishu_urls = notify.parse_urls(os.environ.get("FEISHU_URL", ""))
+    if not feishu_urls:
         print("⚠️ 环境变量FEISHU_URL未设置或为空，无法发送飞书消息")
         return
-        
-    print(f"📤 准备发送 {len(selected_papers)} 篇论文到 {len(FEISHU_URLS)} 个飞书URL...")
-    
+
+    print(f"📤 准备发送 {len(selected_papers)} 篇论文到 {len(feishu_urls)} 个飞书URL...")
+
     # 发送到飞书
     if selected_papers:
-        send_papers_to_feishu(selected_papers)
+        display_date = f"{file_date_str[:4]}-{file_date_str[4:6]}-{file_date_str[6:]}"
+        notify.send(feishu_urls, notify.papers_card(selected_papers, date=display_date))
         print("✅ 飞书消息发送完成！")
     else:
         print("⚠️ 没有符合条件的论文可以发送")
