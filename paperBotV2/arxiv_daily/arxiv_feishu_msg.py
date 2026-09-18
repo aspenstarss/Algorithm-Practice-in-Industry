@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 import requests
 from datetime import datetime
 
@@ -151,12 +152,16 @@ def main():
     # 获取当前脚本所在目录（paperBotV2/arxiv_daily目录）
     current_dir = os.path.dirname(os.path.abspath(__file__))
     json_dir = os.path.join(current_dir, "data")
-    
+
+    if not os.path.isdir(json_dir):
+        print(f"❌ 数据目录不存在: {json_dir}（说明 arxiv_daily_full 尚未成功运行）")
+        sys.exit(1)
+
     # 获取最新的JSON文件
     latest_json_file = get_latest_json_file(json_dir)
     if not latest_json_file:
         print("无法获取最新的JSON文件，程序退出")
-        return
+        sys.exit(1)
     
     # 从文件名中提取日期并检查是否为今天
     latest_file_name = os.path.basename(latest_json_file)
@@ -178,7 +183,7 @@ def main():
     papers = load_paper_data(latest_json_file)
     if not papers:
         print("未加载到论文数据，程序退出")
-        return
+        sys.exit(1)
     
     # 按照精排分数排序并选择前N篇论文
     papers_with_score = [p for p in papers if 'rerank_relevance_score' in p and p.get('is_fine_ranked', False)]

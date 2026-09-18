@@ -205,10 +205,14 @@ def load_results(filename='results.json'):
 
 
 def save_results(results, filename='results.json'):
+    parent = os.path.dirname(os.path.abspath(filename))
+    os.makedirs(parent, exist_ok=True)
     try:
-        json.dump(results, open(filename, 'w'), indent=4, ensure_ascii=False)
-    except IOError as e:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=4, ensure_ascii=False)
+    except OSError as e:
         print(f"Error: Failed to save results to {filename}: {e}")
+        raise
 
 def filter_results(results):
     for conf in results:

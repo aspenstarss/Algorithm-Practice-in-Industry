@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 import time
 import argparse
 import re
@@ -1036,7 +1037,7 @@ def main():
         json_files = get_all_json_files(json_dir)
         if not json_files:
             print("未找到可回溯生成的日期JSON文件，程序退出")
-            return
+            sys.exit(1)
         success_count = 0
         for json_file in json_files:
             date_str = os.path.basename(json_file).split('.')[0]
@@ -1062,13 +1063,13 @@ def main():
     
     if not json_file:
         print("无法获取JSON文件，程序退出")
-        return
-    
+        sys.exit(1)
+
     # 加载论文数据
     papers = load_paper_data(json_file)
     if not papers:
         print("未加载到论文数据，程序退出")
-        return
+        sys.exit(1)
     
     # 生成HTML页面
     date_str = date_arg if date_arg else os.path.basename(json_file).split('.')[0]

@@ -59,6 +59,7 @@ def load_results(path=RESULTS_PATH):
 
 
 def save_results(results, path=RESULTS_PATH):
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
 

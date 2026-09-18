@@ -34,6 +34,7 @@ def load_results(file_path: str) -> dict:
 
 def save_results(data: dict, file_path: str) -> bool:
     """保存数据到results.json文件"""
+    os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
