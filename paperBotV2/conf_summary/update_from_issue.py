@@ -4,9 +4,12 @@ import json
 from pathlib import Path
 import sys
 
+# 兄弟模块 paths（数据路径唯一来源）
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import paths
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-RESULTS_PATH = SCRIPT_DIR / "data" / "results.json"
+SCRIPT_DIR = paths.SCRIPT_DIR
+RESULTS_PATH = paths.RESULTS_PATH
 DEFAULT_FILTERS = ["kddcup", "w.html", "lbr.html"]
 
 if str(SCRIPT_DIR) not in sys.path:

@@ -72,28 +72,11 @@ jobs:
       - name: Run arxiv.py recovery
         if: steps.recovery_check.outputs.needs_recovery == 'true'
         env:
-          # LLM 提供商配置与 arxiv_daily_full 保持一致（Secrets + vars，切换提供商无需改代码）
+          # 抓取/排序参数的唯一来源是 paperBotV2/arxiv_daily/config.py（与 arxiv_daily_full 一致）
           LLM_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           FEISHU_URL: ${{ secrets.FEISHU_URL }}
-          TARGET_CATEGORYS: "cs.IR,cs.CL,cs.CV"
-          MAX_PAPERS: "100"
-          ARXIV_LOOKBACK_HOURS: "36"
-          ARXIV_PAGE_SIZE: "100"
-          ARXIV_MAX_PAGES: "20"
-          ARXIV_CATEGORY_MAX_PAGES: "cs.IR:8,cs.CL:8,cs.CV:5"
-          ARXIV_REQUEST_INTERVAL: "60"
-          ARXIV_CATEGORY_INTERVAL: "120"
-          ARXIV_JITTER_SECONDS: "120"
-          ARXIV_CATEGORY_RETRY_ATTEMPTS: "1"
-          ARXIV_USE_DAILY_CACHE: "true"
-          ARXIV_RETRY_ATTEMPTS: "4"
-          ARXIV_RETRY_BASE_WAIT: "600"
-          ARXIV_RETRY_MAX_WAIT: "2400"
-          ARXIV_API_BASE_URLS: "https://export.arxiv.org/api/query,https://arxiv.org/api/query"
-          ROUGH_SCORE_THRESHOLD: "4"
-          RETURN_PAPERS: "20"
           PYTHONPATH: ${{ github.workspace }}
           PYTHONUNBUFFERED: "1"
         run: |

@@ -1,10 +1,12 @@
 import json
 import os
 import re
+from pathlib import Path
 
-# 文件路径
-results_file = 'data/results.json'
-papers_dir = 'data/papers'
+# 文件路径（绝对路径，不依赖运行目录）
+SCRIPT_DIR = Path(__file__).resolve().parent
+results_file = str(SCRIPT_DIR / "data" / "results.json")
+papers_dir = str(SCRIPT_DIR / "data" / "papers")
 
 # 黑名单会议列表，只对这些会议的摘要进行长度限制
 ABSTRACT_TRUNCATE_BLACKLIST = ['acl', 'emnlp', 'naacl', 'iclr']

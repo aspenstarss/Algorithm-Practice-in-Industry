@@ -7,9 +7,11 @@ for _path in (_HERE, os.path.dirname(_HERE)):
     if _path not in sys.path:
         sys.path.insert(0, _path)
 import daily_store
+import config
 import notify
 
-RETURN_PAPERS = int(os.environ.get("RETURN_PAPERS", "20"))
+# 推送篇数与主流程同一配置源（paperBotV2/arxiv_daily/config.py）
+RETURN_PAPERS = config.load().return_papers
 
 
 def main():

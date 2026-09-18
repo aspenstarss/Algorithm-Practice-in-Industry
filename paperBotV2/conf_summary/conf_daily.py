@@ -13,9 +13,11 @@ from tqdm import tqdm
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from paperBotV2 import llm, notify
 
+# 兄弟模块 paths（数据路径唯一来源）
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import paths
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-RESULTS_PATH = SCRIPT_DIR / "data" / "results.json"
+RESULTS_PATH = paths.RESULTS_PATH
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
