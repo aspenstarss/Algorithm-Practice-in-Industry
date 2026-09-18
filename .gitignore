@@ -162,13 +162,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# 运行产物与累积数据（本地跑会自动重新生成）
+# 运行产物与累积数据（每日 JSON 住在独立 data 分支，workflow 挂载到 data/；main 只放代码）
 paperBotV2/arxiv_daily/output/
+paperBotV2/arxiv_daily/data/
 paperBotV2/industry_practice/output/
 paperBotV2/conf_summary/data/
-# data/ 目录需要入库：arxiv_feishu_msg 依赖 checkout 到当日 JSON（Actions 每日提交 ~450KB）
-# 仅排除 66MB 的累积文件 results.json，本地历史每日 JSON 保持 untracked
-paperBotV2/arxiv_daily/data/results.json
 results.json
 arxiv.json
 papers/

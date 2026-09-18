@@ -635,34 +635,8 @@ def save_results_to_json(all_papers):
     daily_file = os.path.join(save_dir, f"{datetime.now().strftime('%Y%m%d')}.json")
     with open(daily_file, 'w', encoding='utf-8') as f:
         json.dump(all_papers, f, ensure_ascii=False, indent=2)
-    
+
     print(f"💾 当天论文结果已保存到 {daily_file}")
-    
-    # 2. 保存/更新全量results.json文件
-    all_results_file = os.path.join(save_dir, "results.json")
-    
-    # 读取已有全量结果（如果存在）
-    all_results = {}
-    if os.path.exists(all_results_file):
-        try:
-            with open(all_results_file, 'r', encoding='utf-8') as f:
-                all_results = json.load(f)
-            print(f"📋 已加载现有全量结果，共 {len(all_results)} 篇论文。")
-        except Exception as e:
-            print(f"❌ 读取全量结果文件失败: {e}")
-    
-    # 增量更新全量结果（使用arxiv_id作为唯一标识）
-    new_papers_count = 0
-    for arxiv_id, paper in all_papers.items():
-        if arxiv_id not in all_results:
-            all_results[arxiv_id] = paper
-            new_papers_count += 1
-    
-    # 保存更新后的全量结果
-    with open(all_results_file, 'w', encoding='utf-8') as f:
-        json.dump(all_results, f, ensure_ascii=False, indent=2)
-    
-    print(f"📊 全量结果已更新到 {all_results_file}，新增 {new_papers_count} 篇论文，总论文数: {len(all_results)}")
     return True
 
 

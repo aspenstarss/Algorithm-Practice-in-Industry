@@ -42,6 +42,13 @@ jobs:
         with:
           lfs: true
 
+      # 检出 data 分支并挂载为 data/ 目录（每日 JSON 存这里，main 只放代码）
+      - name: Checkout data branch
+        uses: actions/checkout@v3
+        with:
+          ref: data
+          path: paperBotV2/arxiv_daily/data
+
       # 设置Python环境
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
@@ -114,6 +121,29 @@ jobs:
             echo "⏳ arxiv.py 执行失败，等待 ${wait_seconds}s 后进行下一次 workflow 外层重试"
             sleep "$wait_seconds"
           done
+
+      # 提交并推送 data 分支：数据尽早落库，后续步骤失败也不丢
+      - name: Commit and push data branch
+        run: |
+          cd paperBotV2/arxiv_daily/data
+          git config user.email "action@github.com"
+          git config user.name "github-actions"
+          git add --all .
+          git reset -- results.json >/dev/null 2>&1 || true
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "data 分支无变更"
+            exit 0
+          fi
+          git commit -m "data: $(date -u +%Y%m%d) arxiv papers"
+          for i in 1 2 3; do
+            if git pull --rebase origin data && git push origin HEAD:data; then
+              exit 0
+            fi
+            echo "⏳ data push 第 ${i}/3 次失败，30s 后重试"
+            git rebase --abort 2>/dev/null || true
+            sleep 30
+          done
+          exit 1
 
       # 生成HTML页面
       - name: Generate HTML pages

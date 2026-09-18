@@ -1,11 +1,12 @@
 import csv
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 
 STATUS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "status")
 RUNS_CSV = os.path.join(STATUS_DIR, "arxiv_daily_runs.csv")
+STATUS_KEEP_DAYS = 30
 
 CSV_FIELDS = [
     "date",
@@ -204,6 +205,31 @@ class ArxivDailyStatus:
             if not file_exists:
                 writer.writeheader()
             writer.writerow(self.to_csv_row())
+        prune_old_status()
+
+
+def prune_old_status(keep_days=STATUS_KEEP_DAYS):
+    """状态队列化：删除 keep_days 天前的状态 JSON，runs.csv 只保留同窗口的行。"""
+    cutoff = (datetime.now() - timedelta(days=keep_days)).strftime("%Y%m%d")
+    removed = 0
+    if os.path.isdir(STATUS_DIR):
+        for name in os.listdir(STATUS_DIR):
+            date_part = name[:-5]
+            if name.endswith(".json") and date_part.isdigit() and date_part < cutoff:
+                os.remove(os.path.join(STATUS_DIR, name))
+                removed += 1
+    if os.path.exists(RUNS_CSV):
+        with open(RUNS_CSV, "r", encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames or CSV_FIELDS
+            rows = list(reader)
+        kept = [row for row in rows if (row.get("date") or "") >= cutoff]
+        if len(kept) != len(rows):
+            with open(RUNS_CSV, "w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(kept)
+    return removed
 
 
 def latest_status_for_date(date_key=None):

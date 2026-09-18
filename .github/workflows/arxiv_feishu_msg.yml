@@ -42,6 +42,13 @@ jobs:
         with:
           lfs: true
 
+      # 检出 data 分支并挂载为 data/ 目录（读取当日 JSON 用于推送）
+      - name: Checkout data branch
+        uses: actions/checkout@v3
+        with:
+          ref: data
+          path: paperBotV2/arxiv_daily/data
+
       # 设置Python环境
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
