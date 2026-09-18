@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../frontend/styles.css?v={{TIMESTAMP}}">
+    <link rel="stylesheet" href="../frontend/collapse.css?v={{TIMESTAMP}}">
     <script src="../frontend/tailwind.config.js"></script>
 </head>
 
@@ -100,7 +101,16 @@
     <script id="papers-data" type="application/json">
         {{PAPERS_JSON}}
     </script>
+    <script>
+        // 后端注入：业务日配置与有数据的日期列表（calendar.js 读取）
+        window.CALENDAR_CONFIG = {
+            currentDateConfig: {{CURRENT_DATE_CONFIG}},
+            availableDates: {{AVAILABLE_DATES}}
+        };
+    </script>
     <script src="../frontend/app.js"></script>
+    <script src="../frontend/collapse.js"></script>
+    <script src="../frontend/calendar.js"></script>
 </body>
 
 </html>
