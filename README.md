@@ -82,8 +82,6 @@ CI 上：key 存 Secrets，模型/端点存 Actions **Variables**（`vars.LLM_MO
 
 **定时说明**：`arxiv_daily_full` 每天北京时间 11:23 运行，18:05 的恢复流程检查当日状态并按需补跑；两者共享并发队列（排队不互杀）。
 
-旧版脚本和旧 arXiv workflow 已归档到 `legacy/`，仅用于历史回溯、兼容排查和必要时回滚；日常开发和自动化入口以 `paperBotV2/` 为准。
-
 ## 贡献新文章
 提交issue，利用github action自动更新readme和source.xlsx内容
 

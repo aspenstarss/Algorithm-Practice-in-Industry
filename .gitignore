@@ -172,3 +172,6 @@ arxiv.json
 papers/
 .DS_Store
 .git-backup/
+
+# IDE / AI 工具工作文件
+.trae/
