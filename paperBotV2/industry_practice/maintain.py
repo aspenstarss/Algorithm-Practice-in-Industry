@@ -5,6 +5,7 @@ import random
 import json
 import argparse
 import requests
+import generate_industry_html
 import datetime
 import sys
 import re
@@ -58,8 +59,8 @@ def parse_issue(issue):
         print(info)
         assert isinstance(info, list)
         assert len(info) > 0 and info[0].get("公司") and info[0].get("内容") and info[0].get("标签") and info[0].get("时间") and info[0].get("链接")
-    except:
-        raise Exception("[-] Wrong input!")
+    except Exception as exc:
+        raise ValueError(f"issue 数据格式错误（需含 公司/内容/标签/时间/链接 字段）: {exc}") from exc
     return info
 
 def update_json_and_csv(args):
@@ -122,8 +123,8 @@ def update_json_and_csv(args):
                 print(f"[+] 添加新文章: {item.get('内容')}")
         
         # 按时间排序数据（最新的在前）
-        existing_json_data.sort(key=lambda x: get_sortable_date(x.get("date", x.get("时间", ""))), reverse=True)
-        existing_csv_data.sort(key=lambda x: get_sortable_date(x["日期"]), reverse=True)
+        existing_json_data.sort(key=lambda x: generate_industry_html.get_sortable_date(x.get("date", x.get("时间", ""))), reverse=True)
+        existing_csv_data.sort(key=lambda x: generate_industry_html.get_sortable_date(x["日期"]), reverse=True)
         
         # 保存更新后的JSON文件
         with open(ARTICLE_JSON_FILE, 'w', encoding='utf-8') as f:
@@ -144,44 +145,6 @@ def update_json_and_csv(args):
         import traceback
         print(f"[-] 错误详情: {traceback.format_exc()}")
         return False
-
-def get_sortable_date(date_str):
-    """将日期字符串转换为可排序的格式
-    
-    Args:
-        date_str: 日期字符串
-    
-    Returns:
-        str: 标准格式的日期字符串
-    """
-    try:
-        # 处理格式：YYYY-MM-DD
-        if len(date_str) == 10 and '-' in date_str:
-            return date_str
-        # 处理格式：YYYY.MM.DD
-        elif len(date_str) == 10 and '.' in date_str:
-            return date_str.replace('.', '-')
-        # 处理格式：MM/DD/YYYY
-        elif len(date_str) == 10 and '/' in date_str:
-            parts = date_str.split('/')
-            if len(parts) == 3:
-                return f"{parts[2]}-{parts[0]}-{parts[1]}"
-        # 处理格式：YYYY年MM月DD日
-        elif len(date_str) >= 8 and '年' in date_str and '月' in date_str:
-            year = date_str.split('年')[0]
-            month_part = date_str.split('年')[1].split('月')[0]
-            day_part = date_str.split('月')[1].split('日')[0] if '日' in date_str else date_str.split('月')[1]
-            return f"{year}-{month_part.zfill(2)}-{day_part.zfill(2)}"
-        # 处理格式：MM-DD-YY
-        elif len(date_str) == 8 and '-' in date_str:
-            parts = date_str.split('-')
-            if len(parts) == 3 and len(parts[2]) == 2:
-                return f"20{parts[2]}-{parts[0]}-{parts[1]}"
-        # 默认返回当前日期
-        return datetime.datetime.now().strftime('%Y-%m-%d')
-    except Exception as e:
-        print(f"日期格式转换错误: {date_str}, {e}")
-        return datetime.datetime.now().strftime('%Y-%m-%d')
 
 def update_readme(args, info=None):
     print("[+] Add new items into readme...")
@@ -213,8 +176,10 @@ def update_readme(args, info=None):
         with open(README_FILE, "w", encoding="utf-8") as f:
             f.writelines(lines)
         print("[+] Add items Done!")
+        return True
     else:
-        print("[-] Table not found!")
+        print("[-] README 表格未找到，跳过 README 更新")
+        return False
 
 def update_message(args):
     "更新消息通知"
@@ -318,40 +283,32 @@ def send_feishu_message(title, content, urls=None):
 
 
 def update_industry_practice_page():
-    """更新大厂实践文章页面
-    
-    调用generate_industry_html.py生成HTML页面
-    """
+    """更新大厂实践文章页面（同模块直调 generate_industry_html，替代 subprocess）"""
     print("[+] 开始更新大厂实践文章页面...")
-    
     try:
-        import os
-        import sys
-        import subprocess
-        
-        # 使用subprocess运行generate_industry_html.py，不传递任何参数
-        script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generate_industry_html.py")
-        result = subprocess.run([sys.executable, script_path], capture_output=True, text=True)
-        
-        if result.returncode == 0:
-            print("[+] 更新大厂实践文章页面成功!")
-            return True
-        else:
-            print(f"[-] 更新大厂实践文章页面失败，返回码: {result.returncode}")
-            print(f"[-] 错误输出: {result.stderr}")
-            return False
+        generate_industry_html.generate_industry_html()
+        print("[+] 更新大厂实践文章页面成功!")
+        return True
     except Exception as e:
         print(f"[-] 更新大厂实践文章页面失败: {e}")
         import traceback
         print(f"[-] 错误详情: {traceback.format_exc()}")
         return False
 
+
 def main():
     args = set_args()
-    update_json_and_csv(args)
-    update_readme(args)
+    failed = False
+    # 数据与页面阶段失败必须显式（退出码 1）；消息通知为 best-effort，不改变退出码
+    if not update_json_and_csv(args):
+        failed = True
+    if not update_readme(args):
+        failed = True
     update_message(args)
-    update_industry_practice_page()
+    if not update_industry_practice_page():
+        failed = True
+    if failed:
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

@@ -236,14 +236,21 @@ def rough_analyze_papers_cocurrent(results, max_workers=10):
         print(f"\n🚀 开始并发分析 {len(results)} 篇论文，使用 {max_workers} 个工作线程...")
         progress_bar = tqdm(as_completed(future_to_paper),
                             total=len(results), desc="分析进度")
+        failed = 0
         for future in progress_bar:
             try:
                 updated_paper = future.result()
                 if updated_paper:
                     analyzed_papers.append(updated_paper)
             except Exception as exc:
+                failed += 1
                 paper_info = future_to_paper[future]
                 print(f"⚠️ 处理论文 {paper_info['title']} 时产生异常: {exc}")
+    total = len(results)
+    if total and failed == total:
+        raise RuntimeError(f"LLM 粗排全部失败（{failed}/{total}），疑似 API 故障，终止本次运行")
+    if failed:
+        print(f"⚠️ 粗排部分失败：{failed}/{total} 篇被丢弃（已计入 status 的 rough_rank_failed）")
     if not analyzed_papers:
         print("📭 \n没有成功分析任何论文。")
         return []
@@ -302,14 +309,21 @@ def fine_analyze_papers_cocurrent(papers, max_workers=10):
         print(f"\n🚀 开始并发精排 {len(papers)} 篇论文，使用 {max_workers} 个工作线程...")
         progress_bar = tqdm(as_completed(future_to_paper),
                             total=len(papers), desc="精排进度")
+        failed = 0
         for future in progress_bar:
             try:
                 updated_paper = future.result()
                 if updated_paper:
                     analyzed_papers.append(updated_paper)
             except Exception as exc:
+                failed += 1
                 paper_info = future_to_paper[future]
                 print(f"处理论文 {paper_info['title']} 时产生异常: {exc}")
+    total = len(papers)
+    if total and failed == total:
+        raise RuntimeError(f"LLM 精排全部失败（{failed}/{total}），疑似 API 故障，终止本次运行")
+    if failed:
+        print(f"⚠️ 精排部分失败：{failed}/{total} 篇被丢弃")
     if not analyzed_papers:
         print("\n没有成功精排任何论文。")
         return []

@@ -12,6 +12,7 @@ import argparse
 import time
 from datetime import datetime
 from jinja2 import Template
+from markupsafe import escape
 
 # 添加当前目录到系统路径
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -84,9 +85,7 @@ def load_article_data(file_path):
             
         return converted_data
     except Exception as e:
-        print(f"加载文章数据失败: {e}")
-        print("请确保article.json文件存在且格式正确")
-        return []
+        raise RuntimeError(f"加载文章数据失败（请检查 {file_path} 是否存在且为合法JSON）: {e}") from e
 
 
 def get_sortable_date(date_str):
@@ -121,11 +120,12 @@ def get_sortable_date(date_str):
             parts = date_str.split('-')
             if len(parts) == 3 and len(parts[2]) == 2:
                 return f"20{parts[2]}-{parts[0]}-{parts[1]}"
-        # 默认返回当前日期
-        return datetime.now().strftime('%Y-%m-%d')
+        # 其余格式一律无法识别，显式报错（坏日期伪装成今天会污染排序）
+        raise ValueError(f"无法识别的日期格式: {date_str!r}")
+    except ValueError:
+        raise
     except Exception as e:
-        print(f"日期格式转换错误: {date_str}, {e}")
-        return datetime.now().strftime('%Y-%m-%d')
+        raise ValueError(f"日期格式转换错误: {date_str!r}") from e
 
 
 def generate_table_rows(items):
@@ -158,18 +158,18 @@ def generate_table_rows(items):
         
         # 生成表格行HTML，确保列顺序与表头一致：序号、公司、标题、标签、发布时间
         row_html = f"""
-        <tr class="article-row" data-company="{company}" data-tags="{','.join(tags)}">
+        <tr class="article-row" data-company="{escape(company)}" data-tags="{escape(','.join(tags))}">
             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
                 {idx}
             </td>
             <td class="px-4 py-3 whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {company}
+                    {escape(company)}
                 </span>
             </td>
             <td class="px-4 py-3 whitespace-nowrap">
-                <a href="{link}" target="_blank" rel="noopener noreferrer" title="{title}" class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
-                    {display_title}
+                <a href="{escape(link)}" target="_blank" rel="noopener noreferrer" title="{escape(title)}" class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                    {escape(display_title)}
                 </a>
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
@@ -200,76 +200,71 @@ def generate_industry_html():
     Returns:
         str: 生成的HTML文件路径
     """
-    try:
-        # 确保目录存在
-        ensure_directories()
-        
-        # 创建静态模板文件
-        create_static_templates()
-        
-        # 加载文章数据
-        print("加载文章数据...")
-        items = load_article_data(ARTICLE_JSON_FILE)
-        print(f"成功加载 {len(items)} 条文章数据")
-        
-        if not items:
-            print("没有找到文章数据，无法生成HTML页面")
-            return None
-        
-        # 按日期排序
-        print("按日期排序文章...")
-        items_sorted = sorted(items, key=lambda x: get_sortable_date(x.get('date', '')), reverse=True)
-        
-        # 提取公司列表
-        print("提取公司和标签列表...")
-        companies = sorted(list(set([item.get('company', '未知') for item in items])))
-        tags = sorted(list(set([tag for item in items for tag in item.get('tags', [])])))
-        print(f"共提取 {len(companies)} 家公司，{len(tags)} 个标签")
-        
-        # 生成表格行HTML
-        print("生成表格行HTML...")
-        table_rows = generate_table_rows(items_sorted)
-        print(f"表格行生成完成")
-        
-        # 准备渲染上下文
-        print("准备渲染上下文...")
-        context = {
-            'TIMESTAMP': int(time.time()),
-            'LAST_UPDATED': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'total_items': len(items),
-            'companies': companies,
-            'tags': tags,
-            'table_rows': table_rows,
-            'articles_json': json.dumps(items_sorted, ensure_ascii=False, default=str)
-        }
-        print(f"上下文准备完成，键数量: {len(context.keys())}")
-        
-        # 读取HTML模板文件，从output/static/templates目录读取
-        template_file = os.path.join(OUTPUT_DIR, "static", "templates", "index.html.template")
-        with open(template_file, 'r', encoding='utf-8') as f:
-            html_template = f.read()
-        print(f"成功读取模板文件: {template_file}")
-        
-        # 渲染HTML内容
-        print("开始渲染HTML内容...")
-        html_content = render_template(html_template, context)
-        print("HTML渲染成功")
-        
-        # 生成输出文件路径，直接生成index.html
-        output_file = os.path.join(OUTPUT_DIR, "index.html")
-        
-        # 写入文件
-        print(f"写入HTML文件: {output_file}")
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-        
-        print(f"HTML页面已成功生成: {output_file}")
-        return output_file
-    except Exception as e:
-        print(f"生成HTML页面失败: {e}")
-        import traceback
-        print(f"完整错误栈:\n{traceback.format_exc()}")
+    # 确保目录存在
+    ensure_directories()
+    
+    # 创建静态模板文件
+    create_static_templates()
+    
+    # 加载文章数据
+    print("加载文章数据...")
+    items = load_article_data(ARTICLE_JSON_FILE)
+    print(f"成功加载 {len(items)} 条文章数据")
+    
+    if not items:
+        print("没有找到文章数据，无法生成HTML页面")
         return None
+    
+    # 按日期排序
+    print("按日期排序文章...")
+    items_sorted = sorted(items, key=lambda x: get_sortable_date(x.get('date', '')), reverse=True)
+    
+    # 提取公司列表
+    print("提取公司和标签列表...")
+    companies = sorted(list(set([item.get('company', '未知') for item in items])))
+    tags = sorted(list(set([tag for item in items for tag in item.get('tags', [])])))
+    print(f"共提取 {len(companies)} 家公司，{len(tags)} 个标签")
+    
+    # 生成表格行HTML
+    print("生成表格行HTML...")
+    table_rows = generate_table_rows(items_sorted)
+    print(f"表格行生成完成")
+    
+    # 准备渲染上下文
+    print("准备渲染上下文...")
+    context = {
+        'TIMESTAMP': int(time.time()),
+        'LAST_UPDATED': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'total_items': len(items),
+        'companies': companies,
+        'tags': tags,
+        'table_rows': table_rows,
+        'articles_json': json.dumps(items_sorted, ensure_ascii=False, default=str)
+    }
+    print(f"上下文准备完成，键数量: {len(context.keys())}")
+    
+    # 读取HTML模板文件，从output/static/templates目录读取
+    template_file = os.path.join(OUTPUT_DIR, "static", "templates", "index.html.template")
+    with open(template_file, 'r', encoding='utf-8') as f:
+        html_template = f.read()
+    print(f"成功读取模板文件: {template_file}")
+    
+    # 渲染HTML内容
+    print("开始渲染HTML内容...")
+    html_content = render_template(html_template, context)
+    print("HTML渲染成功")
+    
+    # 生成输出文件路径，直接生成index.html
+    output_file = os.path.join(OUTPUT_DIR, "index.html")
+    
+    # 写入文件
+    print(f"写入HTML文件: {output_file}")
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    print(f"HTML页面已成功生成: {output_file}")
+    return output_file
+
 
 
 
