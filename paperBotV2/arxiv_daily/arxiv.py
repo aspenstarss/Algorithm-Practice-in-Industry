@@ -13,6 +13,7 @@ from tenacity import retry, stop_after_attempt, wait_random_exponential
 from openai import APIConnectionError, RateLimitError, APIStatusError
 from .prompts import PRERANK_PROMPT, FINERANK_PROMPT
 from .status import ArxivDailyStatus
+from . import daily_store as _store
 
 # 从环境变量获取配置，同时提供默认值
 # 支持多个飞书URL，用逗号分隔
@@ -93,14 +94,10 @@ def load_today_cached_papers(category):
     if not ARXIV_USE_DAILY_CACHE:
         return {}
 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    today_file = os.path.join(current_dir, "data", f"{datetime.now().strftime('%Y%m%d')}.json")
-    if not os.path.exists(today_file):
-        return {}
-
     try:
-        with open(today_file, 'r', encoding='utf-8') as f:
-            today_data = json.load(f)
+        today_data = _store.load_raw(_store.business_date())
+    except FileNotFoundError:
+        return {}
     except Exception as exc:
         print(f"⚠️ 读取今日缓存失败，将继续请求 arXiv: {exc}")
         return {}
@@ -617,25 +614,13 @@ def perform_fine_ranking(filtered_papers, all_papers, run_status=None):
 
 
 def save_results_to_json(all_papers):
-    """保存所有结果到指定路径的JSON文件，包括天级文件和全量文件"""
+    """保存当天结果到每日数据文件（数据居住在 data 分支，路径约定见 daily_store）"""
     # 如果没有新论文，直接返回
     if not all_papers:
         print("📭 今天没有新论文，跳过保存JSON文件")
         return False
-    
-    # 获取当前脚本所在目录（paperBotV2/arxiv_daily目录）
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 确保data目录存在于paperBotV2/arxiv_daily目录下
-    save_dir = os.path.join(current_dir, "data")
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-    
-    # 1. 保存当天的结果到日期格式的文件
-    daily_file = os.path.join(save_dir, f"{datetime.now().strftime('%Y%m%d')}.json")
-    with open(daily_file, 'w', encoding='utf-8') as f:
-        json.dump(all_papers, f, ensure_ascii=False, indent=2)
 
+    daily_file = _store.save(all_papers, _store.business_date())
     print(f"💾 当天论文结果已保存到 {daily_file}")
     return True
 

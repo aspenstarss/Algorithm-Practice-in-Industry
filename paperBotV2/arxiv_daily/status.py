@@ -3,6 +3,8 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 
+from .daily_store import business_date as _business_date
+
 
 STATUS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "status")
 RUNS_CSV = os.path.join(STATUS_DIR, "arxiv_daily_runs.csv")
@@ -42,7 +44,7 @@ def utc_now_iso():
 
 
 def today_key():
-    return datetime.now().strftime("%Y%m%d")
+    return _business_date()
 
 
 def _duration_seconds(started_at, ended_at):

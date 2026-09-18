@@ -10,6 +10,8 @@ from urllib.parse import urlparse
 from jinja2 import Environment, BaseLoader, select_autoescape
 from markupsafe import Markup, escape
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import daily_store
 
 # 配置参数
 MAX_AUTHORS_DISPLAY_LENGTH = 80  # 作者名最大显示长度
@@ -95,101 +97,6 @@ def coerce_score(score):
         return float(score)
     except (TypeError, ValueError):
         return 0.0
-
-
-def get_latest_json_file(json_dir):
-    """获取最新的JSON文件路径
-    
-    Args:
-        json_dir: JSON文件所在目录
-    
-    Returns:
-        str: 最新JSON文件的路径
-    """
-    try:
-        # 获取目录中的所有日期JSON文件
-        json_files = [
-            f
-            for f in os.listdir(json_dir)
-            if f.endswith('.json') and sanitize_date(f[:-5])
-        ]
-        if not json_files:
-            print("未找到JSON文件")
-            return None
-        
-        # 按文件名（日期）排序，获取最新的
-        json_files.sort(reverse=True)
-        latest_file = json_files[0]
-        return os.path.join(json_dir, latest_file)
-    except Exception as e:
-        print(f"获取最新JSON文件失败: {e}")
-        return None
-
-
-def get_all_json_files(json_dir):
-    """获取所有日期JSON文件，按日期升序返回，便于批量回溯生成HTML。"""
-    try:
-        json_files = [
-            f
-            for f in os.listdir(json_dir)
-            if f.endswith('.json') and sanitize_date(f[:-5])
-        ]
-        json_files.sort()
-        return [os.path.join(json_dir, file_name) for file_name in json_files]
-    except Exception as e:
-        print(f"获取所有JSON文件失败: {e}")
-        return []
-
-
-def get_json_file_by_date(json_dir, date_str):
-    """根据日期获取JSON文件路径
-    
-    Args:
-        json_dir: JSON文件所在目录
-        date_str: 日期字符串，格式为YYYYMMDD
-    
-    Returns:
-        str: JSON文件的路径
-    """
-    date_str = sanitize_date(date_str)
-    if not date_str:
-        print("日期格式无效，应为YYYYMMDD")
-        return None
-
-    file_name = f"{date_str}.json"
-    file_path = os.path.join(json_dir, file_name)
-    
-    if not os.path.exists(file_path):
-        print(f"未找到日期为 {date_str} 的JSON文件")
-        return None
-    
-    return file_path
-
-
-def load_paper_data(file_path):
-    """加载并解析论文数据
-    
-    Args:
-        file_path: JSON文件路径
-    
-    Returns:
-        list: 论文数据列表
-    """
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        # 转换为列表并添加arxiv_id字段；避免原地修改JSON解析出的子对象
-        papers = []
-        for arxiv_id, paper_info in data.items():
-            paper = dict(paper_info)
-            paper['arxiv_id'] = arxiv_id
-            papers.append(paper)
-        
-        return papers
-    except Exception as e:
-        print(f"加载论文数据失败: {e}")
-        return []
 
 
 def read_frontend_file(directory, file_name):
@@ -745,22 +652,8 @@ def generate_html(papers, date_str, script_dir, output_file=None):
         });
     </script>'''
     
-    # 获取有论文数据的日期列表
-    def get_available_dates(json_dir):
-        available_dates = []
-        if os.path.exists(json_dir):
-            for file in os.listdir(json_dir):
-                if file.endswith('.json') and len(file) == 13 and file != 'results.json':  # 格式: YYYYMMDD.json
-                    safe_date = sanitize_date(file[:-5])  # 移除.json
-                    if safe_date:
-                        available_dates.append(safe_date)
-        return sorted(available_dates)
-    
-    # 根据script_dir计算json_dir
-    json_dir = os.path.join(script_dir, "data")
-    
-    # 获取有论文数据的日期列表
-    available_dates = get_available_dates(json_dir)
+    # 获取有论文数据的日期列表（统一走 daily_store）
+    available_dates = daily_store.all_dates()
     available_dates_js = json.dumps(available_dates)
     current_date_config_js = json.dumps({
         "ymd": date_str,
@@ -1019,13 +912,7 @@ def main():
     
     # 获取脚本所在目录
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    json_dir = os.path.join(script_dir, "data")
-    
-    # 确保JSON目录存在
-    if not os.path.exists(json_dir):
-        os.makedirs(json_dir)
-        print(f"创建目录: {json_dir}")
-    
+
     if args.all and args.date:
         print("--all 与 --date 不能同时使用")
         return
@@ -1034,45 +921,43 @@ def main():
         return
 
     if args.all:
-        json_files = get_all_json_files(json_dir)
-        if not json_files:
+        dates = daily_store.all_dates()
+        if not dates:
             print("未找到可回溯生成的日期JSON文件，程序退出")
             sys.exit(1)
         success_count = 0
-        for json_file in json_files:
-            date_str = os.path.basename(json_file).split('.')[0]
-            papers = load_paper_data(json_file)
+        for date_str in dates:
+            try:
+                papers = daily_store.load_papers(date_str)
+            except (OSError, ValueError) as exc:
+                print(f"日期 {date_str} 加载失败，跳过: {exc}")
+                continue
             if not papers:
                 print(f"日期 {date_str} 未加载到论文数据，跳过")
                 continue
             if generate_html(papers, date_str, script_dir):
                 success_count += 1
-        print(f"批量生成完成：成功 {success_count}/{len(json_files)} 个日期")
+        print(f"批量生成完成：成功 {success_count}/{len(dates)} 个日期")
         return
 
-    # 获取JSON文件路径
     if args.date:
-        date_arg = sanitize_date(args.date)
-        if not date_arg:
+        date_str = sanitize_date(args.date)
+        if not date_str:
             print("日期格式无效，应为YYYYMMDD")
             return
-        json_file = get_json_file_by_date(json_dir, date_arg)
+        try:
+            papers = daily_store.load_papers(date_str)
+        except OSError as exc:
+            print(f"未找到日期为 {date_str} 的JSON文件: {exc}")
+            sys.exit(1)
     else:
-        date_arg = None
-        json_file = get_latest_json_file(json_dir)
-    
-    if not json_file:
-        print("无法获取JSON文件，程序退出")
-        sys.exit(1)
+        latest_entry = daily_store.latest()
+        if not latest_entry:
+            print("无法获取JSON文件，程序退出")
+            sys.exit(1)
+        date_str, papers = latest_entry
 
-    # 加载论文数据
-    papers = load_paper_data(json_file)
-    if not papers:
-        print("未加载到论文数据，程序退出")
-        sys.exit(1)
-    
     # 生成HTML页面
-    date_str = date_arg if date_arg else os.path.basename(json_file).split('.')[0]
     generate_html(papers, date_str, script_dir, args.output)
 
 

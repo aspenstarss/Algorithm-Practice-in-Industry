@@ -64,6 +64,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 快速单测：业务日/数据存取的回归防线（<5s）
+      - name: Run unit tests
+        if: steps.recovery_check.outputs.needs_recovery == 'true'
+        run: python -m pytest tests/ -q
+
       - name: Run arxiv.py recovery
         if: steps.recovery_check.outputs.needs_recovery == 'true'
         env:

@@ -61,6 +61,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 快速单测：业务日/数据存取的回归防线（<5s）
+      - name: Run unit tests
+        run: python -m pytest tests/ -q
+
       # 执行脚本生成JSON数据
       - name: Run arxiv.py to generate JSON
         env:
