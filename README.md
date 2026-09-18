@@ -1,5 +1,7 @@
 # Algorithm-Practice-in-Industry
 
+> 本仓库 fork 自 [Doragd/Algorithm-Practice-in-Industry](https://github.com/Doragd/Algorithm-Practice-in-Industry)，现由 [@aspenstarss](https://github.com/aspenstarss) 维护：架构重构为「main 只放代码、数据住独立分支」，LLM 提供商可配置化，并补充了单元测试与领域文档（[CONTEXT.md](CONTEXT.md)）。
+
 ## 仓库介绍
 
 **一开始这个仓库是做如下内容：**
@@ -26,21 +28,61 @@
 
 当前仓库主线代码位于 `paperBotV2/`，主要维护搜广推方向的论文、顶会和工业实践内容：
 
-- **arXiv 每日论文**：抓取 `cs.IR` 等方向新论文，使用大模型进行粗排、精排和摘要翻译，生成每日 JSON 与网页，并支持飞书群推送。
+- **arXiv 每日论文**：抓取 `cs.IR` 等方向新论文，使用大模型进行粗排、精排和摘要翻译，生成每日 JSON 与网页，并支持飞书群推送。每日 JSON 存放在独立的 `data` 分支，main 分支只放代码。
 - **顶会论文汇总**：维护 ACL、CIKM、ECIR、EMNLP、ICLR、ICML、KDD、NAACL、NIPS、RecSys、SIGIR、WSDM、WWW 等会议论文列表，生成按会议和年份组织的 Markdown 页面。
-- **顶会论文日推**：从 `paperBotV2/conf_summary/data/results.json` 中挑选推荐、搜索、广告相关论文，补全摘要、翻译摘要，并通过飞书机器人推送。
+- **顶会论文日推**：从顶会论文库中挑选推荐、搜索、广告相关论文，补全摘要、翻译摘要，并通过飞书机器人推送。
 - **行业实践文章**：维护大厂搜广推、广告、搜索、推荐、生成式等实践文章，支持 Issue 驱动更新 README、数据文件和网页版本。
-- **GitHub Actions 自动化**：通过 workflow 定时或按 Issue 标签触发 arXiv 更新、飞书通知、顶会更新、会议日推和行业实践页面部署。
+- **GitHub Actions 自动化**：通过 workflow 定时或按 Issue 标签触发 arXiv 更新、飞书通知、顶会更新、会议日推和行业实践页面部署。推送均带 rebase 重试，主流程与恢复流程共享并发队列。
+- **单元测试**：`pytest tests/` 覆盖业务日口径、每日数据存取与 LLM 配置解析，arXiv 两个 workflow 在安装依赖后自动运行。
+
+领域词汇与既定决策见 [CONTEXT.md](CONTEXT.md)（业务日、data 分支、status 队列等）。
 
 ## 代码入口
 
 - arXiv 主流程：`python -m paperBotV2.arxiv_daily.arxiv`
+- arXiv 网页生成：`cd paperBotV2/arxiv_daily && python generate_arxiv_html.py [--date YYYYMMDD | --all]`
 - arXiv 飞书通知：`python paperBotV2/arxiv_daily/arxiv_feishu_msg.py`
+- 从 data 分支同步每日数据到本地：`./paperBotV2/arxiv_daily/sync_data.sh`
 - 顶会 Issue 更新：`python paperBotV2/conf_summary/update_from_issue.py`
 - 顶会日推：`python paperBotV2/conf_summary/conf_daily.py`
 - 顶会 Markdown 生成：`python paperBotV2/conf_summary/convert_to_md.py`
 - 顶会 README 更新：`python paperBotV2/conf_summary/update_readme_papers.py`
 - 行业实践更新：`python paperBotV2/industry_practice/maintain.py`
+- 单元测试：`python -m pytest tests/ -q`
+
+## 架构与配置
+
+**分支模型**
+
+| 分支 | 内容 | 体积 |
+|---|---|---|
+| `main` | 纯代码与文档 | 恒定（~2MB） |
+| `data` | 每日论文 JSON（`YYYYMMDD.json`），由 CI 自动写入 | 随天数增长（~450KB/天） |
+| `gh-pages` | 渲染后的网页（`arxiv_daily/`、`industry_practice/`） | 由 CI 部署 |
+
+**本地运行**（Python 3.8+，建议 venv）：
+
+```bash
+pip install -r requirements.txt
+export DEEPSEEK_API_KEY=你的key        # 或 LLM_API_KEY
+export FEISHU_URL=...                  # 可选
+python -m paperBotV2.arxiv_daily.arxiv # 抓取+筛选，写 data/当日.json
+cd paperBotV2/arxiv_daily && python generate_arxiv_html.py
+```
+
+**LLM 提供商配置**（换提供商零代码改动，详见 `paperBotV2/llm.py`）：
+
+| 变量 | 说明 | 缺省 |
+|---|---|---|
+| `LLM_API_KEY` | 优先使用；回落读 `DEEPSEEK_API_KEY` | — |
+| `LLM_BASE_URL` | OpenAI 兼容端点 | `https://api.deepseek.com/v1` |
+| `LLM_MODEL` | 模型名 | `deepseek-chat` |
+
+CI 上：key 存 Secrets，模型/端点存 Actions **Variables**（`vars.LLM_MODEL`、`vars.LLM_BASE_URL`），留空即回落 DeepSeek；切智谱 = 网页上改这三处值（端点 `https://open.bigmodel.cn/api/paas/v4/`，模型如 `glm-4.5-air`）。
+
+**必需 Secret**：`DEEPSEEK_API_KEY`（或 `LLM_API_KEY`）；**可选 Secret**：`FEISHU_URL`（飞书群机器人 Webhook，多个用逗号分隔，机器人安全设置选「自定义关键词」如 `arxiv`）。
+
+**定时说明**：`arxiv_daily_full` 每天北京时间 11:23 运行，18:05 的恢复流程检查当日状态并按需补跑；两者共享并发队列（排队不互杀）。
 
 旧版脚本和旧 arXiv workflow 已归档到 `legacy/`，仅用于历史回溯、兼容排查和必要时回滚；日常开发和自动化入口以 `paperBotV2/` 为准。
 
@@ -57,7 +99,7 @@
 <img src=https://github.com/Doragd/Algorithm-Practice-in-Industry/assets/26213546/a5575665-37f9-43de-941f-5133a6114d7e height="30%" width="30%"></img>
 
 
-## 搜广推论文推送Bot 【✨Newest:网页版本🥹=>[点击查看](https://doragd.github.io/Algorithm-Practice-in-Industry/arxiv_daily)】
+## 搜广推论文推送Bot 【✨Newest:网页版本🥹=>[点击查看](https://www.aspenstars.cn/Algorithm-Practice-in-Industry/arxiv_daily/)】
 * Arxiv论文：利用github action + 大模型排序翻译 + 飞书机器人每天推送cs.IR等方向的新论文到飞书群组中。[配置文件](https://github.com/Doragd/Algorithm-Practice-in-Industry/blob/main/.github/workflows/arxiv_daily_full.yml)
 * 顶会论文：利用github action + 彩云小译 + 飞书机器人每天推送搜广推顶会的论文到到飞书群组中。[配置文件](https://github.com/Doragd/Algorithm-Practice-in-Industry/blob/main/.github/workflows/push_conf_daily.yml)
 * PS: 虽然论文没太大用，但是可以无聊时候刷刷，扩展下思路。
