@@ -8,21 +8,19 @@
 
 搜索、推荐、广告、用增等工业界实践文章收集（来源：知乎、Datafuntalk、技术公众号）
 
-- [搜广推大厂实践文章](https://github.com/Doragd/Algorithm-Practice-in-Industry#%E5%A4%A7%E5%8E%82%E5%AE%9E%E8%B7%B5%E6%96%87%E7%AB%A0)
+- 搜广推大厂实践文章（见下文「大厂实践文章」章节）
 > 本文仅做资源收集，未引用具体内容，如有侵权，请联系删除。
 > 源文件：source.xlsx，可以执行自定义排序
 
 随后扩展了以下内容：
 
-- [搜广推论文推送Bot](https://github.com/Doragd/Algorithm-Practice-in-Industry/tree/main#%E6%90%9C%E5%B9%BF%E6%8E%A8%E8%AE%BA%E6%96%87%E6%8E%A8%E9%80%81bot)
+- 搜广推论文推送Bot（见下文「搜广推论文推送Bot」章节）
 
-- [搜广推顶会论文列表](https://github.com/Doragd/Algorithm-Practice-in-Industry#%E9%A1%B6%E4%BC%9A%E8%AE%BA%E6%96%87%E5%88%97%E8%A1%A8)
+- [搜广推顶会论文列表](#顶会论文列表)
 
-- [搜广推优质博主文章](https://github.com/Doragd/Algorithm-Practice-in-Industry/blob/main/%E6%90%9C%E5%B9%BF%E6%8E%A8%E4%BC%98%E8%B4%A8%E5%8D%9A%E4%B8%BB%E6%96%87%E7%AB%A0.md)
+- 搜广推优质博主文章（见 [搜广推优质博主文章.md](搜广推优质博主文章.md)）
 
-- [搜广推算法系列串讲](https://github.com/Doragd/Algorithm-Practice-in-Industry/blob/main/%E6%90%9C%E5%B9%BF%E6%8E%A8%E7%AE%97%E6%B3%95%E7%B3%BB%E5%88%97%E4%B8%B2%E8%AE%B2.md)
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Doragd/Algorithm-Practice-in-Industry&type=Date)](https://star-history.com/#Doragd/Algorithm-Practice-in-Industry&Date)
+- 搜广推算法系列串讲（见 [搜广推算法系列串讲.md](搜广推算法系列串讲.md)）
 
 ## 当前仓库功能
 
@@ -89,19 +87,11 @@ CI 上：key 存 Secrets，模型/端点存 Actions **Variables**（`vars.LLM_MO
 ## 贡献新文章
 提交issue，利用github action自动更新readme和source.xlsx内容
 
-已提供issue模板，具体内容参考issue：https://github.com/Doragd/Algorithm-Practice-in-Industry/issues/1
-
-## 一起交流
-* 关于我：2023届毕业，之前做NLP方向，毕业后转去搜广推方向，一枚努力适应的菜鸡。目前在做召回方向。
-* 我的论文阅读笔记：https://github.com/doragd/paperreading
-* 和我交流：
-
-<img src=https://github.com/Doragd/Algorithm-Practice-in-Industry/assets/26213546/a5575665-37f9-43de-941f-5133a6114d7e height="30%" width="30%"></img>
-
+已提供两个 issue 模板（**添加新文章** / **添加新会议**），在 Issues 页面选择模板填写即可自动更新对应内容
 
 ## 搜广推论文推送Bot 【✨Newest:网页版本🥹=>[点击查看](https://www.aspenstars.cn/Algorithm-Practice-in-Industry/arxiv_daily/)】
-* Arxiv论文：利用github action + 大模型排序翻译 + 飞书机器人每天推送cs.IR等方向的新论文到飞书群组中。[配置文件](https://github.com/Doragd/Algorithm-Practice-in-Industry/blob/main/.github/workflows/arxiv_daily_full.yml)
-* 顶会论文：利用github action + 彩云小译 + 飞书机器人每天推送搜广推顶会的论文到到飞书群组中。[配置文件](https://github.com/Doragd/Algorithm-Practice-in-Industry/blob/main/.github/workflows/push_conf_daily.yml)
+* Arxiv论文：利用github action + 大模型排序翻译 + 飞书机器人每天推送cs.IR等方向的新论文到飞书群组中。[配置文件](.github/workflows/arxiv_daily_full.yml)
+* 顶会论文：利用github action + 彩云小译 + 飞书机器人每天推送搜广推顶会的论文到到飞书群组中。[配置文件](.github/workflows/push_conf_daily.yml)
 * PS: 虽然论文没太大用，但是可以无聊时候刷刷，扩展下思路。
 * 比如早上通勤的时候，可以刷刷推送，看看有没有有意思的论文，也不需要花太多时间，毕竟摘要都翻译好了~
 
