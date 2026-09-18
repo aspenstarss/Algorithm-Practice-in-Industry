@@ -5,20 +5,17 @@ import json
 import time
 import feedparser
 import random
-from openai import OpenAI
 from datetime import datetime, timedelta, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
-from tenacity import retry, stop_after_attempt, wait_random_exponential
-from openai import APIConnectionError, RateLimitError, APIStatusError
 from .prompts import PRERANK_PROMPT, FINERANK_PROMPT
 from .status import ArxivDailyStatus
 from . import daily_store as _store
+from .. import llm as _llm
 
 # 从环境变量获取配置，同时提供默认值
 # 支持多个飞书URL，用逗号分隔
 FEISHU_URLS = [url.strip() for url in os.environ.get("FEISHU_URL", "").split(',') if url.strip()]
-DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", None)
 # TARGET_CATEGORYS 使用逗号分隔的字符串格式
 TARGET_CATEGORYS = os.environ.get("TARGET_CATEGORYS", "cs.IR,cs.CL,cs.CV")
 TARGET_CATEGORYS = [cat.strip() for cat in TARGET_CATEGORYS.split(',')]
@@ -205,50 +202,6 @@ def request_arxiv_page(base_urls, query_params):
 
     raise ArxivFetchError(f"arXiv API 请求多次失败: {last_error}")
 
-@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(5))
-def call_deepseek_api(prompt_content: str,
-                      
-                      api_key: str = None,
-                      model: str = "deepseek-chat",
-                      base_url: str = "https://api.deepseek.com/v1"):
-    """
-    调用 DeepSeek API 并以 JSON 格式返回结果。
-    Args:
-        prompt_content (str): 发送给模型的完整提示词内容。
-        api_key (str, optional): 你的 DeepSeek API Key。如果为 None，会尝试从环境变量 'DEEPSEEK_API_KEY' 读取。
-        model (str, optional): 使用的模型名称。默认为 "deepseek-chat"。
-        base_url (str, optional): API 的基础 URL。默认为 DeepSeek 的官方地址。
-    Returns:
-        dict: 解析后的 JSON 对象。如果发生错误，则返回 None。
-    """
-    # 优先使用传入的 api_key，否则从环境变量读取
-    if api_key is None:
-        api_key = os.getenv("DEEPSEEK_API_KEY")
-    if not api_key:
-        print("🔑 错误: API Key 未提供。请设置 DEEPSEEK_API_KEY 环境变量或通过参数传入。")
-        return None
-    try:
-        client = OpenAI(api_key=api_key, base_url=base_url)
-        messages = [
-            {"role": "user", "content": prompt_content}
-        ]
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            response_format={'type': 'json_object'}  # 强制返回 JSON
-        )
-        response_content = response.choices[0].message.content
-        return json.loads(response_content)
-    except (APIConnectionError, RateLimitError, APIStatusError) as e:
-        print(f"🔄 API 遇到可重试错误: {e}。正在由 tenacity 进行重试...")
-        raise  # 必须重新抛出异常，tenacity 才能捕获并执行重试策略
-    except ImportError:
-        print("📦 错误：'openai' 库未安装。请运行 'pip install openai'。")
-        return None
-    except Exception as e:
-        print(f"❌ 调用 API 时发生错误: {e}")
-        return None
-
 
 def get_daily_arxiv_papers(category='cs.CL', max_results=20):
     """
@@ -311,8 +264,7 @@ def get_daily_arxiv_papers(category='cs.CL', max_results=20):
 
 def rough_analyze_paper(arxiv_id, paper):
     prompt = PRERANK_PROMPT.format(title=paper['title'])
-    analysis = call_deepseek_api(
-        prompt, api_key=DEEPSEEK_API_KEY)
+    analysis = _llm.json_call(prompt)
     if analysis:
         # 将分析结果合并到原始论文信息中
         paper.update(analysis)
@@ -378,8 +330,7 @@ def rough_rank_papers(results, filter_threshold=2, max_workers=10):
 def fine_analyze_paper(arxiv_id, paper):
     prompt = FINERANK_PROMPT.format(
         title=paper['title'], summary=paper['ori_summary'])
-    analysis = call_deepseek_api(
-        prompt, api_key=DEEPSEEK_API_KEY)
+    analysis = _llm.json_call(prompt)
     if analysis:
         # 将分析结果合并到原始论文信息中
         paper.update(analysis)

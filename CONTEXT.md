@@ -9,6 +9,11 @@ paperBotV2 的领域词汇与既定决策。架构改动应使用这里的名词
 - **data 分支**：每日数据文件的居住地。main 分支只放代码、体积恒定；workflow 把 data 分支挂载到 `paperBotV2/arxiv_daily/data` 路径读写，crawl 完成后立即推送（先于生成与部署，任何后续失败都不丢数据）。
 - **status 队列**：`status/` 下的运行状态（当日 JSON + runs.csv），只保留最近 30 天，status.py 在每次写入后自动清理。
 - **粗排/精排**：LLM 两级筛选。粗排按标题打相关性分（阈值 `ROUGH_SCORE_THRESHOLD`）淘汰；精排对幸存者产出评分、推荐理由与中文翻译，取前 `RETURN_PAPERS` 篇。
+- **LLM adapter**：`paperBotV2/llm.py` 是所有 LLM 调用的唯一入口（`json_call` 结构化输出 / `translate` 摘要翻译）。提供商由环境变量在调用时决定：`LLM_API_KEY`（回落 `DEEPSEEK_API_KEY`）、`LLM_BASE_URL`、`LLM_MODEL`，缺省 DeepSeek。
+
+## 既定决策（不要回退）
+
+- 换 LLM 提供商零代码改动（2026-09 决策）：key 改 Secret 值、模型/端点改 Actions Variables（`vars.LLM_MODEL` / `vars.LLM_BASE_URL`），任何模块不得再硬编码提供商地址或模型名。
 
 ## 既定决策（不要回退）
 

@@ -72,8 +72,11 @@ jobs:
       - name: Run arxiv.py recovery
         if: steps.recovery_check.outputs.needs_recovery == 'true'
         env:
+          # LLM 提供商配置与 arxiv_daily_full 保持一致（Secrets + vars，切换提供商无需改代码）
+          LLM_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           FEISHU_URL: ${{ secrets.FEISHU_URL }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           TARGET_CATEGORYS: "cs.IR,cs.CL,cs.CV"
           MAX_PAPERS: "100"
           ARXIV_LOOKBACK_HOURS: "36"

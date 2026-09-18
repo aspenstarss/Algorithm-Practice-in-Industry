@@ -69,8 +69,12 @@ jobs:
       - name: Run arxiv.py to generate JSON
         env:
           # 可配置的环境变量
+          # LLM 提供商：key 存 Secrets（LLM_API_KEY 或沿用 DEEPSEEK_API_KEY）；
+          # 模型/端点存 Actions Variables（vars.LLM_MODEL / vars.LLM_BASE_URL），为空时回落 DeepSeek 默认值
+          LLM_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          LLM_MODEL: ${{ vars.LLM_MODEL }}
+          LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           FEISHU_URL: ${{ secrets.FEISHU_URL }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           # 目标分类，使用逗号分隔的字符串格式
           TARGET_CATEGORYS: "cs.IR,cs.CL,cs.CV"
           # 单页抓取数量，实际抓取会按页遍历

@@ -2,11 +2,16 @@ import argparse
 import datetime as dt
 import json
 import os
+import sys
 import time
 from pathlib import Path
 
 import requests
 from tqdm import tqdm
+
+# 仓库根加入 sys.path，复用包级 LLM adapter（提供商由 env 决定，见 paperBotV2/llm.py）
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from paperBotV2 import llm
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -129,34 +134,19 @@ def parse_private_paper(item):
     }
 
 
-def translate_with_deepseek(texts, api_key):
-    if not api_key:
-        print("DEEPSEEK_API_KEY 未设置，跳过摘要翻译")
-        return ["" for _ in texts]
-
-    from openai import OpenAI
-
-    client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-    system_prompt = {
-        "role": "system",
-        "content": (
-            "你是一位专业的翻译人员，擅长在人工智能领域内进行高质量的英文到中文翻译。"
-            "请准确翻译论文摘要，保留专业术语和技术细节。"
-        ),
-    }
+def translate_with_llm(texts):
+    """经 llm adapter 翻译摘要；单条重试耗尽后降级为空串并计数上报。"""
+    failures = 0
     translations = []
     for text in texts:
         try:
-            response = client.chat.completions.create(
-                model="deepseek-chat",
-                messages=[system_prompt, {"role": "user", "content": text}],
-                temperature=1.3,
-                stream=False,
-            )
-            translations.append(response.choices[0].message.content.strip())
+            translations.append(llm.translate(text))
         except Exception as exc:
-            print(f"DeepSeek 翻译失败: {exc}")
+            failures += 1
+            print(f"❌ 摘要翻译失败（重试已耗尽）: {exc}")
             translations.append("")
+    if failures:
+        print(f"⚠️ 共 {failures}/{len(texts)} 条摘要翻译失败")
     return translations
 
 
@@ -196,7 +186,7 @@ def translate_abstracts(texts, model_type):
         return []
     if model_type.lower() == "caiyun":
         return translate_with_caiyun(texts, os.environ.get("CAIYUN_TOKEN", ""))
-    return translate_with_deepseek(texts, os.environ.get("DEEPSEEK_API_KEY", ""))
+    return translate_with_llm(texts)
 
 
 def find_and_update_papers(results, conf_url, limits, interval, confs, start_year, dry_run):
