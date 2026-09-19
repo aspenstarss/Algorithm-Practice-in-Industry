@@ -8,8 +8,8 @@ env 在 load() 调用时读取（非 import 时），非法整数抛带字段名
 import os
 from dataclasses import dataclass
 
-DEFAULT_TARGET_CATEGORYS = ["cs.IR", "cs.CL", "cs.CV"]
-DEFAULT_CATEGORY_MAX_PAGES = "cs.IR:8,cs.CL:8,cs.CV:5"
+DEFAULT_TARGET_CATEGORYS = ["cs.IR", "cs.CL", "cs.CV", "cs.GT"]
+DEFAULT_CATEGORY_MAX_PAGES = "cs.IR:8,cs.CL:8,cs.CV:5,cs.GT:3"
 DEFAULT_API_BASE_URLS = [
     "https://export.arxiv.org/api/query",
     "https://arxiv.org/api/query",
@@ -94,7 +94,9 @@ def load(env=None):
 
     return Settings(
         target_categories=[
-            cat.strip() for cat in get_str("TARGET_CATEGORYS", "cs.IR,cs.CL,cs.CV").split(',')
+            cat.strip() for cat in get_str(
+                "TARGET_CATEGORYS", ",".join(DEFAULT_TARGET_CATEGORYS)
+            ).split(',')
             if cat.strip()
         ],
         max_papers=get_int("MAX_PAPERS", 100),

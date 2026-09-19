@@ -6,7 +6,7 @@ from paperBotV2.arxiv_daily import config
 
 def test_defaults_match_ci_behavior():
     s = config.load(env={})
-    assert s.target_categories == ["cs.IR", "cs.CL", "cs.CV"]
+    assert s.target_categories == ["cs.IR", "cs.CL", "cs.CV", "cs.GT"]
     assert s.max_papers == 100
     assert s.rough_score_threshold == 4
     assert s.fine_rank_papers == 50
@@ -17,7 +17,7 @@ def test_defaults_match_ci_behavior():
     assert s.category_interval == 120
     assert s.retry_attempts == 4
     assert s.use_daily_cache is True
-    assert s.category_max_pages == {"cs.IR": 8, "cs.CL": 8, "cs.CV": 5}
+    assert s.category_max_pages == {"cs.IR": 8, "cs.CL": 8, "cs.CV": 5, "cs.GT": 3}
     assert s.api_base_urls == config.DEFAULT_API_BASE_URLS
     assert s.dedup_days == 7
     assert s.listing_base_url == config.DEFAULT_LISTING_BASE_URL
@@ -61,7 +61,7 @@ def test_invalid_dedup_days_raises_with_field_name():
 def test_empty_string_falls_back_to_default():
     s = config.load(env={"MAX_PAPERS": "", "TARGET_CATEGORYS": ""})
     assert s.max_papers == 100
-    assert s.target_categories == ["cs.IR", "cs.CL", "cs.CV"]
+    assert s.target_categories == ["cs.IR", "cs.CL", "cs.CV", "cs.GT"]
 
 
 def test_invalid_int_raises_with_field_name():
