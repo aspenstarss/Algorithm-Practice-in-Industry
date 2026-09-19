@@ -11,11 +11,14 @@ from tqdm import tqdm
 from .prompts import PRERANK_PROMPT, FINERANK_PROMPT
 from .status import ArxivDailyStatus
 from . import daily_store as _store
+from . import new_listing as _listing
 from .. import llm as _llm
 from .config import load as _load_config
 
 # 抓取/排序配置唯一来源：paperBotV2/arxiv_daily/config.py（调参走 git，勿在 yml 重复）
 SETTINGS = _load_config()
+
+ID_LIST_BATCH_SIZE = 40  # id_list 单批大小：官方未公布上限，40 为已验证的稳妥值
 
 
 class ArxivFetchError(RuntimeError):
@@ -154,13 +157,77 @@ def request_arxiv_page(base_urls, query_params):
     raise ArxivFetchError(f"arXiv API 请求多次失败: {last_error}")
 
 
-def get_daily_arxiv_papers(category='cs.CL', max_results=20):
+def get_daily_arxiv_papers(category='cs.CL', max_results=20, seen_ids=None):
     """
-    获取指定 arXiv 领域今天发布的论文。
+    获取指定 arXiv 分类当前公告批次的新论文。
+
+    主路径：/list/{category}/new 公告页提取 ID（公告批次语义，含积压释放的
+    论文——任何 submittedDate 查询都无法完整覆盖），滚动去重后经 id_list
+    批量取元数据。公告页不可用时回退 submittedDate 窗口查询（有周末漏批
+    的已知缺陷，仅作降级）。
 
     Args:
-        category (str): 你感兴趣的 arXiv 类别，例如 'cs.CL', 'cs.AI', 'stat.ML'。
-        max_results (int): 希望获取的最大论文数量。
+        category: 你感兴趣的 arXiv 类别，例如 'cs.CL', 'cs.AI', 'stat.ML'。
+        max_results: 单类抓取论文数上限。
+        seen_ids: 最近 N 天已入库的论文 ID（裸 ID，无版本号），用于滚动去重。
+    """
+    seen_ids = seen_ids or set()
+    try:
+        html = _listing.fetch_listing_html(
+            category, SETTINGS.listing_base_url, SETTINGS.user_agent)
+        listing_ids = _listing.parse_new_listing_ids(html)
+    except (requests.exceptions.RequestException, _listing.ListingParseError) as exc:
+        print(f"⚠️ 公告页抓取/解析失败，回退 submittedDate 窗口查询: {exc}")
+        return _get_papers_by_window(category, max_results)
+
+    fresh_ids = [arxiv_id for arxiv_id in listing_ids if arxiv_id not in seen_ids]
+    skipped = len(listing_ids) - len(fresh_ids)
+    truncated = len(fresh_ids) > max_results
+    fresh_ids = fresh_ids[:max_results]
+    print(
+        f"📰 分类 '{category}' 公告批次共 {len(listing_ids)} 篇，"
+        f"滚动去重剔除 {skipped} 篇已见论文，待抓取 {len(fresh_ids)} 篇"
+        + ("（超出单类上限，已截断）" if truncated else "")
+    )
+    print("=" * 50)
+
+    if not fresh_ids:
+        print(f"📭 分类 '{category}' 公告批次内没有未入库的新论文。")
+        return {}, 0
+
+    return _fetch_papers_by_ids(fresh_ids, category)
+
+
+def _fetch_papers_by_ids(arxiv_ids, category):
+    """经 arXiv API id_list 批量拉取论文元数据，返回 (results, 批次数)。"""
+    results = {}
+    pages = 0
+    for start in range(0, len(arxiv_ids), ID_LIST_BATCH_SIZE):
+        batch = arxiv_ids[start:start + ID_LIST_BATCH_SIZE]
+        response = request_arxiv_page(SETTINGS.api_base_urls, {
+            'id_list': ','.join(batch),
+            'max_results': len(batch),
+        })
+        feed = feedparser.parse(response.content)
+        pages += 1
+        for entry in feed.entries:
+            arxiv_id, paper = parse_arxiv_entry(entry)
+            results[arxiv_id] = paper
+        missing = len(batch) - len(feed.entries)
+        if missing > 0:
+            print(f"⚠️ 分类 '{category}' 有 {missing} 篇论文未从 API 返回（可能已被撤稿）")
+        if start + ID_LIST_BATCH_SIZE < len(arxiv_ids):
+            sleep_with_jitter(SETTINGS.request_interval, f"分类 '{category}' id_list 批次间隔")
+
+    print(f"✅ 分类 '{category}' 共抓取 {len(results)} 篇论文。")
+    return results, pages
+
+
+def _get_papers_by_window(category='cs.CL', max_results=20):
+    """回退路径：submittedDate 窗口查询。
+
+    公告滞后于提交（周五/周六晚无公告、积压释放的论文 submittedDate 更早），
+    该路径在周末与积压场景会漏批，仅作公告页不可用时的降级。
     """
     results = {}
     end_utc = datetime.now(timezone.utc)
@@ -172,7 +239,7 @@ def get_daily_arxiv_papers(category='cs.CL', max_results=20):
     page_size = min(max_results, SETTINGS.page_size)
     max_pages = get_category_max_pages(category)
     print(
-        f"🔍 开始抓取分类 '{category}'，窗口: {start_utc.isoformat()} -> {end_utc.isoformat()}，"
+        f"🔍 [回退] 开始抓取分类 '{category}'，窗口: {start_utc.isoformat()} -> {end_utc.isoformat()}，"
         f"page_size={page_size}, max_pages={max_pages}"
     )
     print("=" * 50)
@@ -357,22 +424,14 @@ def fine_rank_papers(papers, max_workers=10, paper_count=5):
 
 
 def get_papers_from_all_categories(run_status=None):
-    """从所有指定分类获取论文并初始化状态标记，去除与前一天重复的论文"""
+    """从所有指定分类获取当前公告批次的新论文并初始化状态标记（抓取层已去重）。"""
     all_papers = {}
 
-    # 获取前一个业务日的日期（与写侧同一口径）
-    yesterday = _store.business_date(datetime.now() - timedelta(days=1))
+    # 滚动去重：公告页整周末保持不变（周五/周六晚无公告），靠最近 N 天
+    # 已入库 ID 跳过已处理批次；缺失的历史文件容忍（当作没见过，宁可重算不漏发）
+    seen = _store.seen_ids(days=SETTINGS.dedup_days)
+    print(f"📋 已加载最近 {SETTINGS.dedup_days} 天的已见论文 {len(seen)} 篇。")
 
-    # 读取前一天的论文ID集合（用于去重）
-    yesterday_paper_ids = set()
-    try:
-        yesterday_paper_ids = set(_store.load_raw(yesterday).keys())
-        print(f"📋 已加载前一天的论文ID集合，共 {len(yesterday_paper_ids)} 篇论文。")
-    except FileNotFoundError:
-        pass
-    except Exception as e:
-        print(f"❌ 读取前一天论文文件失败: {e}")
-    
     # 获取当前日期的所有分类论文
     for index, category in enumerate(SETTINGS.target_categories):
         category_results = load_today_cached_papers(category)
@@ -383,6 +442,7 @@ def get_papers_from_all_categories(run_status=None):
                     category_results, pages_fetched = get_daily_arxiv_papers(
                         category=category,
                         max_results=SETTINGS.max_papers,
+                        seen_ids=seen,
                     )
                     break
                 except ArxivFetchError as exc:
@@ -408,16 +468,15 @@ def get_papers_from_all_categories(run_status=None):
                 pages=pages_fetched,
             )
         
-        # 添加到all_papers并初始化状态标记，跳过与前一天重复的论文
+        # 添加到all_papers并初始化状态标记（已见论文在抓取层已被剔除）
         for arxiv_id, paper in category_results.items():
-            if arxiv_id not in yesterday_paper_ids:
-                paper['is_filtered'] = False  # 默认为未过滤
-                paper['is_fine_ranked'] = False  # 默认为未精排
-                all_papers[arxiv_id] = paper
+            paper['is_filtered'] = False  # 默认为未过滤
+            paper['is_fine_ranked'] = False  # 默认为未精排
+            all_papers[arxiv_id] = paper
         if index < len(SETTINGS.target_categories) - 1:
             sleep_with_jitter(SETTINGS.category_interval, "分类之间请求间隔")
-    
-    print(f"📚 获取到 {len(all_papers)} 篇论文（已去除与前一天重复的论文）。")
+
+    print(f"📚 获取到 {len(all_papers)} 篇论文。")
     return all_papers
 
 

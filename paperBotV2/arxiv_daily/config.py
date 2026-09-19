@@ -14,6 +14,9 @@ DEFAULT_API_BASE_URLS = [
     "https://export.arxiv.org/api/query",
     "https://arxiv.org/api/query",
 ]
+DEFAULT_LISTING_BASE_URL = "https://arxiv.org/list"
+# 滚动去重回看天数：覆盖"周五抓过 -> 下一次公告在周一"的最长间隔（周五/周六晚无公告）
+DEFAULT_DEDUP_DAYS = 7
 DEFAULT_USER_AGENT = (
     "Algorithm-Practice-in-Industry paperBotV2 arxiv_daily; "
     "https://github.com/Doragd/Algorithm-Practice-in-Industry"
@@ -39,6 +42,8 @@ class Settings:
     retry_max_wait: int              # 重试最大等待（秒）
     api_base_urls: list              # arXiv API 端点（多端点容灾）
     category_max_pages: dict         # 分类级页数上限
+    listing_base_url: str            # /list/{分类}/new 公告页基地址（新论文 ID 唯一来源）
+    dedup_days: int                  # 滚动去重回看天数（对比最近 N 天已入库 ID）
     user_agent: str
 
 
@@ -106,6 +111,8 @@ def load(env=None):
         retry_base_wait=get_int("ARXIV_RETRY_BASE_WAIT", 600),
         retry_max_wait=get_int("ARXIV_RETRY_MAX_WAIT", 2400),
         api_base_urls=get_list("ARXIV_API_BASE_URLS", DEFAULT_API_BASE_URLS),
+        listing_base_url=get_str("ARXIV_LISTING_BASE_URL", DEFAULT_LISTING_BASE_URL),
+        dedup_days=get_int("ARXIV_DEDUP_DAYS", DEFAULT_DEDUP_DAYS),
         category_max_pages=parse_category_max_pages(
             get_str("ARXIV_CATEGORY_MAX_PAGES", DEFAULT_CATEGORY_MAX_PAGES)
         ),

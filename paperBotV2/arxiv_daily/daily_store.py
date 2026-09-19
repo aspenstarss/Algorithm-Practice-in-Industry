@@ -72,3 +72,23 @@ def latest():
         return None
     newest = dates[-1]
     return newest, load_papers(newest)
+
+
+def seen_ids(now=None, days=7):
+    """最近 days 个业务日（不含今天）已入库的论文 ID 集合，供滚动去重。
+
+    ID 去掉版本号后缀（2609.19148v1 -> 2609.19148），与公告页的裸 ID 对齐。
+    缺失/损坏的历史文件跳过（宁可偶尔重算，不可漏发论文）。
+    """
+    moment = now if now is not None else datetime.now(BEIJING_TZ)
+    seen = set()
+    for offset in range(1, days + 1):
+        date = business_date(moment - timedelta(days=offset))
+        try:
+            data = load_raw(date)
+        except (FileNotFoundError, ValueError):
+            continue
+        except Exception:
+            continue
+        seen.update(re.sub(r"v\d+$", "", str(arxiv_id)) for arxiv_id in data)
+    return seen

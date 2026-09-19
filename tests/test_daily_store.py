@@ -74,3 +74,34 @@ def test_feishu_gate_semantics_with_fake_clock(store_dir):
     next_day = same_day + timedelta(days=1)
     assert date == store.business_date(same_day)
     assert date != store.business_date(next_day)
+
+
+def test_seen_ids_rolls_back_days_and_strips_versions(store_dir):
+    now = datetime(2026, 9, 19, 12, 0, tzinfo=store.BEIJING_TZ)
+    store.save({"2609.19148v1": {}}, "20260912")   # 恰好 7 天前
+    store.save({"2609.20000v2": {}, "2609.20001": {}}, "20260918")  # 昨天
+    store.save({"2609.99999": {}}, "20260919")     # 今天：不计入
+
+    seen = store.seen_ids(now=now, days=7)
+    assert seen == {"2609.19148", "2609.20000", "2609.20001"}
+
+
+def test_seen_ids_respects_day_window(store_dir):
+    now = datetime(2026, 9, 19, 12, 0, tzinfo=store.BEIJING_TZ)
+    store.save({"2609.00008": {}}, "20260908")  # 11 天前
+    store.save({"2609.00018": {}}, "20260918")
+    assert store.seen_ids(now=now, days=7) == {"2609.00018"}
+    assert store.seen_ids(now=now, days=1) == {"2609.00018"}
+
+
+def test_seen_ids_tolerates_missing_and_corrupt_files(store_dir, tmp_path):
+    now = datetime(2026, 9, 19, 12, 0, tzinfo=store.BEIJING_TZ)
+    store.save({"2609.00018": {}}, "20260918")
+    (tmp_path / "20260915.json").write_text("{corrupt", encoding="utf-8")
+
+    assert store.seen_ids(now=now, days=7) == {"2609.00018"}
+
+
+def test_seen_ids_empty_when_no_history(store_dir):
+    now = datetime(2026, 9, 19, 12, 0, tzinfo=store.BEIJING_TZ)
+    assert store.seen_ids(now=now, days=7) == set()
