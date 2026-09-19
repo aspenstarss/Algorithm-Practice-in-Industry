@@ -1,0 +1,69 @@
+/* 分级折叠功能样式（由 generate_arxiv_html 拆出） */
+/* 分级折叠功能样式 */
+.collapsed-level-1 .paper-details {
+    display: none;
+}
+
+.collapsed-level-2 {
+    display: none;
+}
+
+/* 展开/折叠图标样式 */
+.expand-icon {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+/* 展开/折叠按钮样式 */
+.expand-toggle {
+    cursor: pointer;
+    padding: 8px 12px;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 500;
+    color: #4b5563;
+    transition: all 0.2s ease;
+}
+
+.expand-toggle:hover {
+    background-color: #e5e7eb;
+}
+
+/* 分割线样式 */
+.papers-divider {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 20px 0;
+    position: relative;
+}
+
+.papers-divider-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 0 12px;
+    color: #9ca3af;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.papers-divider-label:hover {
+    color: #4b5563;
+}
+
+/* 展开后的样式 */
+.expanded-all .collapsed-level-1 .paper-details,
+.expanded-all .collapsed-level-2 {
+    display: block;
+}
+
+.expanded-level-2 .collapsed-level-2 {
+    display: block;
+}
