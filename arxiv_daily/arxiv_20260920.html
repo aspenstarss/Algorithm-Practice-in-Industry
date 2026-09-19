@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 每日论文精选</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css?v=1789840337">
+    <link rel="stylesheet" href="static/collapse.css?v=1789840337">
+    <script src="static/tailwind.config.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 顶部导航与统计信息合并 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
+                <div class="flex items-center">
+                    <i class="fa fa-book text-primary text-xl mr-2"></i>
+                    <h1 class="text-lg md:text-xl font-bold text-gray-800">arXiv 每日论文精选</h1>
+                </div>
+                <div class="flex items-center mt-2 md:mt-0">
+                    <span id="current-date" class="text-gray-600 text-sm">
+                        <i class="fa fa-calendar-o mr-1"></i>2026-09-20
+                    </span>
+                    <div class="ml-3 relative" id="date-picker-container">
+                        <button id="date-picker-toggle" class="bg-light border border-gray-300 text-gray-700 py-1 px-3 pr-6 rounded text-sm leading-tight focus:outline-none focus:bg-white inline-flex items-center">
+                            <i class="fa fa-calendar mr-2"></i>
+                            <span id="selected-date-text">2026-09-20</span>
+                            <i class="fa fa-chevron-down ml-2 text-xs"></i>
+                        </button>
+                        <div id="date-picker" class="hidden absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg p-2 z-20 w-56">
+                            <div class="flex justify-between items-center mb-2">
+                                <button id="prev-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-left"></i></button>
+                                <h4 id="current-month">2026-09-20</h4>
+                                <button id="next-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-right"></i></button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
+                                <div class="text-gray-500">日</div>
+                                <div class="text-gray-500">一</div>
+                                <div class="text-gray-500">二</div>
+                                <div class="text-gray-500">三</div>
+                                <div class="text-gray-500">四</div>
+                                <div class="text-gray-500">五</div>
+                                <div class="text-gray-500">六</div>
+                            </div>
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                                <!-- 日历格子将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分类来源统计（一行富文本：各分类粗排/精排数量） -->
+            <div id="category-stats" class="text-sm mb-2">
+                <span class="text-gray-500 mr-1"><i class="fa fa-pie-chart"></i> 来源统计:</span><span class="mr-3"><span class="font-medium">cs.AI, cs.CL</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.AI, cs.CL, cs.LG, cs.SE</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.AI, cs.GT, cs.LG</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.AI, cs.GT, cs.LG, cs.MA</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.AR, cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GR, cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GT</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GT, cs.AI</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GT, cs.AI, cs.LG, cs.MA</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GT, cs.IT</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GT, math.CO, math.OC</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.GT, math.PR</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.LG, cs.AI, cs.CL</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.LG, cs.GT</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.MM, cs.AI</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.AI, cs.CL, cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.AI, cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.AI, cs.CV, cs.LG, eess.SY</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.CV, cs.LG</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.CV, eess.IV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">cs.RO, cs.CV, eess.SP</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">eess.IV, cs.AI, cs.CV, cs.MM</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">eess.IV, cs.CV</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">eess.IV, cs.CV, cs.LG</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">eess.IV, cs.CV, stat.AP</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">eess.SY, cs.GT</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span><span class="text-gray-300 mx-1">|</span><span class="mr-3"><span class="font-medium">math.OC, cs.GT</span><span class="text-gray-500"> 粗排 </span><span class="font-semibold text-primary">0</span><span class="text-gray-500"> 精排 </span><span class="font-semibold text-accent">0</span></span>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="flex flex-wrap gap-4 text-sm">
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 总论文数:</span>
+                    <span id="total-papers" class="font-semibold text-primary">43</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 精选论文数:</span>
+                    <span id="selected-papers" class="font-semibold text-accent">0</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-line-chart"></i> 平均评分:</span>
+                    <span id="avg-score" class="font-semibold text-secondary">1.3</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-5">
+        <!-- 筛选器 -->
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div class="text-gray-700 text-sm mb-2 sm:mb-0">
+                <span id="display-count" class="font-medium">显示 43 篇论文 (共 43 篇)</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="show-all"
+                    class="px-3 py-1 bg-primary text-white rounded text-sm hover:bg-primary/90 transition-colors">
+                    全部论文
+                </button>
+                <button id="show-selected"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    仅显示精选
+                </button>
+            </div>
+        </div>
+
+        <!-- 论文列表 -->
+        <div id="papers-container" class="grid grid-cols-1 gap-4">
+            <!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19319v1" target="_blank" rel="noopener noreferrer">
+                随机效用下的渐近最大最小公平分配
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Asymptotic Max-Min Fair Allocation with Random Utilities
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Noam Glazner, Amir Leshem
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究随机效用模型下的最大最小公平分配，属于资源分配与公平性理论。虽然公平性主题与曝光公平/流量控制有一定概念关联，但这是纯理论/经济学机制设计工作，缺乏与排序模型、再排序或广告竞价机制（如eCPM/GSP/VCG）的具体结合，也未提供可落地的排序或拍卖公式优化。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 18:33:51
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19319v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19319v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.IT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We investigate the asymptotic behavior of max-min fair allocations for indivisible goods under i.i.d. random utilities. For $N$ agents and $K$ goods with utilities ${\mU_{i,j}}$ drawn independently from a common distribution $F$, we derive asymptotic characterizations of the max-min value in the balanced case $K=N$ (and in $K=LN$ extensions) via distributional quantiles. We then study the efficiency impact of max-min fairness by comparing the resulting total welfare with the optimal sum welfare. For distributions with sufficiently light tails, we prove that the relative efficiency loss converges to zero as the market grows, implying that max-min fairness incurs negligible welfare loss in large random instances for a broad class of distributions.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20715v1" target="_blank" rel="noopener noreferrer">
+                不要遮蔽环境：观测监督如何改变强化学习智能体的探索行为
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Don&#39;t Mask the Environment: Observation Supervision Changes How Agents Explore Under RL
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Juzheng Zhang, Disha Makhija, Manoj Ghuhan Arivazhagan, Vinayshekhar Bannihatti ...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究强化学习中的观测监督机制及其对智能体探索行为的影响，属于纯RL领域，未涉及CTR/CVR建模、重排序、拍卖/竞价机制或电商排序等核心主题。其强化学习方法也未具体应用于排序模型或机制公式设计，因此不满足使能技术的硬性约束。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:11:29
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20715v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20715v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.LG</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Agent trajectories record what an agent does and what happens next. Yet standard supervised fine-tuning (SFT) applies loss only to agent-authored action tokens, using environment observations as context but not as prediction targets. We ask whether this convention provides the best initialization for subsequent reinforcement learning. We introduce ActObs, which also supervises the observation tokens already present in each trajectory. Although deployed agents never generate observations, learning to predict them encourages the policy to model action consequences without adding data, parameters, sequence tokens, or forward passes. The methods perform similarly after SFT but diverge after GRPO. On Qwen3-4B, GRPO from ActObs achieves higher pass@k at every evaluated sampling budget than its action-only counterpart on Terminal-Bench 2.0. On Qwen3-8B, it trades some pass@1 reliability for higher pass@k (+3.4 pp at pass@16) and solves more distinct tasks. The advantage extends to cross-domain code editing on aider-polyglot (+4.2 pp at pass@1 at 4B), whose tasks are unseen during SFT and RL. ActObs retains more entropy during RL while requiring less policy movement, leaving the final policy closer to its SFT initialization. Our analysis traces this difference to SFT: action and observation gradients rapidly become orthogonal, while action-only training leaves a large residual observation gradient and degrades environment prediction below the base model. Joint supervision prevents this one-sided specialization, preserving consequence prediction and preparing the policy for downstream exploration.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2606.28308v1" target="_blank" rel="noopener noreferrer">
+                哪一个纳什均衡？零和纳什多面体上依赖求解器的选择
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Which Nash Equilibrium? Solver-Dependent Selection on Zero-Sum Nash Polytopes
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Luis Leal
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究零和博弈中纳什均衡多面体的求解器依赖选择问题，属于博弈论与优化理论的基础研究。虽然拍卖机制设计可能涉及均衡分析，但该工作不涉及排序公式、eCPM/GSP/VCG拍卖、竞价策略或平台收益平衡等具体机制优化问题，缺乏直接的电商排序应用，因此与核心关注点关联度很低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-06-26 17:53:30
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2606.28308v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2606.28308v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.LG</span><span class="category-tag">cs.MA</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Many two-player zero-sum games admit not a unique Nash equilibrium but a convex set of them: a polytope of profiles that all share the minimax value V* yet prescribe different behaviour. Standard solvers each converge to some equilibrium and are treated as interchangeable. We ask whether they instead select different members of the Nash set, systematically as a function of the algorithm rather than the seed. Using a tabular, exactly solvable testbed of six games with analytically known Nash sets -- including a two-dimensional Nash polytope and Kuhn poker -- we find that (i) selection is determined by the algorithm, not the seed, but families differ only on asymmetric Nash sets; (ii) regularized last-iterate methods (R-NaD, magnetic mirror descent) select the maximum-entropy member, the information projection of their uniform reference onto the Nash set -- exactly on the 2-D polytope and at 99.7% of maximum entropy in Kuhn -- while regret-averaging methods (CFR, CFR+, fictitious play) drift to a lower-entropy face; we confirm this on a randomized 180-game ensemble, where R-NaD attains the maximum-entropy member in 100% of converged games while CFR+ sits strictly below it in 94% (paired Wilcoxon p &lt; 10^-27); (iii) the selected member has downstream consequences against sub-optimal opponents that scale with sequential/hidden-information structure but stay bounded -- in Kuhn the max-entropy member is a strictly better hedge, whereas on the matrix games the members differ without either dominating. We also report two negative results correcting common intuitions: removing CFR&#39;s positive-orthant (max(R,0)) projection does not eliminate boundary drift; and R-NaD&#39;s selection is anchor-following, not initialization-independent. We state the maximum-entropy / I-projection characterization as a strongly data-supported conjecture, checked throughout against analytic ground truth.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20404v1" target="_blank" rel="noopener noreferrer">
+                面向道德风险与逆向选择下公平小农碳农业的主-代理合约学习
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Learning Principal-Agent Contracts for Equitable Smallholder Carbon Farming under Moral Hazard and Adverse Selection
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Rishi Bharadwaj, Yadati Narahari
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究碳农业中的主-代理合约设计，属于机制设计范畴，但应用领域是农业环境经济学，而非电子商务中的排名、拍卖或流量分配。其核心是处理道德风险和逆向选择，与广告/推荐系统的机制公式优化无直接关联，因此与核心焦点相关性很低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 13:53:00
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20404v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20404v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.LG</span><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Agricultural soils are a major untapped carbon sink. Carbon farming is emerging as a promising practice for tapping this potential. Smallholder farmers, who dominate agriculture across South Asia and sub-Saharan Africa, are key to scaling climate mitigation via carbon farming. It is ironic that real-world carbon programs largely fail to reach them. We study this important gap through the lens of contract design. An aggregator offers a single pooled contract to a heterogeneous population of smallholder farmers who have private adoption costs (adverse selection) and exert unobserved effort (moral hazard), with agronomic outcomes evolving over multiple seasons. We formulate this evolving contracting problem as a POMDP and use reinforcement learning to learn a dynamic profit-maximising contract. We analyse the performance of the aggregator under various conditions. We find that a profit-maximising aggregator does not merely inherit the exclusion of smallholders, it amplifies it. On large farms the aggregator realises 87.7% of achievable adoption, against only 8.2% on smallholdings. Per-hectare Measurement, Reporting and Verification (MRV) costs fall as farm size rises, and the aggregator&#39;s pooling contract compounds this gradient rather than offsetting it. A counterfactual that makes MRV costs purely area-proportional eliminates this disparity. Our results and simulation can guide contract and policy design that opens carbon income to smallholders while enabling agricultural soils to contribute to climate mitigation at scale.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19677v1" target="_blank" rel="noopener noreferrer">
+                一般和博弈中乐观对冲算法的对数遗憾界
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            A Logarithmic Regret Bound for Optimistic Hedge in General-Sum Games
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Junsoo Ha
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究一般和博弈中乐观对冲算法的理论遗憾界，属于博弈论与在线学习领域。虽然多智能体在线学习与广告拍卖机制设计有潜在联系，但本文未涉及任何排名分数公式、竞价机制（如eCPM、GSP、VCG）或实际排序系统的应用，属于纯理论论文，缺乏对排名或机制公式优化的直接实用价值。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 04:24:45
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19677v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19677v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Can simple no-regret dynamics attain smaller regret in self-play than against arbitrary adversaries? In $n$-player general-sum games, Daskalakis et al. 2021 proved an $O(n\log d_i\log^4 T)$ individual regret bound for Optimistic Hedge, which improves upon the classical $O(\sqrt T)$ adversarial regret bound. In this work, we show that Optimistic Hedge with a constant step size can further achieve $O(\sqrt n\log d_i\log T)$ individual external regret under expected loss-vector feedback. The time-averaged play consequently enjoys a coarse correlated equilibrium gap $O(\sqrt n\log d\log T/T)$, where $d=\max_i d_i$. The improvement comes from a larger admissible step size $η=Θ(1/(\sqrt n\log T))$. Our analysis proves factorial bounds on high-order differences of probability-weighted pairwise loss gaps, then applies finite-difference interpolation in a fixed Euclidean norm. These estimates sharpen the analysis of Daskalakis et al. 2021 and yield a logarithmic regret bound.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19593v1" target="_blank" rel="noopener noreferrer">
+                带并列的线性排序问题的孔多塞型性质
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Condorcet-type properties of the linear ordering problem with ties
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Daichi Kawashima, Noriyoshi Sukegawa
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究线性排序问题（聚合偏好形成全序）的理论性质，属于社会选择与组合优化的数学理论。虽然排名聚合与重排序有概念联系，但未涉及CTR/CVR建模、多任务学习、上下文感知重排序、曝光公平或拍卖机制公式优化等核心焦点，也未提出面向电商排序的机制设计或算法，属于纯理论且缺乏实际排名系统应用，故相关性很低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 02:19:47
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19593v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19593v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">math.CO</span><span class="category-tag">math.OC</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    The Kemeny rule aggregates multiple strict rankings into a single strict ranking that minimizes the sum of its distances from the input rankings. The resulting optimization problem, called the Kemeny problem (\texttt{KP}), is a special case of the linear ordering problem (\texttt{LOP}). The Kemeny rule satisfies several desirable properties in social choice theory, including the extended Condorcet criterion (\texttt{XCC}). Ando et al. strengthened this result by introducing the strong Condorcet criterion (\texttt{SCC}) and showing that it holds for every optimal solution to an arbitrary \texttt{LOP} instance. Yoo and Escobedo extended the Kemeny rule to rankings with ties and showed that the resulting rule satisfies the non-strict extended Condorcet criterion (\texttt{NXCC}). This criterion gives a condition under which one candidate must be ranked strictly above another in every optimal solution. In this paper, we introduce the non-strict strong Condorcet criterion (\texttt{NSCC}), a counterpart of the \texttt{SCC} for rankings with ties, and show that it holds for every optimal solution to an arbitrary instance of the linear ordering problem with ties (\texttt{LOPT}). We also establish a complementary structural property that gives conditions under which two candidates must be tied in every optimal solution to an arbitrary \texttt{LOPT} instance.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19394v1" target="_blank" rel="noopener noreferrer">
+                欧几里得空间中的策略证明聚合：刚性与中位数最优性
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Strategyproof Aggregation in Euclidean Spaces: Rigidity and Median Optimality
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Jianhao Jia
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究欧几里得空间中的策略证明聚合机制，属于社会选择与机制设计理论，但未涉及排名、拍卖、竞价或电商排序公式等具体应用。虽然机制设计是我关注的核心领域，但纯理论聚合与排序/拍卖机制优化的直接关联不足，因此相关性较低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 20:25:08
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19394v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19394v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We study deterministic strategyproof aggregation in finite-dimensional Euclidean spaces. For every odd number $n\ge3$ of agents and every finite dimension, we prove that the coordinate-wise median minimizes the worst-case approximation ratio for total Euclidean distance among all continuous, anonymous, deterministic strategyproof mechanisms. The same optimality result holds for every even $n\ge4$ when each coordinate uses a fixed choice of the lower or upper middle rank. The proof combines a rigidity theorem with a normalization that does not increase the approximation ratio: any hypothetical mechanism outperforming the median has a normalized representative that is a fixed coordinate-wise order-statistic rule in a single orthonormal frame. A reflection argument then shows that no such rule improves on the median.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19706v1" target="_blank" rel="noopener noreferrer">
+                带失败的序贯竞赛中的最优策略
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Optimal Strategies in a Sequential Contest with Failures
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Alec Pannunzio, Ashley Shaffer, Gregory Shaver, Shreyas Sundaram
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究序贯竞赛（sequential contest）中的最优策略，属于博弈论与机制设计范畴，但未涉及电商排序、竞价拍卖（GSP/VCG/eCPM）或重排等核心场景。虽然竞赛机制与激励相容设计有抽象联系，但缺乏直接应用于排序模型优化或机制公式设计的具体内容，因此相关性低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 04:59:18
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19706v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19706v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">math.OC</span><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We study a Stackelberg model where two players compete in a sequential contest, and the player that successfully invests the most effort wins. Our formulation considers a probability that each player fails to invest their chosen level of effort, as captured by a failure function that increases with the amount of effort. The players each have their own cost of failure, as well as a maximum level of effort (capturing different abilities of the players). We prove three key results. First, we provide the optimal strategy for Player 1 (the follower), to maximize their utility given an observed effort exerted by Player 2 (the leader). Next, we characterize the optimal strategy to maximize the expected utility of Player 2, anticipating the optimal response by Player 1. Finally, we analyze the expected utilities of each player when both play their optimal strategy, and provide key insights into how heterogeneous player abilities and failure costs affect the outcomes of the game.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20696v1" target="_blank" rel="noopener noreferrer">
+                拟阵交先知不等式的近乎紧确下界
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            A Nearly Tight Lower Bound for Matroid Intersection Prophet Inequalities
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Dimitris Fotakis, Charalampos Platanos, Thanos Tolias
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究先知不等式与拟阵交的离线最优比，属于纯理论在线算法与机制设计的数学基础，缺乏对电商排序、重排或拍卖公式的直接优化启示。尽管拟阵结构在组合广告分配中有潜在关联，但本文聚焦抽象紧确下界，未涉及具体排名机制或公式设计，实践相关性极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:00:18
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20696v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20696v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We study prophet inequalities under intersections of $q$ partition matroids, where an online algorithm irrevocably selects elements with independent nonnegative values drawn from known distributions and revealed in an adversarial order. We prove an $Ω(q/\log q)$ lower bound on the competitive ratio. Together with the known $O(q)$ upper bounds, this resolves, up to a logarithmic factor, the optimal dependence on $q$, an open question posed by Correa, Cristi, Fielbaum, Pollner, and Weinberg (IPCO 2022) and Saxena, Velusamy, and Weinberg (ITCS 2023). Our construction also yields an $Ω(d/\log d)$ lower bound for $d$-single-minded auctions, where buyers request fixed bundles of at most $d$ unit-capacity items. Our construction and analysis build on the &#34;big-decisions-first&#34; framework of Rubinstein and Singla (STOC 2026).
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19963v1" target="_blank" rel="noopener noreferrer">
+                集中式串行独裁老虎机中的精确遗憾前沿与外部性调度
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Exact Regret Frontiers and Externality Scheduling in Centralized Serial-Dictatorship Bandits
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Lishang Xu, Guodong Ma, Pengcheng Weng, Zixuan Xia
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究集中式串行独裁老虎机中的遗憾前沿与外部性调度，属于纯理论性的多臂老虎机机制设计，未涉及电商排名分数公式、拍卖/计费机制或排序模型。尽管其机制设计在抽象层面可能被视为“机制”相关，但缺乏与排名、竞价或电商排序场景的具体联系，因此与核心焦点关联度极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 09:35:34
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19963v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19963v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Exploration in centralized serial-dictatorship matching bandits must use complete matchings, so learning one player--arm pair can impose regret on others. We study this externality under a known common priority order and Gaussian rewards with unit variance. We show that the matching-level Graves--Lai constraints reduce to finitely many pairwise exploration quotas and, at top-choice-separated instances, yield a polynomial-size marginal linear program. At these instances, the exact attainable set of expected logarithmic regret coefficients is $G(θ)\Xset(θ)$, where $\Xset$ is the feasible matching-allocation set and $G$ maps allocations to player regret. The usual upper-closed Graves--Lai region can be strictly larger despite having the same Pareto-minimal boundary. We further show that identical exploration quotas can induce very different regret through their scheduling. Finally, we construct estimate--solve--track policies, uniformly good on the full row-strict class, that attain every fixed positively weighted optimum without assuming optimizer uniqueness. Every Pareto-minimal point is pointwise attainable, possibly through an instance-calibrated target.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20634v1" target="_blank" rel="noopener noreferrer">
+                PAA：概率艾伦代数——艾伦区间关系的一种生成式且完备的概率扩展
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            PAA: The Probabilistic Allen Algebra: A Generative and Complete Probabilistic Extension of Allen&#39;s Interval Relations
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Julian Eggert
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文提出了一种对艾伦区间关系的概率拓展，属于纯理论性的时序或知识表示工作，与排序模型、重排序、机制公式设计或曝光公平性均无直接关联。其既非排序相关技术，也不属于与排序直接相关的使能技术（如生成式推荐、语义ID或LLM用户行为理解），因此不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 16:20:38
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20634v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20634v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.AI</span><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Allen&#39;s interval algebra is a qualitative calculus for temporal relations, but its thirteen base relations are crisp predicates over exact interval boundaries. This is inadequate for temporal information from language, perception, databases, or uncertain histories, where times, durations, and boundaries are uncertain and expressions such as &#34;just before&#34; or &#34;roughly during&#34; have graded meaning. We develop the probabilistic Allen algebra (PAA): a generative and complete extension in which relation probabilities are derived from distributions over interval boundaries rather than assigned as scores. Time points are Gaussian; intervals have Gaussian midpoints and truncated-Gaussian durations. Every relation is a boundary-ordering predicate in one common probability space: point-point relations reduce to error functions, and point-interval and interval-interval relations to multivariate Gaussian orthant probabilities induced by linear inequalities. Contact relations (meets, starts, finishes, equals) receive positive measure through a tolerance band, and under a single tolerance the thirteen relations form a true partition that recovers crisp Allen as the tolerance vanishes. The construction derives Allen&#39;s taxonomy rather than positing it: coarse predicates such as precedence, overlap, and containment are unions of leaves whose probabilities are leaf sums, and this hierarchy is preserved as intervals collapse to points and thirteen relations reduce to five and then three. Each relation further decomposes into correlation-aware temporal primitives in the spirit of CIDOC CRM. The algebra is scale-invariant and separates graded expressions such as &#34;shortly before&#34; from contact relations. All results are Monte-Carlo validated and shipped as an open, tested Python package.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20804v1" target="_blank" rel="noopener noreferrer">
+                面向编程智能体的工具带设计的实证研究
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            An Empirical Study of Harness Design for Coding Agents
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Run-Ze Fan, Zihao Zhang, Simin Ma, Yebowen Hu, Shouju Wang, Kaiqiang Song, Fei L...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文关注编程智能体（coding agents）的工具带/工作流设计，属于智能体工程或软件工程范畴，与电商排序算法（精排模型、重排序、机制公式优化等）没有直接关联。尽管涉及智能体技术，但其应用场景是代码生成而非排序模型或拍卖机制，不满足使能技术的硬约束。因此判定为不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:58:07
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20804v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20804v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.AI</span><span class="category-tag">cs.CL</span><span class="category-tag">cs.LG</span><span class="category-tag">cs.SE</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Coding harnesses shape how autonomous coding agents translate model capabilities into long-horizon software-engineering performance, yet existing work typically evaluates harnesses as monolithic systems, leaving the effectiveness of individual components unclear. To enable component-level comparisons, we study this question with a lightweight coding harness whose execution loop is fixed while three components are varied: planning, action space, and context management. Across four models evaluated on SWE-Bench Verified and Terminal-Bench 2.1, we evaluate 176 matched settings spanning five context-management strategies, four context-window budgets, and targeted ablations of planning and action space. We find that: (1) Context management becomes increasingly valuable as the context-window budget tightens, with most of its benefit coming from preventing context-overflow failures. (2) Staging rule-based elision before LLM-based summarization provides the strongest overall efficiency among the context-management strategies, whereas making elided content recoverable adds machinery that models rarely use and yields no accuracy gain. (3) Planning shifts from an accuracy scaffold for weaker models to a cost saver for stronger models, with little change in accuracy. (4) Predefined tools improve performance for models with weaker bash proficiency, whereas bash-capable models can operate effectively with a bash-only interface and achieve substantially lower cost, especially on command-line-centric tasks. Trajectory-level analysis explains these effects: context management extends execution trajectories without substantially altering agent behavior, planning changes where trajectories stop, and the action space changes the granularity at which code is written. These findings inform model- and budget-aware harness design and provide a modular framework for evaluating future harness components.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20822v1" target="_blank" rel="noopener noreferrer">
+                具备障碍感知执行框架的用于安全机器人操作的编码代理
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Coding Agents with an Obstacle-Aware Harness for Safe Robot Manipulation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Bingxin Xu, Yuzhang Shang, Zhen Dong, Emilio Ferrara
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于机器人操作与安全控制，属于机器人学和具身智能领域，与电商排序、重排、竞价机制或推荐广告系统毫无关联。其核心技术（编码代理、障碍感知执行框架）并非排序模型或机制公式设计所需的使能技术，且应用场景不涉及排名或流量调控。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:59:58
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20822v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20822v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.CL</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Coding agents have emerged as a promising paradigm for robot manipulation: a language model writes the robot controller as a program, and agents built in this way now operate robots without robot-specific training.Whether this paradigm is also safe, however, has not been asked. We evaluate coding agent under a safety constraint, where each task pairs a manipulation goal with an obstacle the robot must not touch. The agent pursues the goal but collides with the obstacle in most cases, treating task completion as its sole objective while neglecting safety. The agent reasons about the obstacle in its traces, and the prompt already forbids touching it, so neither perception nor instruction is at fault; the fault lies in the planning, where the stated constraint never becomes a priority. By decomposing manipulation into a route phase and a contact-rich moment, we locate the source of the failure. Along the route, the model cannot prioritize the safety constraint, having no notion of a clearing route and none of replanning once a chosen route becomes infeasible. At the contact, it is unaware that contact execution is bounded by the same constraint. To close this gap, we present SafeHarness, which equips the model with two obstacle-aware harnesses that enable it to prioritize the safety constraint. Obstacle-aware route planning grounds the objects as bounding boxes and draws candidate routes over them as sequences of waypoints. The agent then plans a route in advance, verifies it, replans when necessary, and only then executes it. Obstacle-aware contact execution instead selects the contact position so that the contact itself avoids the obstacle. SafeHarness attains 71.9% task success and 87.5% collision avoidance, surpassing the previous SOTA by 6.5% and 27.0%, respectively. These results are $2.3\times$ and $1.5\times$ those of the same agent without harnesses.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19755v1" target="_blank" rel="noopener noreferrer">
+                HyperAMS-Net：用于脑部疾病分类的自适应多尺度空间超图网络
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            HyperAMS-Net: Adaptive Multi-Scale Spatial Hypergraph Network for Brain Disorder Classification
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Proloy Kumar Mondal, Md Kamran Hussin Chowdhury, Hoi Leong Lee
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于脑部疾病分类，属于医学影像领域的专用应用，与电商排序、重排或拍卖机制公式优化完全无关；虽然使用了超图网络结构，但没有任何面向排序模型或机制设计的直接应用，因此相关性极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 06:25:21
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19755v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19755v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">eess.IV</span><span class="category-tag">cs.CV</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Accurate classification of brain disorders from neuroimaging data remains challenging because of substantial inter-subject heterogeneity and the complex multi-scale patterns present in functional connectivity and morphological representations. To address these challenges, we propose HyperAMS-Net, a deep learning framework for brain disorder classification using neuroimaging representations derived from resting-state functional MRI or structural MRI. HyperAMS-Net integrates adaptive multi-scale convolution, hypergraph attention, spatial-channel attention, and adaptive feature fusion. Specifically, adaptive multi-scale convolution learns data-driven weights over multiple receptive fields to capture complementary patterns at different scales. Hypergraph attention models higher-order dependencies among learned feature representations through node--hyperedge--node message passing, while spatial-channel attention enhances discriminative feature learning. Adaptive feature fusion further aggregates complementary information across parallel network branches. HyperAMS-Net is evaluated on three benchmark datasets spanning distinct brain disorders: ABIDE for autism spectrum disorder, REST-meta-MDD for major depressive disorder, and ADNI for Alzheimer&#39;s disease, using 5-fold stratified cross-validation. HyperAMS-Net achieves state-of-the-art performance across all evaluated datasets, attaining the highest accuracy and AUC among the compared methods. Ablation studies further demonstrate the contribution of each proposed component, with the largest performance degradation observed when hypergraph attention is removed.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20318v1" target="_blank" rel="noopener noreferrer">
+                基于LLM引导的增强现实非关键驾驶场景向安全关键场景的转换
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            LLM-Guided Transformation of Non-Critical Driving Scenes into Safety-Critical Scenarios Using Augmented Reality
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Noura Fady, Farah Khaled, Catherine M. Elias
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于自动驾驶场景生成与增强现实，属于医疗、生物、化学、物理等特定领域应用之外的其他领域应用。其核心内容与电商排名模型、重排序、拍卖机制、CTR/CVR建模等毫无关联。LLM在此仅用于驾驶场景变换，并非排序或机制公式设计的使能技术。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-07-31 15:37:22
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20318v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20318v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Testing Autonomous Driving Systems (ADS) requires realistic safety-critical scenarios, but collecting such data from real-world driving is costly and unsafe. This paper presents an automated pipeline that transforms safe driving scenes into safety-critical scenarios by combining computer vision, Large Language Models (LLMs), and Augmented Reality (AR). The system detects and tracks road users, extracts safety features including distance, velocity, motion direction, and Time-to-Collision (TTC), and assesses scene criticality. Safe scenes are modified by an LLM, which generates realistic collision-inducing objects and behaviors that are integrated into the original scene using AR. The proposed pipeline was evaluated on the nuScenes dataset, achieving 97.52% safety classification accuracy and successfully generating realistic scenarios such as pedestrian crossings, rear overtaking vehicles, and sudden-stop events. The results demonstrate an effective and flexible approach for automated generation of safety-critical scenarios to support the testing and validation of autonomous driving systems.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20669v1" target="_blank" rel="noopener noreferrer">
+                无需显式轨迹学习前瞻性以实现3D扩散策略
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Learning Foresight without Explicit Trajectories for 3D Diffusion Policies
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhongbo Zhang, Zaibin Zhang, Yifan Wang, Changbo Yan, Lijun Wang, Huchuan Lu
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究3D扩散策略与机器人轨迹学习，属于机器人学与3D视觉领域，与电商搜索、推荐、广告中的排序模型或机制公式优化无直接关联。其技术不涉及CTR/CVR建模、重排序、拍卖机制等核心关注点，因此与用户研究方向高度不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 16:44:13
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20669v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20669v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    3D diffusion policies are strong at generating geometrically grounded actions from current observations, but successful manipulation requires not only knowing what motion is feasible now, but also anticipating where the interaction is heading. Existing policies largely leave such foresight to emerge implicitly from action learning. We introduce Movement Trend Guidance, a simple but effective way to provide this foresight without introducing an explicit plan. From a short observation history, the policy learns a compact latent representation of interaction evolution. During training, sparse future gripper states supervise this representation; at inference, only the latent is retained as future-oriented conditioning alongside the current observation. The latent provides global conditioning for action generation, while an additional gated FiLM branch is used only at the UNet bottleneck. Despite adding only 3.52% more parameters to DP3, our method preserves the original dense-action and receding-horizon formulation and consistently improves upon DP3 across RoboTwin2.0, LIBERO-40, and DexArt. It reaches 62.8% vs. 56.1% in 50-task RoboTwin2.0 mixed training, 71.93% vs. 37.08% on LIBERO-40, and 72.0% vs. 49.0% on five real-robot tasks. These results show that a diffusion policy can benefit substantially from knowing where an interaction is heading, without being told exactly where to move.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19954v1" target="_blank" rel="noopener noreferrer">
+                LapaTrack-3D：用于腹腔镜手术的六自由度术前形状跟踪
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            LapaTrack-3D: 6 DoF pre-operative shape tracking for laparoscopic surgery
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Jingwei Song, Javid Hussain Jakir, Ray Zhang, Wenwei Zhang, Hao Zhou, Xiaomeng X...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于腹腔镜手术中的6自由度术前形状跟踪，属于医学影像与手术导航领域，与电商排序算法、重排序、拍卖机制或相关使能技术均无直接关联。其技术内容不适用于CTR/CVR建模、列表重排或排序公式优化，因此判定为不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 09:27:29
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19954v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19954v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    This work proposes a real-time 6 Degree-of-Freedom (6 DoF) tracking algorithm for monocular laparoscopic surgery. It provides alignment between intra-operative video and pre-operative data (e.g., CT). The 6 DoF tracking offers a solution for accurately locating the internal anatomy of the target organ despite the lack of tactile feedback and transparency. The ORB-SLAM2 framework is adopted and modified for prior-based 3D tracking with four major modifications. First, the primitive 3D shape is used for fast initialization of the ORB-SLAM2 monocular mode. Second, a pseudo-segmentation strategy is employed to separate the target organ from the background for tracking. Third, the 3D shape is incorporated as a geometric prior in its pose graph optimization. Fourth, the Multi-Scale Retinex with Chromaticity Preservation (MSRCP) algorithm is leveraged and modified for image enhancement in challenging illumination scenarios. In-vivo and ex-vivo experiments validate that LapaTrack-3D provides robust 3D tracking and effectively handles typical challenges such as poor illumination, fast motion, out-of-field-of-view scenarios, partial visibility, and ``organ-background&#39;&#39; relative motion. LapaTrack-3D achieves a processing rate of 13 Hz for 1280*720 pixel video.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19216v1" target="_blank" rel="noopener noreferrer">
+                自动驾驶中的4D雷达感知算法：综述
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            4D Radar Perception Algorithms for Autonomous Driving: A Review
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Xumin Wu, Jun Zhou, Jilin Mei, Chen Min, Yu Hu
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文主题为4D雷达感知算法在自动驾驶中的应用，属于纯视觉/感知领域，与电商搜索、推荐、广告中的排序模型、重排序、机制公式优化等核心方向无关。不涉及任何排序或机制设计内容，因此评分极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 12:46:07
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19216v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19216v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span><span class="category-tag">eess.SP</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Research on 4D millimeter-wave radar perception algorithms has flourished in recent years, extending from signal processing and object detection to semantic segmentation, motion estimation, occupancy prediction, and dynamic scene reconstruction. This review organizes the field according to the evolution of perception tasks and algorithms. It first introduces radar fundamentals, data representations, and quality-enhancement methods, and then reviews object-level perception, motion and localization, local and dense spatial perception, and dynamic scene understanding. Across these directions, we compare radar-only learning, multimodal fusion, and cross-modal supervision and knowledge distillation. Particular attention is paid to how elevation, Doppler measurements, and radar physical priors are exploited across tasks. We further summarize the task coverage, input data, annotations, and evaluation protocols of existing datasets, clarifying the empirical support for different research directions. Finally, we discuss the common challenges and future directions of 4D radar perception for autonomous driving. This review provides a task-oriented perspective on the transition from sparse object perception to dynamic spatial understanding.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19730v1" target="_blank" rel="noopener noreferrer">
+                分割天花板：为何显式左心室掩膜无法提升学习式射血分数回归
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            The segmentation ceiling: why explicit left-ventricular masks do not improve learned ejection-fraction regression
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Farshid Farhadi Khouzani, Paul La Plante, Bryar Mustafa Shareef, Laxmi Gewali
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究医学影像中的心脏左心室分割与射血分数回归，属于医学图像分析领域，与电商排序、重排序、拍卖机制、精排模型等核心关注点完全无关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 05:41:28
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19730v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19730v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">eess.IV</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Accurate estimation of left ventricular ejection fraction (EF) from echocardiography is central to cardiovascular care, and deep learning enables automated EF prediction from echocardiographic video. Because EF is clinically derived from left-ventricular (LV) volumes, a widely held intuition is that explicit LV segmentation should improve prediction. We introduce a quantitative criterion, the segmentation ceiling, that makes this testable: from EF as a normalized difference of end-diastolic and end-systolic volumes, we derive in closed form how per-frame segmentation area error propagates into EF error, and thus the accuracy a mask must reach before it can improve on direct regression. Using EchoNet-Dynamic, a UniFormer-S backbone, and the empirically measured within-patient error correlation, the criterion places the break-even near 10% per-frame area error, whereas a representative segmenter operates at roughly 14%, above the ceiling. Consistent with this, four strategies for injecting segmentation or area information (a predicted-mask channel, end-diastolic/end-systolic clip sampling, and per-bin and amplitude area-consistency objectives) fail to beat a raw-video baseline; ground-truth masks help only through label leakage. Input representation thus not being the limit, we identify generalization as the practical lever: weight averaging with strong augmentation attains a test R^2 of 0.806 (MAE 4.08) under a matched dense-clip protocol, comparable to an R(2+1)D baseline (0.811) while tightening the validation-to-test gap. Finally, a heteroscedastic beta-NLL formulation yields informative, well-calibrated per-prediction uncertainty, larger for clinically harder low-EF cases, where Monte-Carlo dropout does not. The segmentation ceiling gives a concrete design criterion for when mask-guided EF estimation is worthwhile, plus a simple, uncertainty-aware recipe for EF regression.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19683v1" target="_blank" rel="noopener noreferrer">
+                MiX：用于端到端低位视觉-语言模型加速的微反转缩放
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            MiX: Micro-Inverted-Scaling for End-to-End Low-Bit Vision-Language Model Acceleration
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yuan Liao, Jae-sun Seo
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文专注于视觉-语言模型的低比特量化与加速系统优化，属于纯模型效率/系统加速领域。其内容不涉及CTR/CVR排序模型、多任务学习、重排序、拍卖机制或曝光公平性等核心主题，也未展示对排序模型或机制公式设计的具体应用，因此与我的核心方向无关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 04:31:34
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19683v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19683v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.AR</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    The deployment of Vision-Language Models (VLMs) on edge devices is severely bottlenecked by memory bandwidth, necessitating aggressive sub-8-bit quantization. Since edge accelerators are strictly constrained by area and power, they require end-to-end quantized models. However, the extreme dynamic range gap between multi-modal tokens causes standard block formats to suffer &#34;microscaling collapse,&#34; where a single massive outlier hijacks the shared exponent, underflowing surrounding elements and destroying attention maps. To break this bottleneck, we propose Micro-Inverted-Scaling (MiX), a novel format that mathematically inverts the microscaling paradigm: rather than grouping multiple mantissas under one shared exponent, MiX groups private, per-element exponents under a single shared mantissa. To handle asymmetric VLM outlier topologies, we introduce an adaptive dual-format (MiX-MX) inference framework. By algebraically factoring out the shared MiX mantissa, this framework maps to a custom accelerator, replacing multipliers with efficient shifters. Evaluated end-to-end on multiple VLMs, our 4.5-bit MiX formulation exhibits equivalent or superior accuracy on multi-modal benchmarks compared to NVFP4. Simultaneously, the MiX accelerator delivers a 25% improvement in area efficiency over the NVFP4 baseline and a 2.3-4.5x speedup with 1.4-2.9x energy reduction across models compared to the state-of-the-art accelerator Focus, proving the inverted-scaling datapath is physically superior for efficient VLM deployment.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20819v1" target="_blank" rel="noopener noreferrer">
+                4D基础模型能记忆吗？
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Can 4D Foundation Models Remember?
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Guangzhao He, Hadar Averbuch-Elor, Wei-Chiu Ma
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文标题涉及4D基础模型及其记忆能力，属于计算机视觉或时空建模领域，没有明确涉及CTR/CVR建模、重排序、拍卖机制或电商排序等核心主题。即使作为使能技术，也未体现其在排序模型或机制公式设计中的具体应用，因此与核心关注点无关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:59:50
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20819v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20819v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Perceiving and remembering the visual world is fundamental to navigating and interacting with our environment. Current 4D foundation models, such as camera-controllable video models or 4D reconstruction models, can perceive and reconstruct dynamic environments, but how well they remember what they have perceived remains an open question. Existing benchmarks largely rely on pixel-level metrics and lack ground truth for objects once they leave the field of view, making them unable to evaluate visual memory in an object-centric manner against references. To fill this gap, we introduce PersistBench, a dataset and metric suite that leverages 360° videos as omniscient ground truth and proposes three evaluation aspects: object permanence, motion continuity, and appearance preservation. Evaluating various models across diverse categories reveals that current models can only maintain short-term consistency that degrades significantly once objects leave the field of view. Our findings highlight the gap between current model capabilities and robust visual memory (&#34;seeing is not remembering&#34;), providing guidance for future development of 4D foundation models. Dataset and code are available on the project page: https://guangzhaohe.com/persistbench.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20586v1" target="_blank" rel="noopener noreferrer">
+                CoRef-GS：面向多智能体场景理解的协同指代高斯泼溅
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            CoRef-GS: Cooperative Referring Gaussian Splatting for Multi-Agent Scene Understanding
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhikun Zhou, Kunyu Peng, Runyi Yang, Junhao Cai, Di Wen, Ruiping Liu, Danda Pani...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文主题为多智能体三维场景理解与高斯泼溅（Gaussian Splatting），属于3D视觉和图形学领域，与电商排序、重排序、拍卖机制、CTR/CVR建模等核心方向无直接关联。虽然其“多智能体协同”概念可能抽象联想到多场景统一建模，但论文本身不涉及任何排序模型或机制公式设计，且3D视觉属于明确不相关话题，因此评分极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 15:39:25
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20586v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20586v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span><span class="category-tag">eess.IV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Referring scene understanding for embodied robots requires grounding object- and relation-centric language queries from a designated viewpoint. While a local semantic Gaussian map can support such grounding within one agent&#39;s observations, cooperative settings require this ability to remain effective after independently reconstructed maps are aligned and fused. In this setting, the referred target or its contextual landmark may come from another agent&#39;s observations, while spatial relations must still be interpreted from the querying robot&#39;s viewpoint. We formulate this problem as cooperative referring Gaussian grounding over fused maps, which requires geometric alignability, instance-level semantic comparability, and view-conditioned relation reasoning. Existing language-aware Gaussian methods mainly focus on single-map querying, whereas Gaussian registration methods optimize geometric or photometric alignment without preserving language-grounding-oriented semantic compatibility. We propose CoRef-GS, a cooperative referring Gaussian splatting framework. CoRef-GS constructs local open-vocabulary instance-aware Gaussian maps, then aligns partially overlapping maps with a cross-agent alignment module by geometric and semantic consistency, and grounds queries using a view-conditioned mask relation graph. We further introduce CoQuad-Ref, a dual-quadruped benchmark spanning both real-world and simulated indoor scenes. Experiments show that, on simulated scenes, CoRef-GS reduces the rotation error from 2.58° after coarse initialization to 0.15° after refinement, and improves real-world referring mIoU over ReferSplat from 52.6% to 68.8%. The established benchmark and source code will be publicly released at https://github.com/ruojiruoli17/CoRef-GS.git.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2512.14185v1" target="_blank" rel="noopener noreferrer">
+                基于端到端学习的视频流增强流水线：一种生成式AI方法
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            End-to-End Learning-based Video Streaming Enhancement Pipeline: A Generative AI Approach
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Emanuele Artioli, Farzad Tashtarian, Christian Timmerer
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文标题聚焦视频流媒体传输增强和生成式AI，属于视频编码/传输领域，与电商排序算法（精排、重排、机制公式）的核心焦点无关。生成式AI在此用于视频流增强，而非直接应用于排序模型或拍卖机制设计，因此不满足使能技术的硬约束，判定为高度不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2025-12-16 08:28:53
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2512.14185v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2512.14185v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.MM</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    The primary challenge of video streaming is to balance high video quality with smooth playback. Traditional codecs are well tuned for this trade-off, yet their inability to use context means they must encode the entire video data and transmit it to the client. This paper introduces ELVIS (End-to-end Learning-based VIdeo Streaming Enhancement Pipeline), an end-to-end architecture that combines server-side encoding optimizations with client-side generative in-painting to remove and reconstruct redundant video data. Its modular design allows ELVIS to integrate different codecs, inpainting models, and quality metrics, making it adaptable to future innovations. Our results show that current technologies achieve improvements of up to 11 VMAF points over baseline benchmarks, though challenges remain for real-time applications due to computational demands. ELVIS represents a foundational step toward incorporating generative AI into video streaming pipelines, enabling higher quality experiences without increased bandwidth requirements.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20680v1" target="_blank" rel="noopener noreferrer">
+                迈向利用合成数据扩展海洋感知
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Towards Scaling Marine Perception with Synthetic Data
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Haoyu Ma, Onur Bagoren, Anja Sheppard, Elias Fandi, Ashrith Edukulla, Tanner Asl...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于海洋感知与合成数据，属于领域特定的视觉/机器人应用，与电商排序、重排、拍卖机制或曝光公平性无关。合成数据方法不涉及排序模型或机制公式设计，因此完全不在核心聚焦范围内。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 16:51:02
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20680v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20680v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Scalable machine learning in challenging underwater environments is strongly limited by the lack of labeled real-world training data. This data is often expensive and laborious to gather, making large-scale real-world data challenging to gather and curate. However, simulated data can help close the gap, enabling many learning-based tasks for underwater perception. In this work, we extend OceanSim, an IsaacSim-based underwater perception simulator, with a Synthetic Data Generation (SDG) pipeline for training models to be used in underwater scenarios. The proposed pipeline enables users to generate large, automatically labeled, photorealistic datasets with configurable scene appearance, structure, and sensor settings. We evaluate the pipeline on a real-world sea urchin detection task and study how different forms of synthetic scene variation affect sim-to-real performance. Based on these experiments, we discuss findings on our results, main limitations of the current pipeline and identify future directions for improving underwater rendering fidelity, scene diversity, and the evaluation of sim-to-real generalization. The open-source code can be found at https://github.com/umfieldrobotics/OceanSim.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20649v1" target="_blank" rel="noopener noreferrer">
+                DexTouch-WM：从人类触觉中学习动作条件触觉世界模型以实现灵巧机器人操作
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            DexTouch-WM: Learning Action-Conditioned Tactile World Models from Human Touch for Dexterous Robot Manipulation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yan Qin, Yue Chen, Wenwei Lin, Shujia Liu, Chuqiao Lyu, Kailun Su, Chenze Yu, Pi...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究面向机器人灵巧操作的触觉世界模型，属于机器人控制/具身智能领域，与电商搜索推荐、广告排序、重排或拍卖机制公式优化毫无关联。其核心技术（动作条件世界模型、触觉建模）不构成排名模型或机制设计的使能技术，因此不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 16:28:34
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20649v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20649v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Learning predictive models of contact-rich dexterous manipulation requires dense tactile interaction, but such data are costly to scale on real robots and remain tied to embodiment-specific sensors. We introduce DexTouch-WM, an action-conditioned world model that learns from scalable human touch to jointly predict future RGB observations and bilateral tactile dynamics. Our insight is that human and robot manipulation share transferable contact dynamics when their tactile observations and action spaces are made compatible. We deploy flexible piezoresistive arrays with a shared sensing layout on both human and dexterous robot hands, and retarget human motion into the robot action space so that human interaction can supervise the same dynamics model used for real-robot prediction. DexTouch-WM couples a pretrained video expert with a lightweight tactile expert using anatomy-aware tactile tokens and aligned action conditioning. In human-to-robot scaling experiments, we keep five hours of real-robot supervision fixed while increasing human interaction from 0 to 100 hours, and observe substantial improvements in held-out robot-domain visual, geometric, and contact prediction despite disjoint human and robot task sets. Beyond prediction, we evaluate the world models as surrogate environments for policy evaluation and as generators of synthetic trajectories for real-robot policy learning, showing that scalable human interaction provides a complementary data axis for learning dexterous robot world models.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20615v1" target="_blank" rel="noopener noreferrer">
+                INSPECT：从助手使用中学习机器人视角选择
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            INSPECT: Learning Robot View Selection from Assistant Use
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Di Wen, Kailun Yang, Wenhao Guo, Yitian Shi, Junwei Zheng, Yufan Chen, Ruiping L...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究机器人视角选择，属于机器人学领域，与电商搜索、推荐、广告排序以及重排、机制公式优化等核心方向无关。标题未涉及任何排序模型、重排、拍卖机制或电商排序相关内容，因此不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 16:00:17
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20615v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20615v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Robots inspecting an assembly must determine which parts are present and whether they are correctly installed. During egocentric assembly assistance, head motion and workpiece handling reveal evidence for these checks, while spoken state confirmations link observations to procedural outcomes. We introduce INSPECT, which learns robot view preferences from records of a smart-glasses assistant that answers part queries and provides next-step guidance. Presence-Invariant TwinSwap (PI-TwinSwap) calibrates object evidence through paired identity interventions. Claim-indexed supervision separates evidence requirements from camera-reproducible observation changes. Object-centered calibration adapts relative view preferences to robot poses, while clause-level screening checks predicted evidence. The robot selects views using only its current observation and known poses, without candidate images. Evaluation uses annotated assistant-video replay to simulate state feedback, without target-domain view labels for policy training. On images of physical gearbox assemblies, INSPECT achieves the highest view utility among the compared non-oracle policies and raises human-rated full verifiability from 34.8% to 41.7% compared with keeping the current view. On commercial angle-grinder recordings in IMPACT, the transferred relative-view selector increases the correct decision rate from 50.6% to 54.3% with a frozen perception head. The source code is available at https://github.com/Kratos-Wen/INSPECT.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20566v1" target="_blank" rel="noopener noreferrer">
+                OmniMimic：面向多风格全向四足运动的动力学补全运动增强
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            OmniMimic: Dynamics-completed Motion Augmentation for Multi-style Omnidirectional Quadruped Locomotion
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Sheng Wu, Guoqiang Zhao, Zhe Yang, Fei Teng, Zhikun Zhou, Yanlin Yang, Zheng Fan...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究四足机器人的运动增强与全向行走，属于机器人学与运动控制领域，与电商排序、重排、拍卖机制、CTR/CVR建模、曝光公平等核心焦点完全无关。其技术内容也不属于对排序模型或机制公式设计有直接应用的赋能技术。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 15:28:48
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20566v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20566v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span><span class="category-tag">eess.IV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Animal demonstrations provide quadruped robots with natural and distinctive gait styles that are difficult to specify through hand-crafted rewards. However, their narrow directional coverage leaves little style-consistent supervision for backward, lateral, and turning commands. We present OmniMimic, a training framework that turns directionally limited animal demonstrations into a single multi-gait policy over target per-axis velocity ranges. OmniMimic first combines temporal reversal, constrained dynamics completion, and sagittal reflection to construct robot-specific kinematic and physical supervision beyond the observed directions. It then expands commands progressively from the demonstrated velocity distribution toward the target per-axis bounds, and uses a shared actor with soft-gated, gait-specialized residual experts to balance reusable locomotion skills with gait-specific corrections. Across four gaits in simulation, OmniMimic reduces mean foot-position RMSE at forward and backward reference velocities by 12.9% and velocity-tracking RMSE on a uniform Cartesian command grid by 63.1%, compared with the matched APEX baseline. The project page is at https://OmniMimic.github.io.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20388v1" target="_blank" rel="noopener noreferrer">
+                Navi-Agent：非定位单目导航智能体
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Navi-Agent: Unlocalized Monocular Navigation Agent
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Wenyuan Xie, Mengyang Hong, Yongzhong Wang, Yanbiao Ji, Yijin Zhou, Shaokai Wu, ...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于单目视觉导航智能体，属于机器人/具身智能领域的视觉导航任务，与电商排序（精排、重排、机制公式优化、曝光公平性等）无直接关联。即使涉及智能体或大模型技术，也未将其应用于排序模型或拍卖/流量分配机制的设计与优化，因此判定为不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 13:41:27
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20388v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20388v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Vision-Language Navigation in Continuous Environments (VLN-CE) requires an embodied agent to execute long-horizon instructions in unknown environments. Existing zero-shot VLN-CE systems typically maintain spatial states through geometric localization or coordinate-based representations. Recent geometry-constrained navigation removes depth and globally consistent coordinates, but maintaining persistent spatial awareness for place confirmation, progress verification, and recovery remains challenging. We present Navi-Agent, a zero-shot VLN-CE agent that constructs a coordinate-free spatial state from visual observations and executed motion histories. Navi-Agent organizes this state as a navigation topology, where nodes represent visual places and edges represent motion transitions. This representation enables observation-based approximate self-localization, task progress verification, and visual revisitation-based recovery. Navi-Agent performs closed-loop navigation by decomposing instructions into sub-goals, executing local visual navigation, and verifying visited places through the constructed spatial state. Experiments on zero-shot VLN-CE benchmark and real-world robot platforms show that Navi-Agent achieves state-of-the-art performance among geometry-constrained methods while remaining competitive with approaches relying on geometric localization.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19525v1" target="_blank" rel="noopener noreferrer">
+                压缩有害，池化有益：B型超声中瑞利尺度估计的信息损失
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Compression Hurts, Pooling Helps: Information Loss in Rayleigh-Scale Estimation from B-Mode Ultrasound
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>D. Hudson Smith, Ahmer Raza
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究的是医学超声成像中的信号估计与压缩问题，与电商排名、重排序或拍卖机制公式优化完全无关。它属于医学/信号处理领域，不涉及任何核心焦点主题，因此评分极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 00:31:43
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19525v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19525v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">eess.IV</span><span class="category-tag">cs.CV</span><span class="category-tag">stat.AP</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Clinical B-mode images are widely available as potential data sources for quantitative ultrasound (QUS) analysis for tissue characterization. However, standard clinical ultrasound devices apply unknown log-compression to RF envelope data before display and storage. Previous work has demonstrated estimation of the underlying RF envelope statistics in the presence of an unknown compression law. Using Fisher information analysis, we show that finite-offset log compression causes severe information loss when estimating the Rayleigh scale $σ$, which controls diffuse speckle. For a single image window, unknown compression raises the minimum achievable variance for unbiased estimation of $σ$ by a compression-independent factor of approximately $\FisherMinInflation$. When $M$ equal-sized windows share the same unknown compression settings, the excess variance decays as $1/M$; even in the most favorable regime, reducing the variance inflation factor below $1.1$ requires $\FisherBestCaseWindows$ windows. Our analysis treats the contrast parameter $a$ as unknown and the boundary offset $b$ as known; estimating $b$ experimentally shows even larger variance. We validate this theory using synthetic estimation experiments and demonstrate RF-scale recovery on real RF-envelope windows from the OASBUD dataset. Together, these results clarify the limitations of using routine B-mode images for QUS.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19215v1" target="_blank" rel="noopener noreferrer">
+                基于生成式AI层的端到端视频流媒体感知细化
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Perceptual Refinement of an End-to-End Video Streaming Pipeline via Generative AI Layers
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Emanuele Artioli, Farzad Tashtarian, Christian Timmerer
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于视频流媒体管线的感知质量优化，属于视频处理和生成式AI领域，与电商排序、重排序、竞价机制或曝光公平性等核心关注点无直接关联。生成式AI在此处的应用是视频感知增强，并非用于排序模型或机制公式设计，因此不满足使能技术的硬性约束条件。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 12:33:08
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19215v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19215v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">eess.IV</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.CV</span><span class="category-tag">cs.MM</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Traditional codecs treat every region of a frame alike; a generative layer can instead degrade the regions a viewer attends to least and reconstruct them at the client. We present PRESLEY, which extends the prior conference work ELVIS by replacing destructive block removal with adaptive in-place degradation under a removability mask, signaling per-block strength in a bit-packed side channel, and restoring via generative backbones conditioned on transmitted visual priors rather than unconditioned in-painting. We separate the problem into three goals: choosing which blocks to degrade, degrading them so the encoder spends fewer bits, and restoring them. Against its predecessor at matched rate, PRESLEY achieves a decisive mean -56.4% BD-rate reduction on delivered background quality across 13 rate ladders spanning multiple codecs and dataset families. Against pristine baselines, PRESLEY defines the operating regime of generative transport: delivering substantial bitrate savings (up to -29.4% BD-rate) and superior background quality (17/23 sequences) in the target bit-starved regime, while maintaining foreground fidelity bit-exact. We further map where the theoretical headroom in this class of architecture lies. Using an exact leave-one-superblock-out combinatorial oracle as an additive empirical bound, we show that existing complexity heuristics already capture 83.3% of bit-cost savings, bounding remaining cost-axis headroom at about 5% of total bitrate. We then identify and model the primary unaddressed axis -- post-restoration damage -- which disperses widely (4.9-8.4 dB). We prove that this damage is predictable before transmission (held-out rho = +0.400), establishing the feasibility of transmit-time restorability modeling and defining the roadmap for joint rate-distortion-restoration selection rules.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19863v1" target="_blank" rel="noopener noreferrer">
+                穿越前感知地形：面向越野导航的世界模型
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Feeling Terrain Before Crossing: World Models for Off-Road Navigation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>E-In Son, Dong-Wook Kim, Ji-Hoon Hwang, Kangsun Lee, Jisung Bae, Jung-Taak Kim, ...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于越野导航中的机器人世界模型，属于机器人学/具身智能领域，与电商排序、重排、拍卖机制公式优化等核心方向无直接关联。其技术（世界模型）虽可归入生成式/模型类技术，但应用场景为物理导航而非排序模型或机制设计，不满足使能技术硬约束。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 08:19:06
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19863v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19863v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Navigation world models plan by foresight, predicting the future that each candidate action sequence produces and selecting the best, rather than mapping observations to actions directly. Unlike urban settings where a predicted scene is a sufficient proxy, off-road navigation hinges on the robot--terrain interaction, so the prediction must cover not only what the camera will see but what the robot will feel. However, existing scene-focused models do not predict how much the robot will slip, tilt or shake along a planned trajectory. Proprioception captures these dynamics directly and, when used as input, improves the prediction of the physical future. We present Feel-WM, the first off-road navigation world model that conditions on proprioception and predicts what the robot will feel alongside what the camera will see. The physical future takes the form of a future proprioceptive state and a failure risk, both learned from the robot&#39;s own experience without human labels. The planner rolls out the physical future alongside the scene and weighs the predicted failure risk against goal similarity in a separable score. Experiments on real off-road data and in simulation demonstrate that Feel-WM outperforms visual-only navigation world models in open-loop planning and closed-loop rough-terrain navigation across wheeled and legged platforms. Deployed on a Husky on mountain trails, Feel-WM plans onboard, predicts rough ground ahead and steers around it, completing courses that an end-to-end policy fails.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19554v1" target="_blank" rel="noopener noreferrer">
+                VABench：通过视觉演示、主动感知和度量控制测量具身空间智能
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            VABench: Measuring Embodied Spatial Intelligence through Visual Demonstrations, Active Perception, and Metric Control
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhongbo Zhang, Jiayi Jin, Yifan Wang, Zaibin Zhang, Haiwen Diao, Lijun Wang, Huc...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文属于具身智能与空间智能评测基准，与电商排序、重排、拍卖机制、CTR/CVR建模等核心方向无关。它不涉及排序模型、机制公式设计或具体的排序应用，因此判定为不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 01:24:51
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19554v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19554v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Spatial intelligence requires more than describing object locations. Under incomplete observation, models must identify and acquire missing evidence, interpret it in a common spatial frame, and act on it. We introduce VA-Bench to evaluate the complete observe-reason-act-revise loop. General-purpose MLLMs learn procedural context from RGB-only demonstrations, actively select camera viewpoints, issue metric Cartesian commands, and revise them from execution feedback. Models receive no privileged object poses, oracle trajectories, or learned action heads. A fixed model-agnostic controller executes only model-specified targets. VA-Bench contains 14 base task families (11 single-arm and three dual-arm), seven held-out geometry/layout variants, and a long-horizon five-object composition track. We evaluate 12 primary model conditions in three independent runs over the same 20 physically verified seeds per base task, reporting terminal success, nine trajectory-level behavioral diagnostics, and subtask progress. First, the best-performing model scores 100.0% on target localization and 78.9% on spatial relations in the annotated run. Its three-run macro-average task success is only 53.93+/-3.17%. Second, active camera control significantly improves task success over passive multi-view observation. In one matched comparison, success rises from 27.86% to 57.50%. Third, held-out geometric transfer can reduce task success by over 30 percentage points. No model completes a strict long-horizon episode, despite substantial partial progress. VA-Bench thus tests whether general-purpose MLLMs can turn visual demonstrations and actively acquired evidence into successful embodied action.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20756v1" target="_blank" rel="noopener noreferrer">
+                OPTED：使用无渲染教师模型进行端到端驾驶的在策略微调
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            OPTED: On-Policy Fine-Tuning for End-to-End Driving using a Render-Free Teacher
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Damiano Da Col, Maximilian Igl, Peter Karkus, Kashyap Chitta, Boris Ivanovic, Ma...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于自动驾驶领域的端到端驾驶模型，研究在策略微调与无渲染教师模型技术。这与电商排序、重排序、拍卖机制、曝光公平等核心关注点完全无关，也不属于条件性使能技术（生成式/LLM在排序或机制中的具体应用）。因此判定为不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:41:51
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20756v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20756v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.CV</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    As scaling pre-training data alone yields diminishing returns, post-training is becoming increasingly important across physical AI domains such as autonomous driving. End-to-end driving policies are pre-trained in open loop with behavior cloning on human demonstrations. However, compounding errors during closed-loop deployment can take the vehicle outside the training data distribution, increasing the risk of safety-critical incidents. Closed-loop post-training can mitigate this risk but requires costly simulation for sensor-based policies. We propose OPTED (on-policy fine-tuning for end-to-end driving) which decouples reinforcement learning from the post-training of the end-to-end policy: a privileged teacher is trained using RL on vectorized inputs (HD-map and bounding boxes). This teacher then provides supervision to the pre-trained student during closed-loop post-training. We apply OPTED to two camera-based models, TransFuser and VaVAM, and fine-tune them in AlpaSim, using neural reconstructions (3DGS) of real driving logs. Driving scores increase by factors of 1.6$\times$ and 9.5$\times$, respectively. In controlled experiments OPTED matches closed-loop performance with approximately three orders of magnitude fewer simulator interactions than direct RL post-training, while staying closer to the human prior. Project page: https://01dami23.github.io/opted/
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20191v1" target="_blank" rel="noopener noreferrer">
+                飞行中的视觉语言导航：面向空中机器人的机载视觉-语言导航系统栈
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            VLN on the Fly: An Onboard Vision-Language Navigation Stack for Aerial Robots
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Marco S. Tayar, Felipe Tommaselli, Gianluca Capezutto, Pedro Antonio Rabelo Sara...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究空中机器人的具身视觉语言导航（VLN）系统栈，属于机器人学、视觉与具身智能领域，与电商搜索/推荐/广告的排序模型、重排序、拍卖机制公式优化等核心方向完全无关。其视觉语言技术也未涉及排序特征建模或机制设计，不满足使能技术的硬性约束条件。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-08-07 20:34:33
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20191v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20191v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.RO</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.CV</span><span class="category-tag">cs.LG</span><span class="category-tag">eess.SY</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Running vision-language navigation fully onboard an aerial robot is hard, since grounding, planning, and control must share limited compute and a single-stage error is difficult to isolate in flight. End-to-end aerial policies fuse these stages into one network, giving up the observability and safety checks a modular stack keeps available. We propose VLN on the Fly, an onboard stack that keeps grounding, planning, and control as separate, inspectable stages. A quantized VLM grounds an instruction to a coarse image cell, depth lifts it to a 3D goal, a fast B-spline planner returns a feasible trajectory, and a pretrained reinforcement learning policy tracks it to motor commands across quadrotors. Across 15 onboard flights over three everyday referents in a controlled indoor volume, the stack reaches the target in 13 of 15 trials with 5.72 cm mean goal error and 39.3% average GPU utilization. In 6 additional cluttered-environment trials, the stack tracks collision-free trajectories under onboard perception gating.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19385v1" target="_blank" rel="noopener noreferrer">
+                用于机会性预测主要不良心血管事件的乳腺钼靶基础模型
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Mammography Foundation Models for Opportunistic Prediction of Major Adverse Cardiovascular Events
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Paula Feldman, Nusrat Binta Nizam, Sunwoo Kwak, Batuhan Karaman, Katerina Dodelz...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文属于医学影像与心血管事件预测领域，与电商排序、重排或机制公式优化等核心研究方向完全无关。其涉及的基础模型技术也并非面向排序或机制设计的使能技术，因此相关性极低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 20:06:04
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19385v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19385v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">eess.IV</span><span class="category-tag">cs.CV</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Cardiovascular disease (CVD) remains the leading cause of death among women, yet cardiovascular risk assessment often relies on clinical variables that may be missing, outdated, or unavailable in routine care. Screening mammography offers an opportunity for opportunistic cardiovascular risk stratification because it is routinely acquired and contains vascular features, including breast arterial calcifications (BAC), that are associated with cardiovascular risk and events. We evaluate whether mammography specific foundation models, originally pretrained for breast cancer-related tasks, can transfer to cardiovascular risk prediction without cardiovascular specific supervision or explicit BAC annotation. We constructed a 5-year major adverse cardiovascular event (MACE) cohort of 22,497 women linked to electronic health record outcomes, including 500 events (2.22% prevalence). The foundation models achieved AUROCs of 0.823 and 0.822 substantially exceeding an age-only model (AUROC 0.765), despite using only the screening mammogram as input, with no clinical variables. Both foundation models evaluated assigned substantially higher predicted risk to patients with radiologist-documented BAC, despite BAC never being used as a training label, and showed activation patterns consistent with vascular findings. Together, these findings suggest that mammography foundation models can recover clinically relevant cardiovascular risk information directly from mammographic pixels and suggest that screening mammography may provide an opportunistic source of cardiovascular risk information to complement conventional clinical assessment without additional imaging. Code is available in https://github.com/PauFeld/MammoCVD
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19782v1" target="_blank" rel="noopener noreferrer">
+                打印欠定：在具象绘画中实现多解性
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Printing the Underdetermined: Materializing Multi-solutionness in Figurative Paintings
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yutao Ming, Teng Xu, Youjia Wang, Yunyang Liu, Fengmin Yang, Fuqiang Zhao, Jingy...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文探讨视觉艺术与具象绘画，属于纯视觉/图形领域，与电商排名、重排序或拍卖机制公式优化完全无关。其主题不涉及任何可用于CTR/CVR建模、排序分数设计或机制设计的要素，因此与核心焦点无关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 06:50:54
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19782v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19782v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GR</span><span class="category-tag">cs.CV</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Figurative paintings are often approached as if they depict a single recoverable 3D scene: viewers infer depth and occlusion, and reconstruction pipelines attempt to converge to one stable model. We instead foreground multi-solutionness, the non-uniqueness of 3D configurations compatible with a single painted image, and propose a workflow that keeps this non-uniqueness visible and material. Multi-solutionness arises from two sources: unobserved content, where backsides and occluded volumes admit multiple plausible completions, and observed cues, where perspective, shading, and occlusion still underconstrain geometry. When additional views are synthesized by a video generative model without explicit 3D constraints, small frame-level drifts become inevitable rather than exceptional. Our pipeline samples multiple camera-orbit multi-view video sequences from one painting, reconstructs each sequence with 3D Gaussian Splatting into a point-based Gaussian scene representation where density halos and ghosting expose unresolved degrees of freedom, and fabricates these representations as physical artifacts using DreamPrinting. By treating multiple compatible interpretations as explicit outputs rather than residual error, we provide a computational framework for spatial readings of figurative painting that can be inspected, compared, and discussed in both digital and physical form.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20789v1" target="_blank" rel="noopener noreferrer">
+                无对等节点的相互评估与监督
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Mutual Evaluation and Supervision without Peers
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zachary Robertson
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该标题属于分布式系统/点对点网络中的评估与监督机制，没有涉及排序模型、重排序或拍卖/竞价公式优化等核心方向。其“相互评估与监督”概念与电商排序机制中的曝光公平、流量调控无直接关联，且不属于可迁移的排序使能技术。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 17:53:22
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20789v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20789v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.IT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    This article introduces mutual evaluation of a replicable task worker and a critic that incentivizes truthful reporting, both modeled as strategic agents. The critic chooses a finite-valued rule that induces an evaluation score on joint report laws. Their common payoff is analyzed through regret relative to the unrestricted critic envelope. The critic rule is distinct from the evaluation score. This class enables a peer-free information elicitation mechanism using conditionally independent replications of a worker on the same task. This replication-loop mechanism implements a type-agreement payoff using same-task replications and new-task samples. In contrast to the peer-prediction and scoring-rule literature, implementations are shown that produce unbiased Pearson and Shannon information scores without requiring peers, a ground-truth reference, or likelihood-ratio estimation. A valid binary critic also can be represented by shared finite type annotations of worker returns. One runtime restriction is that the number of required replicas is random and can depend on the critic rule. Other timing effects, such as commitment and reoptimization, yield distinct incentives, connecting the framework to variational peer prediction. This mechanism class illustrates why strategic considerations matter for both critic and worker agents.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19820v1" target="_blank" rel="noopener noreferrer">
+                通过参考策略引导正则化自博弈中的均衡选择
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Steering Equilibrium Selection in Regularized Self-Play via the Reference Policy
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Luis Leal
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究自博弈中均衡选择的理论问题，与推荐/广告排序模型、重排序或拍卖机制公式设计没有直接或具体的关联。虽然自博弈/博弈论可能与机制设计有理论联系，但标题未显示任何面向排序或电商机制优化的实际应用。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 07:30:23
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19820v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19820v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.AI</span><span class="category-tag">cs.GT</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Regularized self-play -- the family behind DeepNash&#39;s Stratego play -- drives a two-player zero-sum policy to a Nash equilibrium by best-responding to a slowly moving, entropy-regularized reference policy $ρ$. When the game has a polytope of value-equivalent equilibria, the regularizer silently breaks the tie: with a uniform reference it selects the maximum-entropy member, the I-projection of $ρ$ onto the Nash set. Can the reference be used to choose the equilibrium on purpose? On five exactly solvable games plus a 2-D polytope, with exact best responses and equivalence tests over independent seeds, anchoring the reference at a target member and refining steers self-play to that member with mean coordinate error 0.007 at median exploitability $5\times10^{-5}$, TOST-equivalent to the request within $\pm0.05$; the anchoring persists through refinement and follows the reference, not the initialization. Selection follows the reach-weighted I-projection (slope 0.969 [0.950, 0.987]). We report with equal emphasis where the story breaks: fixed off-manifold references cost 0.08-0.25 exploitability; stiff or flat families require a smaller mirror step, set by a pre-registered rule; boundary targets undershoot; curvature predicts where boundary saturation bites (rank correlation 0.90, p=0.037) while interior precision is curvature-independent. Table and MLP steering maps are equivalent within $\pm0.03$ at every target (30 seeds); matched control arms show attention&#39;s robust signature is excess seed variance, any systematic shift bounded at 0.018 and not significant. Against a best response the selection-robustness trade-off is degenerate: steering matters only against fixed, non-equilibrium opponents. The recipe -- anchor the reference at the desired member and refine -- reinterprets the KL anchor of RLHF-style RL as a selection knob, not only a stability leash.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19438v1" target="_blank" rel="noopener noreferrer">
+                关于偿付能力博弈中的周期性与非周期性最优策略
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            On Periodic and Aperiodic Optimal Strategies in Solvency Games
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Quentin Guilmant, Florian Luca, Richard Mayr, Joël Ouaknine, James Worrell
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究偿付能力博弈中的最优策略，属于博弈论与随机控制领域，与电商排名、重排序或拍卖机制公式设计无直接关联。不涉及CTR/CVR建模、多任务学习、多样性重排或eCPM/GSP/VCG等排名与机制优化核心主题。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 21:18:59
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19438v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19438v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">math.PR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Solvency games are a gambling problem on infinite-state Markov decision processes in which the state $n \in \mathbb{N}$ represents an investor&#39;s fortune. In every round, the investor chooses an action from a finite action set, and every action yields a distribution over integer-valued gains in an interval $\{-\ell,\ldots,m\}$. The risk-averse investor wants to minimise the probability of eventual ruin (reaching a fortune $\le 0$). It was shown in [Berger et al.] that memoryless deterministic optimal strategies exist, but they are not eventually constant in general. Even in the special case of gains in $\{-2,\ldots,1\}$, the optimal strategy may need to make use of two different actions at arbitrarily high fortunes. We show that optimal strategies in solvency games need not be ultimately periodic in general (thus disproving a 2012 conjecture of Kučera). Already in the case of gains in $\{-3,\ldots,1\}$, it is possible for the optimal strategy to be unique but aperiodic. For gains in $\{-2,\ldots,1\}$, there always exists an ultimately periodic optimal strategy whose tail is constant or alternates between two actions. Finally, we show that the optimal strategy is computable if it is unique. Moreover, (some) optimal strategy can always be computed in the case of gains in $\{-\ell,\ldots,1\}$ for any $\ell \in \mathbb{N}$. Computability in the general case however remains open.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.19399v1" target="_blank" rel="noopener noreferrer">
+                网络安全博弈中纳什均衡的高效计算
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Efficient Nash Equilibrium Computation for Cybersecurity Games
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Michael Lanier, David Farmer, Yevgeniy Vorobeychik
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究网络安全博弈中的纳什均衡计算，属于安全领域，明确属于无关主题。其提出的高效计算思路虽然可能涉及均衡计算，但并未涉及排序公式、拍卖机制或广告/推荐系统中的竞价机制设计，与我的核心关注点没有直接关联。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-16 20:29:07
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.19399v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.19399v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Computing Nash equilibria of simulation-based cybersecurity games with policy-space response oracles (PSRO) is bottlenecked by payoff estimation: every payoff-matrix entry costs Monte-Carlo rollouts of a slow simulator, while policies and restricted-game solves are cheap. We introduce Regret-Weighted Payoff Sampling (RWPS), a budgeted estimator that simulates only the cells an equilibrium is sensitive to and fills the rest with a surrogate trained on every entry simulated earlier in the run. The sup-norm error bound cannot evaluate such an estimator, because it is set by the cells left deliberately inaccurate. We prove an instance-dependent bound that weights error by the opponent&#39;s equilibrium mixture, a certificate computable from simulation data alone, and a coverage result showing that once the deviation-relevant set is simulated, surrogate error cannot affect either player&#39;s regret. On three 21x21 general-sum games, two synthetic and an asymmetric Colonel Blotto, the refined bounds are four to six times tighter on the estimator&#39;s own output, and the coverage result predicts in advance which games are cheap: 18% of the matrix for small-support games against 82% for Blotto. In growing-pool PSRO, RWPS reaches lower exploitability than minimum-regret-first search, information-gain search, and progressive sampling at a matched budget, and on the CyGym and ANSG cyber simulators it is lowest at the smallest budgets.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20579v1" target="_blank" rel="noopener noreferrer">
+                通过最小割更快验证 PJR$^+$
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Faster Verification of PJR$^+$ via Mincuts
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Drew Springham
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究的是比例代表制中 PJR$^+$ 的算法验证，属于计算社会选择/公平公理理论。虽然公平性是一个主题，但这项工作研究的是委员会选举或集体决策中公理的算法验证，与电商搜索/推荐/广告中的曝光公平、流量治理或重排序机制无关，也没有涉及排序分数公式、拍卖机制或排序模型。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 15:35:49
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20579v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20579v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    PJR$^+$ is a polynomial-time verifiable proportionality axiom for approval-based committee elections, but its known polynomial-time verification procedure relies on general submodular-function minimisation. We show that its objective is a maximum-closure problem and give a direct mincut formulation of the problem on a bipartite graph. Using an almost-linear-time maximum-flow algorithm, this yields an $\mathcal{O}(m(nk)^{1+o(1)})$-time verifier, where $n$, $m$, and $k$ are the numbers of voters, candidates, and committee members, respectively. The dependence of this bound on each parameter separately is almost linear: it is linear in $m$, and almost linear in $n$ and $k$. The verifier also returns an explicit group witnessing a violation and admits a slower but immediately implementable variant based on the preflow--push mincut algorithm. Finally, for the parameterised axiom $α$-PJR$^+$, where $α$ is used as a multiplier in the group size, we demonstrate how to compute the largest value of $α$ for which a committee still fails the axiom using this mincut formulation.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2607.17543v1" target="_blank" rel="noopener noreferrer">
+                曲率阴影：最大熵均衡选择的一种表面失败是可去除的假象
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            The Curvature Shadow: An Apparent Failure of Maximum-Entropy Equilibrium Selection is a Removable Artifact
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Luis Leal
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究最大熵均衡选择中的理论假象问题，属于纯博弈论/均衡分析的理论研究，与电商排序、重排、拍卖机制设计等核心焦点无直接关联，也未涉及任何具体的排序模型或机制公式优化。因此判定为不相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-07-20 04:38:25
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2607.17543v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2607.17543v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.AI</span><span class="category-tag">cs.GT</span><span class="category-tag">cs.LG</span><span class="category-tag">cs.MA</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    In two-player zero-sum games whose Nash equilibria form a convex set, regularized solvers such as Regularized Nash Dynamics (R-NaD) empirically select the maximum-entropy member: the information projection (I-projection) of a uniform reference onto the Nash set. On a panel of small games this match is exact, with one apparent exception: in Kuhn poker R-NaD lands at bluff coordinate 0.180 while the maximum-entropy member sits at 0.201, a coordinate gap of about 0.021, even though R-NaD attains 99.7 percent of the maximum entropy. We ask whether this gap is a genuine selection bias or an artifact, and answer it quantitatively. We show that for selection on a one-dimensional Nash manifold the coordinate gap factorizes as $\mathrm{gap} \approx \sqrt{2δ/κ}$, where $δ$ is the entropy shortfall of the solver and $κ$ is the curvature of the entropy landscape at its peak. Across five games this relation holds to within $2 \times 10^{-4}$ (under 1 percent relative error). The four matrix games have $δ\approx 0$ (R-NaD reaches the maximum-entropy member exactly) and therefore no gap regardless of curvature; only the sequential game (Kuhn) has $δ&gt; 0$. A causal sweep of the magnet strength drives $δ\to 0$ and the gap toward zero along the predicted curve (fitted scaling exponent 0.50, $R^2 &gt; 0.999999$, against the exact prediction of 1/2), until the dynamics destabilize at a stability floor: behavior consistent with a removable shortfall and inconsistent with a fixed bias. We quantify the curvature half of the law from measured curvatures and flag a moving-target pitfall in the natural Tsallis-entropy experiment. The Kuhn gap is thus the curvature shadow of a small, removable entropy shortfall on an unusually flat peak; the I-projection account is upheld up to a flatness-limited residual.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-2">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.20450v1" target="_blank" rel="noopener noreferrer">
+                时变仿射观点网络的稀疏一步前瞻最优控制：跟踪与竞争博弈
+            </a>
+        </h3>
+        <span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>1/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Sparse One-Step-Ahead Optimal Control of Time-Varying Affine Opinion Networks: Tracking and Competitive Games
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Gabriel Gentil, Amit Bhaya
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究时变仿射观点网络的最优控制问题，属于控制理论和社会网络动力学领域，与电商排序、重排序、拍卖机制或排序公式优化无关。其应用场景（观点跟踪与竞争博弈）不涉及搜索/推荐/广告中的排序模型或机制设计，因此与核心关注点无关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-17 14:17:55
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.20450v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.20450v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">eess.SY</span><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    This paper studies resource-limited external influence in time-varying opinion networks when a controller must choose both a small set of agents and a scalar intervention at each update. We use the affine free response, which includes DeGroot and Friedkin--Johnsen dynamics, followed by a direct sparse action. Eliminating the scalar action reduces the one-step problem to a cardinality-constrained support objective whose global optimum is obtained from the largest or smallest residual components. Hence exact sparse one-step-ahead optimal control requires one sort and \(O(|\mathcal T|\log|\mathcal T|)\) operations, where \(\mathcal T\) is the support set. For periodic affine dynamics, the resulting state-dependent low-rank feedback admits cycle-based ultimate bounds and exact tracking of model-invariant targets. The DeGroot and Friedkin--Johnsen specializations expose the role of target invariance and the affine mismatch term. With several competing external players, each sparse best response retains the same sorting structure and the complete binary--continuous stage game is an exact potential game, so a pure-strategy equilibrium exists at every frozen state. Same-state welfare benchmarks separate loss due to scalar competition from the additional loss due to strategic support selection. Numerical examples validate exact support selection and illustrate switching-order effects, DeGroot/Friedkin--Johnsen tracking, resource tradeoffs, and competitive implementations.
+                </div>
+            </details>
+    </div>
+</div>
+        </div>
+    </main>
+
+    <!-- 加载论文数据和JavaScript逻辑 -->
+    <script>
+        // 后端注入：业务日配置与有数据的日期列表（calendar.js 读取）
+        window.CALENDAR_CONFIG = {
+            currentDateConfig: {"ymd": "20260920", "display": "2026-09-20", "year": 2026, "month": 9, "day": 20},
+            availableDates: ["20260919", "20260920"]
+        };
+    </script>
+    <script src="static/app.js"></script>
+    <script src="static/collapse.js"></script>
+    <script src="static/calendar.js"></script>
+</body>
+
+</html>
