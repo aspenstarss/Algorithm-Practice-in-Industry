@@ -13,8 +13,8 @@ import json
 
 import requests
 
-PAPERS_CARD_TEMPLATE_ID = "AAqxH62u1uNko"
-PAPERS_CARD_TEMPLATE_VERSION = "1.0.8"
+PAPERS_CARD_TEMPLATE_ID = "AAqTHKealEdKC"
+FULL_LIST_URL = "https://www.aspenstars.cn/Algorithm-Practice-in-Industry/arxiv_daily/"
 _TIMEOUT_SECONDS = 10
 
 
@@ -67,10 +67,11 @@ def papers_card(papers, date=None):
         "type": "template",
         "data": {
             "template_id": PAPERS_CARD_TEMPLATE_ID,
-            "template_version_name": PAPERS_CARD_TEMPLATE_VERSION,
             "template_variable": {
                 "loop": [],
                 "date": date,
+                # Url 类型变量要求多端链接对象,不能传纯字符串
+                "list_url": {"url": FULL_LIST_URL},
             },
         },
     }

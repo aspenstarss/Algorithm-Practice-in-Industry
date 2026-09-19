@@ -91,8 +91,10 @@ def test_papers_card_structure_and_score_rendering():
     card = json.loads(body["card"])
     data = card["data"]
     assert data["template_id"] == notify.PAPERS_CARD_TEMPLATE_ID
-    assert data["template_version_name"] == notify.PAPERS_CARD_TEMPLATE_VERSION
+    # 不钉模板版本:飞书侧发布新版卡片后,推送自动使用最新版
+    assert "template_version_name" not in data
     assert data["template_variable"]["date"] == "2026-09-19"
+    assert data["template_variable"]["list_url"] == {"url": notify.FULL_LIST_URL}
     loop = data["template_variable"]["loop"]
     assert loop[0]["paper"] == "[T1](https://arxiv.org/abs/1)"
     assert "⭐️⭐️⭐️" in loop[0]["score"] and "3分" in loop[0]["score"]
