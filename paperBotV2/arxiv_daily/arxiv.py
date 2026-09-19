@@ -511,13 +511,14 @@ def perform_rough_ranking(all_papers, run_status=None):
 
 
 def perform_fine_ranking(filtered_papers, all_papers, run_status=None):
-    """执行精排并标记精排状态"""
-    final_papers = fine_rank_papers(filtered_papers, paper_count=SETTINGS.return_papers)
+    """执行精排并标记精排状态：按粗排分取前 fine_rank_papers 篇进精排，按精排分返回前 return_papers 篇"""
+    ranked_papers = fine_rank_papers(filtered_papers, paper_count=SETTINGS.fine_rank_papers)
+    final_papers = ranked_papers[:SETTINGS.return_papers]
     if run_status:
         run_status.record_fine_rank(
-            total=min(len(filtered_papers), SETTINGS.return_papers),
-            success=len(final_papers),
-            scores=[paper.get('rerank_relevance_score', 0) for paper in final_papers],
+            total=min(len(filtered_papers), SETTINGS.fine_rank_papers),
+            success=len(ranked_papers),
+            scores=[paper.get('rerank_relevance_score', 0) for paper in ranked_papers],
         )
     
     for paper in final_papers:

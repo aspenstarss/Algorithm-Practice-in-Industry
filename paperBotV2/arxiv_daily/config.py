@@ -28,6 +28,7 @@ class Settings:
     target_categories: list
     max_papers: int                  # 单类抓取论文数上限
     rough_score_threshold: int       # 粗排分数线
+    fine_rank_papers: int            # 进入精排的篇数上限（按粗排分取前 N）
     return_papers: int               # 精排后返回篇数
     lookback_hours: int              # 抓取回看窗口
     page_size: int                   # arXiv API 单页条数
@@ -98,6 +99,7 @@ def load(env=None):
         ],
         max_papers=get_int("MAX_PAPERS", 100),
         rough_score_threshold=get_int("ROUGH_SCORE_THRESHOLD", 4),
+        fine_rank_papers=get_int("FINE_RANK_PAPERS", 50),
         return_papers=get_int("RETURN_PAPERS", 20),
         lookback_hours=get_int("ARXIV_LOOKBACK_HOURS", 36),
         page_size=get_int("ARXIV_PAGE_SIZE", 100),

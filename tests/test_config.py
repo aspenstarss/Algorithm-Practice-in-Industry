@@ -9,6 +9,7 @@ def test_defaults_match_ci_behavior():
     assert s.target_categories == ["cs.IR", "cs.CL", "cs.CV"]
     assert s.max_papers == 100
     assert s.rough_score_threshold == 4
+    assert s.fine_rank_papers == 50
     assert s.return_papers == 20
     assert s.lookback_hours == 36
     assert s.max_pages == 20
@@ -27,6 +28,7 @@ def test_env_overrides_win():
         "TARGET_CATEGORYS": "cs.IR",
         "MAX_PAPERS": "50",
         "ROUGH_SCORE_THRESHOLD": "6",
+        "FINE_RANK_PAPERS": "30",
         "RETURN_PAPERS": "10",
         "ARXIV_CATEGORY_MAX_PAGES": "cs.IR:3",
         "ARXIV_USE_DAILY_CACHE": "false",
@@ -35,6 +37,7 @@ def test_env_overrides_win():
     assert s.target_categories == ["cs.IR"]
     assert s.max_papers == 50
     assert s.rough_score_threshold == 6
+    assert s.fine_rank_papers == 30
     assert s.return_papers == 10
     assert s.lookback_hours == 48
     assert s.category_max_pages == {"cs.IR": 3}
