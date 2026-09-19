@@ -124,15 +124,6 @@ def score_color(score):
     return 'bg-gray-100 text-gray-800'
 
 
-def score_color(score):
-    """评分颜色分档：>=6 绿、>=4 蓝、其余灰。"""
-    if score >= 6:
-        return 'bg-green-100 text-green-800'
-    if score >= 4:
-        return 'bg-blue-100 text-blue-800'
-    return 'bg-gray-100 text-gray-800'
-
-
 def paper_stats(papers):
     """页面统计：(总数, 精选数, 平均分字符串保留1位小数)。"""
     total = len(papers)
@@ -142,6 +133,54 @@ def paper_stats(papers):
     else:
         avg = "0"
     return total, selected, avg
+
+
+def primary_category(paper):
+    """论文主分类：categories 首项；缺失时归入 other。"""
+    categories = paper.get('categories')
+    if isinstance(categories, list):
+        for category in categories:
+            text = safe_text(category).strip()
+            if text:
+                return text
+    return safe_text(categories).strip() if categories else "other"
+
+
+def category_stats(papers):
+    """按主分类统计：rough=通过粗排数（is_filtered=False），fine=精排数。
+
+    返回 [{category, rough, fine}]，按粗排数降序、分类名升序。
+    """
+    stats = {}
+    for paper in papers:
+        category = primary_category(paper)
+        item = stats.setdefault(category, {"category": category, "rough": 0, "fine": 0})
+        if not paper.get('is_filtered', False):
+            item["rough"] += 1
+        if paper.get('is_fine_ranked', False):
+            item["fine"] += 1
+    return sorted(stats.values(), key=lambda x: (-x["rough"], x["category"]))
+
+
+def render_category_stats_html(stats):
+    """来源统计渲染为一行富文本；无数据返回空串（整行隐藏）。分类文本经转义。"""
+    if not stats:
+        return ""
+    segments = []
+    for item in stats:
+        segments.append(
+            f'<span class="mr-3">'
+            f'<span class="font-medium">{escape(item["category"])}</span>'
+            f'<span class="text-gray-500"> 粗排 </span>'
+            f'<span class="font-semibold text-primary">{item["rough"]}</span>'
+            f'<span class="text-gray-500"> 精排 </span>'
+            f'<span class="font-semibold text-accent">{item["fine"]}</span>'
+            f'</span>'
+        )
+    return (
+        '<span class="text-gray-500 mr-1"><i class="fa fa-pie-chart"></i> 来源统计:</span>'
+        + '<span class="text-gray-300 mx-1">|</span>'.join(segments)
+    )
 
 
 def truncate_authors(authors, max_length=MAX_AUTHORS_DISPLAY_LENGTH):

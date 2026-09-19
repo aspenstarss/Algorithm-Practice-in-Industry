@@ -83,7 +83,7 @@ def test_send_collects_request_exceptions(monkeypatch):
 def test_papers_card_structure_and_score_rendering():
     papers = [
         {"title": "T1", "url": "https://arxiv.org/abs/1", "translation": "译",
-         "summary": "s", "rerank_relevance_score": 3},
+         "summary": "s", "rerank_relevance_score": 3, "categories": ["cs.IR", "cs.CL"]},
         {"title": "T2", "url": "https://arxiv.org/abs/2"},
     ]
     body = notify.papers_card(papers, date="2026-09-19")
@@ -95,8 +95,13 @@ def test_papers_card_structure_and_score_rendering():
     assert "template_version_name" not in data
     assert data["template_variable"]["date"] == "2026-09-19"
     assert data["template_variable"]["list_url"] == {"url": notify.FULL_LIST_URL}
+    stats_var = data["template_variable"]["stats"]
+    assert stats_var.startswith("**来源统计:**")
+    assert "<text_tag color='violet'>cs.IR</text_tag>" in stats_var  # 分类胶囊,与单篇来源标签同款
     loop = data["template_variable"]["loop"]
     assert loop[0]["paper"] == "[T1](https://arxiv.org/abs/1)"
+    assert loop[0]["translation"] == "<text_tag color='violet'>cs.IR</text_tag> 译"  # 有分类时来源胶囊标签(取主分类)
+    assert loop[1]["translation"] == "N/A"  # 无分类时不标注
     assert "⭐️⭐️⭐️" in loop[0]["score"] and "3分" in loop[0]["score"]
     assert loop[1]["score"] == "N/A"
 

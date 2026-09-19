@@ -39,6 +39,33 @@ def test_paper_stats_counts_and_avg():
     assert pl.paper_stats([]) == (0, 0, "0")
 
 
+def test_category_stats_counts_rough_and_fine_by_primary_category():
+    papers = [
+        {"categories": ["cs.IR", "cs.CL"], "is_filtered": False, "is_fine_ranked": True},
+        {"categories": ["cs.IR"], "is_filtered": False, "is_fine_ranked": False},
+        {"categories": ["cs.CL"], "is_filtered": True, "is_fine_ranked": False},
+        {"categories": [], "is_filtered": False, "is_fine_ranked": False},
+    ]
+    assert pl.category_stats(papers) == [
+        {"category": "cs.IR", "rough": 2, "fine": 1},
+        {"category": "other", "rough": 1, "fine": 0},
+        {"category": "cs.CL", "rough": 0, "fine": 0},
+    ]
+    assert pl.category_stats([]) == []
+
+
+def test_render_category_stats_html_line():
+    stats = [
+        {"category": "cs.IR", "rough": 2, "fine": 1},
+        {"category": "<b>x</b>", "rough": 0, "fine": 0},
+    ]
+    html = pl.render_category_stats_html(stats)
+    assert "来源统计" in html
+    assert "cs.IR" in html and "粗排" in html and "精排" in html
+    assert "&lt;b&gt;x&lt;/b&gt;" in html  # 分类文本转义
+    assert pl.render_category_stats_html([]) == ""
+
+
 def test_sanitize_date_strict():
     assert pl.sanitize_date("20260919") == "20260919"
     assert pl.sanitize_date("2026-09-19") == ""

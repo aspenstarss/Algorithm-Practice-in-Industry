@@ -61,6 +61,36 @@ def send(urls, body, timeout=_TIMEOUT_SECONDS):
         raise RuntimeError("飞书推送存在失败:\n" + "\n".join(failures))
 
 
+def _category_stats_text(papers):
+    """各来源分类的粗排/精排数量，渲染为富文本一行(分类紫色胶囊,与单篇来源标签同款)。
+
+    统计口径与页面一致（page_logic.category_stats）；函数内导入以保持
+    本模块对 conf_summary 等调用方零重依赖。
+    """
+    from paperBotV2.arxiv_daily.page_logic import category_stats
+
+    items = category_stats(papers)
+    if not items:
+        return ""
+    parts = [
+        f"<text_tag color='violet'>{item['category']}</text_tag> "
+        f"粗排 {item['rough']} / 精排 {item['fine']}"
+        for item in items
+    ]
+    return "**来源统计:** " + " · ".join(parts)
+
+
+def _with_source_tag(translation, paper):
+    """在译名前用胶囊标签标注论文来源分类,如 <text_tag>cs.IR</text_tag>;
+    与页面统计同口径(主分类)。无分类时原样返回。
+    """
+    from paperBotV2.arxiv_daily.page_logic import primary_category
+
+    if not paper.get('categories'):
+        return translation
+    return f"<text_tag color='violet'>{primary_category(paper)}</text_tag> {translation}"
+
+
 def papers_card(papers, date=None):
     """arXiv 每日论文卡片。date 为展示用日期串（YYYY-MM-DD）。"""
     card_data = {
@@ -72,6 +102,8 @@ def papers_card(papers, date=None):
                 "date": date,
                 # Url 类型变量要求多端链接对象,不能传纯字符串
                 "list_url": {"url": FULL_LIST_URL},
+                # 来源分类统计一行文本;卡片模板中绑定 stats 的组件展示,未绑定则忽略
+                "stats": _category_stats_text(papers),
             },
         },
     }
@@ -90,7 +122,7 @@ def papers_card(papers, date=None):
         )
         card_data["data"]["template_variable"]["loop"].append({
             "paper": paper_text,
-            "translation": translation,
+            "translation": _with_source_tag(translation, paper),
             "score": score_text,
             "summary": summary,
         })

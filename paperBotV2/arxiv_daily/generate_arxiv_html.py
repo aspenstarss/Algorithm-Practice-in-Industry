@@ -21,9 +21,11 @@ import daily_store
 from page_logic import (
     build_arxiv_url,
     build_category_tags,
+    category_stats,
     coerce_score,
     fold_display_class,
     paper_stats,
+    render_category_stats_html,
     sanitize_arxiv_id,
     sanitize_date,
     sanitize_url,
@@ -207,6 +209,7 @@ def generate_html(papers, date_str, script_dir, output_file=None):
 
     display_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
     total_papers, selected_papers, avg_score = paper_stats(papers)
+    category_stats_html = render_category_stats_html(category_stats(papers))
 
     frontend_dir = os.path.join(script_dir, "frontend")
 
@@ -250,6 +253,7 @@ def generate_html(papers, date_str, script_dir, output_file=None):
         '{{TOTAL_PAPERS}}': str(total_papers),
         '{{SELECTED_PAPERS}}': str(selected_papers),
         '{{AVG_SCORE}}': avg_score,
+        '{{CATEGORY_STATS_HTML}}': category_stats_html,
         '{{DATE_OPTIONS}}': date_options,
         '{{PAPERS_HTML}}': papers_html,
         '{{CURRENT_DATE_CONFIG}}': current_date_config_js,
