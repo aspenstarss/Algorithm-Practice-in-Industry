@@ -61,15 +61,28 @@ def send(urls, body, timeout=_TIMEOUT_SECONDS):
         raise RuntimeError("飞书推送存在失败:\n" + "\n".join(failures))
 
 
-def _category_stats_text(papers):
-    """各来源分类的粗排/精排数量，渲染为富文本一行(分类紫色胶囊,与单篇来源标签同款)。
+def _subscribed_categories():
+    """订阅源列表：读 arxiv_daily 唯一配置源；函数内导入以保持本模块
+    对 conf_summary 等调用方零重依赖。
+    """
+    from paperBotV2.arxiv_daily import config
 
-    统计口径与页面一致（page_logic.category_stats）；函数内导入以保持
-    本模块对 conf_summary 等调用方零重依赖。
+    return config.load().target_categories
+
+
+def _category_stats_text(papers, subscribed_categories):
+    """订阅源的粗排/精排数量，渲染为富文本一行(分类紫色胶囊,与单篇来源标签同款)。
+
+    统计口径与页面一致（page_logic.category_stats，全源命中计数），
+    但飞书只展示订阅源（页面才有非订阅源）。
     """
     from paperBotV2.arxiv_daily.page_logic import category_stats
 
-    items = category_stats(papers)
+    subscribed_set = set(subscribed_categories)
+    items = [
+        item for item in category_stats(papers, subscribed_categories)
+        if item["category"] in subscribed_set
+    ]
     if not items:
         return ""
     parts = [
@@ -81,18 +94,26 @@ def _category_stats_text(papers):
 
 
 def _with_source_tag(translation, paper):
-    """在译名前用胶囊标签标注论文来源分类,如 <text_tag>cs.IR</text_tag>;
-    与页面统计同口径(主分类)。无分类时原样返回。
+    """在译名前为论文每个来源分类标注一枚胶囊标签,如 <text_tag>cs.IR</text_tag>;
+    与页面单篇分类标签同口径（全部分类）。无分类时原样返回。
     """
-    from paperBotV2.arxiv_daily.page_logic import primary_category
+    from paperBotV2.arxiv_daily.page_logic import paper_categories
 
-    if not paper.get('categories'):
+    tags = " ".join(
+        f"<text_tag color='violet'>{category}</text_tag>"
+        for category in paper_categories(paper)
+    )
+    if not tags:
         return translation
-    return f"<text_tag color='violet'>{primary_category(paper)}</text_tag> {translation}"
+    return f"{tags} {translation}"
 
 
-def papers_card(papers, date=None):
-    """arXiv 每日论文卡片。date 为展示用日期串（YYYY-MM-DD）。"""
+def papers_card(papers, date=None, subscribed_categories=None):
+    """arXiv 每日论文卡片。date 为展示用日期串（YYYY-MM-DD）；
+    subscribed_categories 缺省时读 config 订阅源。
+    """
+    if subscribed_categories is None:
+        subscribed_categories = _subscribed_categories()
     card_data = {
         "type": "template",
         "data": {
@@ -103,7 +124,7 @@ def papers_card(papers, date=None):
                 # Url 类型变量要求多端链接对象,不能传纯字符串
                 "list_url": {"url": FULL_LIST_URL},
                 # 来源分类统计一行文本;卡片模板中绑定 stats 的组件展示,未绑定则忽略
-                "stats": _category_stats_text(papers),
+                "stats": _category_stats_text(papers, subscribed_categories),
             },
         },
     }

@@ -85,8 +85,13 @@ def test_papers_card_structure_and_score_rendering():
         {"title": "T1", "url": "https://arxiv.org/abs/1", "translation": "译",
          "summary": "s", "rerank_relevance_score": 3, "categories": ["cs.IR", "cs.CL"]},
         {"title": "T2", "url": "https://arxiv.org/abs/2"},
+        {"title": "T3", "url": "https://arxiv.org/abs/3", "translation": "译3",
+         "categories": "cs.AI, cs.CL", "is_filtered": False},
+        {"title": "T4", "url": "https://arxiv.org/abs/4", "translation": "译4",
+         "categories": "cs.AI", "is_filtered": False},
     ]
-    body = notify.papers_card(papers, date="2026-09-19")
+    subscribed = ["cs.IR", "cs.CL", "cs.CV", "cs.GT"]
+    body = notify.papers_card(papers, date="2026-09-19", subscribed_categories=subscribed)
     assert body["msg_type"] == "interactive"
     card = json.loads(body["card"])
     data = card["data"]
@@ -97,11 +102,25 @@ def test_papers_card_structure_and_score_rendering():
     assert data["template_variable"]["list_url"] == {"url": notify.FULL_LIST_URL}
     stats_var = data["template_variable"]["stats"]
     assert stats_var.startswith("**来源统计:**")
-    assert "<text_tag color='violet'>cs.IR</text_tag>" in stats_var  # 分类胶囊,与单篇来源标签同款
+    # 飞书只展示订阅源(按订阅顺序),非订阅源 cs.AI 不出现;全源口径计数:
+    # cs.CL 被 T1/T3 命中 -> 粗排 2;两篇均未精排 -> 精排 0
+    assert "cs.IR</text_tag> 粗排 1 / 精排 0" in stats_var
+    assert "cs.CL</text_tag> 粗排 2 / 精排 0" in stats_var
+    assert "cs.CV</text_tag> 粗排 0 / 精排 0" in stats_var  # 订阅源当天为 0 也显示
+    assert "cs.GT</text_tag> 粗排 0 / 精排 0" in stats_var
+    assert "cs.AI" not in stats_var
     loop = data["template_variable"]["loop"]
     assert loop[0]["paper"] == "[T1](https://arxiv.org/abs/1)"
-    assert loop[0]["translation"] == "<text_tag color='violet'>cs.IR</text_tag> 译"  # 有分类时来源胶囊标签(取主分类)
+    # 每个来源分类一枚胶囊(全部分类,与页面单篇标签同口径)
+    assert loop[0]["translation"] == (
+        "<text_tag color='violet'>cs.IR</text_tag>"
+        " <text_tag color='violet'>cs.CL</text_tag> 译"
+    )
     assert loop[1]["translation"] == "N/A"  # 无分类时不标注
+    assert loop[2]["translation"] == (  # 字符串形态的分类拆成多枚胶囊
+        "<text_tag color='violet'>cs.AI</text_tag>"
+        " <text_tag color='violet'>cs.CL</text_tag> 译3"
+    )
     assert "⭐️⭐️⭐️" in loop[0]["score"] and "3分" in loop[0]["score"]
     assert loop[1]["score"] == "N/A"
 

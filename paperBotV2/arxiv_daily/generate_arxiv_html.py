@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from jinja2 import Environment, BaseLoader, select_autoescape
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config
 import daily_store
 from page_logic import (
     build_arxiv_url,
@@ -209,7 +210,9 @@ def generate_html(papers, date_str, script_dir, output_file=None):
 
     display_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
     total_papers, selected_papers, avg_score = paper_stats(papers)
-    category_stats_html = render_category_stats_html(category_stats(papers))
+    category_stats_html = render_category_stats_html(
+        category_stats(papers, config.load().target_categories)
+    )
 
     frontend_dir = os.path.join(script_dir, "frontend")
 

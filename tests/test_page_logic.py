@@ -39,31 +39,59 @@ def test_paper_stats_counts_and_avg():
     assert pl.paper_stats([]) == (0, 0, "0")
 
 
-def test_category_stats_counts_rough_and_fine_by_primary_category():
+def test_paper_categories_handles_list_and_string():
+    assert pl.paper_categories({"categories": ["cs.IR", " cs.CL "]}) == ["cs.IR", "cs.CL"]
+    assert pl.paper_categories({"categories": "cs.AI, cs.CL,cs.LG"}) == [
+        "cs.AI", "cs.CL", "cs.LG"
+    ]
+    assert pl.paper_categories({"categories": ""}) == []
+    assert pl.paper_categories({}) == []
+    assert pl.paper_categories({"categories": ["cs.IR", "cs.IR"]}) == ["cs.IR"]  # 去重
+
+
+def test_category_stats_counts_every_hit_category():
+    # 全源口径：一篇论文命中其每个分类各计一次,总和可超论文数
     papers = [
         {"categories": ["cs.IR", "cs.CL"], "is_filtered": False, "is_fine_ranked": True},
-        {"categories": ["cs.IR"], "is_filtered": False, "is_fine_ranked": False},
+        {"categories": "cs.IR", "is_filtered": False, "is_fine_ranked": False},
         {"categories": ["cs.CL"], "is_filtered": True, "is_fine_ranked": False},
         {"categories": [], "is_filtered": False, "is_fine_ranked": False},
     ]
-    assert pl.category_stats(papers) == [
+    assert pl.category_stats(papers, ["cs.IR", "cs.CL"]) == [
         {"category": "cs.IR", "rough": 2, "fine": 1},
-        {"category": "other", "rough": 1, "fine": 0},
-        {"category": "cs.CL", "rough": 0, "fine": 0},
+        {"category": "cs.CL", "rough": 1, "fine": 1},
     ]
-    assert pl.category_stats([]) == []
+    assert pl.category_stats([], ["cs.IR"]) == [
+        {"category": "cs.IR", "rough": 0, "fine": 0}
+    ]
 
 
-def test_render_category_stats_html_line():
+def test_category_stats_subscribed_first_and_extra_threshold():
+    papers = [
+        # cs.AI 两篇过粗排 -> 达到门槛成列;cs.LG 一篇 -> 不出现
+        {"categories": ["cs.AI"], "is_filtered": False, "is_fine_ranked": False},
+        {"categories": ["cs.AI", "cs.LG"], "is_filtered": False, "is_fine_ranked": False},
+        {"categories": ["cs.MM", "cs.AI"], "is_filtered": False, "is_fine_ranked": True},
+        # cs.DB 粗排 0 -> 不出现(仅被过滤不算)
+        {"categories": ["cs.DB"], "is_filtered": True, "is_fine_ranked": False},
+    ]
+    stats = pl.category_stats(papers, ["cs.IR", "cs.CL"])
+    assert [item["category"] for item in stats] == ["cs.IR", "cs.CL", "cs.AI"]
+    assert stats[2] == {"category": "cs.AI", "rough": 3, "fine": 1}  # 排订阅源之后
+    # 订阅源按给定顺序恒在列,当天为 0 也显示
+    assert stats[0] == {"category": "cs.IR", "rough": 0, "fine": 0}
+
+
+def test_render_category_stats_html_table():
     stats = [
         {"category": "cs.IR", "rough": 2, "fine": 1},
-        {"category": "<b>x</b>", "rough": 0, "fine": 0},
+        {"category": "<b>x</b>", "rough": 3, "fine": 0},
     ]
     html = pl.render_category_stats_html(stats)
-    assert "来源统计" in html
+    assert "来源统计" in html and "<table" in html
     assert "cs.IR" in html and "粗排" in html and "精排" in html
     assert "&lt;b&gt;x&lt;/b&gt;" in html  # 分类文本转义
-    assert pl.render_category_stats_html([]) == ""
+    assert pl.render_category_stats_html([]) == ""  # 空数据整块隐藏
 
 
 def test_sanitize_date_strict():

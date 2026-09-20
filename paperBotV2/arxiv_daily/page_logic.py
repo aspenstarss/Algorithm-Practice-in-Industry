@@ -135,51 +135,92 @@ def paper_stats(papers):
     return total, selected, avg
 
 
-def primary_category(paper):
-    """论文主分类：categories 首项；缺失时归入 other。"""
+def paper_categories(paper):
+    """论文全部分类：兼容 list 与逗号拼接字符串两种历史形态，去空有序。"""
     categories = paper.get('categories')
     if isinstance(categories, list):
-        for category in categories:
-            text = safe_text(category).strip()
-            if text:
-                return text
-    return safe_text(categories).strip() if categories else "other"
+        candidates = categories
+    elif categories:
+        candidates = safe_text(categories).split(',')
+    else:
+        return []
+    result = []
+    for category in candidates:
+        text = safe_text(category).strip()
+        if text and text not in result:
+            result.append(text)
+    return result
 
 
-def category_stats(papers):
-    """按主分类统计：rough=通过粗排数（is_filtered=False），fine=精排数。
+def category_stats(papers, subscribed_categories=()):
+    """按源统计：论文命中其每个分类各计一次（rough=通过粗排数，fine=精排数）。
 
-    返回 [{category, rough, fine}]，按粗排数降序、分类名升序。
+    因此各源计数之和可超过论文总数（一篇多分类重复计）。订阅源恒在列
+    （按给定顺序，当天为 0 也显示）；非订阅源需 rough>=2 才出现，
+    按粗排数降序、分类名升序排在订阅源之后。
     """
-    stats = {}
+    counts = {}
     for paper in papers:
-        category = primary_category(paper)
-        item = stats.setdefault(category, {"category": category, "rough": 0, "fine": 0})
-        if not paper.get('is_filtered', False):
-            item["rough"] += 1
-        if paper.get('is_fine_ranked', False):
-            item["fine"] += 1
-    return sorted(stats.values(), key=lambda x: (-x["rough"], x["category"]))
+        passed_rough = not paper.get('is_filtered', False)
+        fine_ranked = paper.get('is_fine_ranked', False)
+        for category in paper_categories(paper):
+            item = counts.setdefault(
+                category, {"category": category, "rough": 0, "fine": 0}
+            )
+            if passed_rough:
+                item["rough"] += 1
+            if fine_ranked:
+                item["fine"] += 1
+
+    subscribed = list(dict.fromkeys(subscribed_categories))
+    subscribed_set = set(subscribed)
+    ordered = [
+        counts.get(category, {"category": category, "rough": 0, "fine": 0})
+        for category in subscribed
+    ]
+    extras = sorted(
+        (item for category, item in counts.items()
+         if category not in subscribed_set and item["rough"] >= 2),
+        key=lambda x: (-x["rough"], x["category"]),
+    )
+    return ordered + extras
 
 
 def render_category_stats_html(stats):
-    """来源统计渲染为一行富文本；无数据返回空串（整行隐藏）。分类文本经转义。"""
+    """来源统计渲染为表格（源为列，粗排/精排两行）卡片；无数据返回空串。
+
+    分类文本经转义；容器由本函数输出（外层占位 div 保持空壳即可整体隐藏）。
+    """
     if not stats:
         return ""
-    segments = []
-    for item in stats:
-        segments.append(
-            f'<span class="mr-3">'
-            f'<span class="font-medium">{escape(item["category"])}</span>'
-            f'<span class="text-gray-500"> 粗排 </span>'
-            f'<span class="font-semibold text-primary">{item["rough"]}</span>'
-            f'<span class="text-gray-500"> 精排 </span>'
-            f'<span class="font-semibold text-accent">{item["fine"]}</span>'
-            f'</span>'
-        )
+    header_cells = "".join(
+        f'<th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">'
+        f'{escape(item["category"])}</th>'
+        for item in stats
+    )
+    rough_cells = "".join(
+        f'<td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">'
+        f'{item["rough"]}</td>'
+        for item in stats
+    )
+    fine_cells = "".join(
+        f'<td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">'
+        f'{item["fine"]}</td>'
+        for item in stats
+    )
     return (
-        '<span class="text-gray-500 mr-1"><i class="fa fa-pie-chart"></i> 来源统计:</span>'
-        + '<span class="text-gray-300 mx-1">|</span>'.join(segments)
+        '<div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 '
+        'inline-block max-w-full overflow-x-auto">'
+        '<span class="text-gray-500 text-sm mr-3 whitespace-nowrap">'
+        '<i class="fa fa-pie-chart"></i> 来源统计</span>'
+        '<table class="text-sm">'
+        f'<thead><tr><th class="px-3 py-1.5"></th>{header_cells}</tr></thead>'
+        '<tbody>'
+        f'<tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td>{rough_cells}</tr>'
+        f'<tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td>{fine_cells}</tr>'
+        '</tbody>'
+        '</table>'
+        '</div>'
     )
 
 
