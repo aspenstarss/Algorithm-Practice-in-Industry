@@ -54,11 +54,6 @@
                 </div>
             </div>
 
-            <!-- 分类来源统计（一行富文本：各分类粗排/精排数量） -->
-            <div id="category-stats" class="text-sm mb-2">
-                {{CATEGORY_STATS_HTML}}
-            </div>
-
             <!-- 统计信息 -->
             <div class="flex flex-wrap gap-4 text-sm">
                 <div class="flex items-center">
@@ -79,6 +74,11 @@
 
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 py-5">
+        <!-- 分类来源统计（表格卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
+        <div id="category-stats">
+            {{CATEGORY_STATS_HTML}}
+        </div>
+
         <!-- 筛选器 -->
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="text-gray-700 text-sm mb-2 sm:mb-0">
