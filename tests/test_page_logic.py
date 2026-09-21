@@ -127,3 +127,48 @@ def test_coerce_score_tolerates_garbage():
     assert pl.coerce_score("4.5") == 4.5
     assert pl.coerce_score(None) == 0.0
     assert pl.coerce_score("高") == 0.0
+
+
+def test_normalize_track():
+    assert pl.normalize_track("core") == "core"
+    assert pl.normalize_track(" RELATED ") == "related"
+    assert pl.normalize_track("OFF") == "off"
+    assert pl.normalize_track("") == ""
+    assert pl.normalize_track("unknown") == ""
+    assert pl.normalize_track(None) == ""
+
+
+def test_paper_track_new_field_and_legacy_fallback():
+    # 新数据：直接采用 track 字段
+    assert pl.paper_track({"track": "related"}, 4) == "related"
+    assert pl.paper_track({"track": "off", "relevance_score": 9}, 4) == "off"
+    # 历史数据无 track：精排标记或分数达线 -> core，否则 off
+    assert pl.paper_track({"is_fine_ranked": True, "relevance_score": 1}, 4) == "core"
+    assert pl.paper_track({"relevance_score": 5}, 4) == "core"
+    assert pl.paper_track({"relevance_score": 3}, 4) == "off"
+    assert pl.paper_track({}, 4) == "off"
+
+
+def test_split_papers_by_track():
+    papers = [
+        {"track": "core", "is_filtered": False},
+        {"track": "related", "is_filtered": False},
+        {"track": "off", "is_filtered": False},
+        {"track": "core", "is_filtered": True},   # 未过粗排 -> off 计数
+        {"is_fine_ranked": True},                  # 历史数据回落 core
+    ]
+    core, related, off = pl.split_papers_by_track(papers, 4)
+    assert len(core) == 2 and len(related) == 1 and off == 2
+
+
+def test_track_badge():
+    assert "核心" in pl.track_badge("core")
+    assert "沾边" in pl.track_badge("related")
+    assert pl.track_badge("off") == ""
+    assert pl.track_badge("unknown") == ""
+
+
+def test_render_category_stats_html_title():
+    stats = [{"category": "cs.IR", "rough": 1, "fine": 0}]
+    assert "核心榜单 · 来源统计" in pl.render_category_stats_html(stats, title="核心榜单 · 来源统计")
+    assert "来源统计" in pl.render_category_stats_html(stats)  # 缺省标题保持兼容

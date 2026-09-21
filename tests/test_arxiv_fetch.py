@@ -152,3 +152,78 @@ def test_falls_back_when_listing_structure_changed(monkeypatch):
 
     arxiv.get_daily_arxiv_papers("cs.CL", max_results=100)
     assert "search_query" in captured["params"]
+
+
+def test_fine_rank_quota_transfers_to_related_when_core_short(monkeypatch):
+    """core 不足精排配额时，related 按粗排分递补剩余配额。"""
+    import dataclasses
+
+    monkeypatch.setattr(
+        arxiv, "SETTINGS",
+        dataclasses.replace(arxiv.SETTINGS, fine_rank_papers=6),
+    )
+
+    def fake_fine_rank(papers_in, max_workers=10, paper_count=5):
+        assert paper_count == 6
+        return [dict(p, rerank_relevance_score=10) for p in papers_in]
+
+    papers = (
+        [{"arxiv_id": f"c{i}", "title": f"core {i}", "track": "core", "relevance_score": 9 - i, "is_fine_ranked": False} for i in range(3)]
+        + [{"arxiv_id": f"r{i}", "title": f"related {i}", "track": "related", "relevance_score": 8 - i, "is_fine_ranked": False} for i in range(5)]
+    )
+    all_papers = {p["arxiv_id"]: dict(p) for p in papers}
+    monkeypatch.setattr(arxiv, "fine_rank_papers", fake_fine_rank)
+
+    arxiv.perform_fine_ranking(list(all_papers.values()), all_papers)
+
+    # 进精排的顺序与配额：core 全进（c0..c2），related 按分递补 3 篇（r0..r2）
+    fine_ids = [all_papers[i]["arxiv_id"] for i in all_papers if all_papers[i]["is_fine_ranked"]]
+    assert fine_ids == ["c0", "c1", "c2", "r0", "r1", "r2"]
+    # 未递补的 related 不标精排
+    assert all_papers["r3"]["is_fine_ranked"] is False
+
+
+def test_fine_rank_quota_full_core_excludes_related(monkeypatch):
+    """core 已占满精排配额时，related 完全不进精排。"""
+    import dataclasses
+
+    monkeypatch.setattr(
+        arxiv, "SETTINGS",
+        dataclasses.replace(arxiv.SETTINGS, fine_rank_papers=4),
+    )
+    monkeypatch.setattr(
+        arxiv, "fine_rank_papers",
+        lambda papers_in, max_workers=10, paper_count=5: [
+            dict(p, rerank_relevance_score=10) for p in papers_in
+        ],
+    )
+
+    papers = (
+        [{"arxiv_id": f"c{i}", "title": f"core {i}", "track": "core", "relevance_score": 9, "is_fine_ranked": False} for i in range(4)]
+        + [{"arxiv_id": "r0", "title": "related 0", "track": "related", "relevance_score": 9, "is_fine_ranked": False}]
+    )
+    all_papers = {p["arxiv_id"]: dict(p) for p in papers}
+
+    arxiv.perform_fine_ranking(list(all_papers.values()), all_papers)
+
+    fine_ids = [i for i in all_papers if all_papers[i]["is_fine_ranked"]]
+    assert sorted(fine_ids) == ["c0", "c1", "c2", "c3"]
+    assert all_papers["r0"]["is_fine_ranked"] is False
+
+
+def test_rough_rank_filters_off_track_even_with_score(monkeypatch):
+    """off 轨道即使分数达线也被过滤；core/related 达线放行。"""
+    analyzed = [
+        {"arxiv_id": "a", "title": "t-a", "track": "core", "relevance_score": 6},
+        {"arxiv_id": "b", "title": "t-b", "track": "related", "relevance_score": 5},
+        {"arxiv_id": "c", "title": "t-c", "track": "off", "relevance_score": 8},
+        {"arxiv_id": "d", "title": "t-d", "relevance_score": 2},
+    ]
+    monkeypatch.setattr(
+        arxiv, "rough_analyze_papers_cocurrent",
+        lambda results, max_workers=10: [dict(p) for p in analyzed],
+    )
+
+    filtered, analyzed_out = arxiv.rough_rank_papers([], filter_threshold=4)
+
+    assert sorted(p["arxiv_id"] for p in filtered) == ["a", "b"]

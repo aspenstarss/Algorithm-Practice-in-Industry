@@ -90,9 +90,11 @@ class ArxivDailyStatus:
                 "rough_rank_total": 0,
                 "rough_rank_success": 0,
                 "rough_rank_failed": 0,
+                "rough_tracks": {},
                 "fine_rank_total": 0,
                 "fine_rank_success": 0,
                 "fine_rank_failed": 0,
+                "fine_rank_related_filled": 0,
                 "avg_rough_score": 0,
                 "avg_fine_score": 0,
             },
@@ -120,17 +122,22 @@ class ArxivDailyStatus:
         self.data["fetch"]["success"] = all(item["success"] for item in categories) if categories else False
         self.write()
 
-    def record_rough_rank(self, total, success, scores):
+    def record_rough_rank(self, total, success, scores, track_counts=None):
         self.data["llm"]["rough_rank_total"] = int(total or 0)
         self.data["llm"]["rough_rank_success"] = int(success or 0)
         self.data["llm"]["rough_rank_failed"] = max(int(total or 0) - int(success or 0), 0)
         self.data["llm"]["avg_rough_score"] = _safe_avg(scores)
+        if track_counts:
+            self.data["llm"]["rough_tracks"] = {
+                str(track): int(count) for track, count in track_counts.items()
+            }
         self.write()
 
-    def record_fine_rank(self, total, success, scores):
+    def record_fine_rank(self, total, success, scores, related_filled=0):
         self.data["llm"]["fine_rank_total"] = int(total or 0)
         self.data["llm"]["fine_rank_success"] = int(success or 0)
         self.data["llm"]["fine_rank_failed"] = max(int(total or 0) - int(success or 0), 0)
+        self.data["llm"]["fine_rank_related_filled"] = int(related_filled or 0)
         self.data["llm"]["avg_fine_score"] = _safe_avg(scores)
         self.write()
 

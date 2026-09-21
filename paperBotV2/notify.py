@@ -150,6 +150,20 @@ def papers_card(papers, date=None, subscribed_categories=None):
     return {"msg_type": "interactive", "card": json.dumps(card_data)}
 
 
+def related_brief_card(papers, date=None):
+    """沾边速览附卡：related 轨道论文的标题速览（markdown 列表，纯文本打分）。"""
+    lines = []
+    for idx, paper in enumerate(papers, start=1):
+        title = paper.get("translation") or paper.get("title", "N/A")
+        url = paper.get("url", "")
+        score = paper.get("relevance_score")
+        score_text = f"（{score}分）" if isinstance(score, (int, float)) else ""
+        lines.append(f"{idx}. [{title}]({url}){score_text}")
+    content = "\n".join(lines) if lines else "今天没有沾边论文。"
+    title = f"📌 沾边速览 {date}" if date else "📌 沾边速览"
+    return markdown_card(title, content)
+
+
 def markdown_card(title, content):
     """通用 markdown 卡片（绿色标题 + markdown 正文）。"""
     card_data = {

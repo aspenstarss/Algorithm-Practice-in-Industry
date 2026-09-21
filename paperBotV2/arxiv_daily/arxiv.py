@@ -12,6 +12,11 @@ from .prompts import PRERANK_PROMPT, FINERANK_PROMPT
 from .status import ArxivDailyStatus
 from . import daily_store as _store
 from . import new_listing as _listing
+from .page_logic import (
+    TRACK_CORE,
+    TRACK_RELATED,
+    paper_track,
+)
 from .. import llm as _llm
 from .config import load as _load_config
 
@@ -344,11 +349,20 @@ def rough_rank_papers(results, filter_threshold=2, max_workers=10):
         print(f"  - 理由: {paper.get('reasoning', 'N/A')}")
     print("-" * 60)
 
-    # 过滤低分论文
-    filtered_papers = [p for p in analyzed_papers if p.get(
-        'relevance_score', 0) >= filter_threshold]
+    # 双轨过滤：分数线达线且轨道为 core/related 才放行；off 一律过滤
+    filtered_papers = [
+        p for p in analyzed_papers
+        if p.get('relevance_score', 0) >= filter_threshold
+        and paper_track(p, filter_threshold) in (TRACK_CORE, TRACK_RELATED)
+    ]
+    core_passed = sum(
+        1 for p in filtered_papers
+        if paper_track(p, filter_threshold) == TRACK_CORE
+    )
     print(
-        f"\n⚠️ 过滤掉 {len(analyzed_papers) - len(filtered_papers)} 篇低分论文，剩余 {len(filtered_papers)} 篇高质量论文。")
+        f"\n⚠️ 过滤掉 {len(analyzed_papers) - len(filtered_papers)} 篇低分/不相关论文，"
+        f"剩余 {len(filtered_papers)} 篇（核心 {core_passed} / 沾边 {len(filtered_papers) - core_passed}）。"
+    )
     return filtered_papers, analyzed_papers
 
 
@@ -489,10 +503,16 @@ def perform_rough_ranking(all_papers, run_status=None):
         max_workers=10,
     )
     if run_status:
+        track_counts = {"core": 0, "related": 0}
+        for paper in filtered_papers:
+            track = paper_track(paper, SETTINGS.rough_score_threshold)
+            if track in track_counts:
+                track_counts[track] += 1
         run_status.record_rough_rank(
             total=len(all_papers),
             success=len(analyzed_papers),
             scores=[paper.get('relevance_score', 0) for paper in analyzed_papers],
+            track_counts=track_counts,
         )
     
     # 更新all_papers中的论文信息并标记过滤状态
@@ -511,14 +531,39 @@ def perform_rough_ranking(all_papers, run_status=None):
 
 
 def perform_fine_ranking(filtered_papers, all_papers, run_status=None):
-    """执行精排并标记精排状态：按粗排分取前 fine_rank_papers 篇进精排，按精排分返回前 return_papers 篇"""
-    ranked_papers = fine_rank_papers(filtered_papers, paper_count=SETTINGS.fine_rank_papers)
+    """执行精排并标记精排状态。
+
+    精排配额 fine_rank_papers 优先给 core 过线论文；core 不足配额时由
+    related 过线论文按粗排分递补。精排后按精排分返回前 return_papers 篇。
+    """
+    quota = SETTINGS.fine_rank_papers
+    threshold = SETTINGS.rough_score_threshold
+    core_pool = [
+        p for p in filtered_papers
+        if paper_track(p, threshold) == TRACK_CORE
+    ]
+    related_pool = [
+        p for p in filtered_papers
+        if paper_track(p, threshold) == TRACK_RELATED
+    ]
+    # filtered_papers 已按粗排分降序，递补取 related 的最高分部分
+    related_fill = related_pool[:max(0, quota - len(core_pool))]
+    fine_input = core_pool + related_fill
+
+    print(
+        f"🎯 精排配额 {quota}：core {len(core_pool)} 篇"
+        + (f" + related 递补 {len(related_fill)} 篇" if related_fill else "")
+        + f" = {len(fine_input)} 篇进精排。"
+    )
+
+    ranked_papers = fine_rank_papers(fine_input, paper_count=quota)
     final_papers = ranked_papers[:SETTINGS.return_papers]
     if run_status:
         run_status.record_fine_rank(
-            total=min(len(filtered_papers), SETTINGS.fine_rank_papers),
+            total=len(fine_input),
             success=len(ranked_papers),
             scores=[paper.get('rerank_relevance_score', 0) for paper in ranked_papers],
+            related_filled=len(related_fill),
         )
     
     for paper in final_papers:

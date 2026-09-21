@@ -30,6 +30,7 @@ class Settings:
     rough_score_threshold: int       # 粗排分数线
     fine_rank_papers: int            # 进入精排的篇数上限（按粗排分取前 N）
     return_papers: int               # 精排后返回篇数
+    related_max_papers: int          # 沾边榜单页展示篇数上限（防刷屏）
     lookback_hours: int              # 抓取回看窗口
     page_size: int                   # arXiv API 单页条数
     max_pages: int                   # 分类未单列时的最大页数
@@ -103,6 +104,7 @@ def load(env=None):
         rough_score_threshold=get_int("ROUGH_SCORE_THRESHOLD", 4),
         fine_rank_papers=get_int("FINE_RANK_PAPERS", 50),
         return_papers=get_int("RETURN_PAPERS", 20),
+        related_max_papers=get_int("RELATED_MAX_PAPERS", 40),
         lookback_hours=get_int("ARXIV_LOOKBACK_HOURS", 36),
         page_size=get_int("ARXIV_PAGE_SIZE", 100),
         max_pages=get_int("ARXIV_MAX_PAGES", 20),

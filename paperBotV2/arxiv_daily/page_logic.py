@@ -8,6 +8,12 @@ from urllib.parse import urlparse
 from markupsafe import Markup, escape
 
 MAX_AUTHORS_DISPLAY_LENGTH = 80  # 作者名最大显示长度
+# 双轨道：core=核心关注（电商精排/重排/机制公式），related=沾边使能技术，
+# off=两者都不沾。粗排 LLM 输出 track 字段，展示/推送按轨道拆成两个列表。
+TRACK_CORE = "core"
+TRACK_RELATED = "related"
+TRACK_OFF = "off"
+TRACK_LABELS = {TRACK_CORE: "核心", TRACK_RELATED: "沾边"}
 ALLOWED_URL_SCHEMES = {"http", "https"}
 ALLOWED_URL_HOSTS = {"arxiv.org", "www.arxiv.org", "export.arxiv.org"}
 ALLOWED_ARXIV_PATH_PREFIXES = ("/abs/", "/pdf/", "/html/")
@@ -88,6 +94,55 @@ def coerce_score(score):
         return float(score)
     except (TypeError, ValueError):
         return 0.0
+
+
+def normalize_track(value):
+    """轨道字段归一化：只认 core/related/off，其余（含缺失）返回空串。"""
+    value = safe_text(value).strip().lower()
+    return value if value in (TRACK_CORE, TRACK_RELATED, TRACK_OFF) else ""
+
+
+def paper_track(paper, threshold=4):
+    """论文轨道：core/related/off。
+
+    有 track 字段时直接采用；缺失时按旧口径回落（历史数据无 track）：
+    精排标记或分数达线视为 core，否则 off。threshold 缺省与粗排分数线一致。
+    """
+    track = normalize_track(paper.get('track'))
+    if track:
+        return track
+    if paper.get('is_fine_ranked', False) or coerce_score(paper_score(paper)) >= threshold:
+        return TRACK_CORE
+    return TRACK_OFF
+
+
+def track_badge(track):
+    """轨道徽章 HTML（文本转义）；off 或未知轨道不出徽章。"""
+    label = TRACK_LABELS.get(track)
+    if not label:
+        return Markup('')
+    css = 'track-badge-core' if track == TRACK_CORE else 'track-badge-related'
+    return Markup(f'<span class="track-badge {css}">{escape(label)}</span>')
+
+
+def split_papers_by_track(papers, threshold=4):
+    """双列表分组：只收通过粗排（is_filtered=False）的论文，按轨道拆两组。
+
+    返回 (core_list, related_list, off_count)，off 为未过粗排或双轨都不沾的篇数。
+    """
+    core, related, off = [], [], 0
+    for paper in papers:
+        if paper.get('is_filtered', False):
+            off += 1
+            continue
+        track = paper_track(paper, threshold)
+        if track == TRACK_CORE:
+            core.append(paper)
+        elif track == TRACK_RELATED:
+            related.append(paper)
+        else:
+            off += 1
+    return core, related, off
 
 
 def paper_score(paper):
@@ -186,7 +241,7 @@ def category_stats(papers, subscribed_categories=()):
     return ordered + extras
 
 
-def render_category_stats_html(stats):
+def render_category_stats_html(stats, title="来源统计"):
     """来源统计渲染为表格（源为列，粗排/精排两行）卡片；无数据返回空串。
 
     分类文本经转义；容器由本函数输出（外层占位 div 保持空壳即可整体隐藏）。
@@ -211,8 +266,8 @@ def render_category_stats_html(stats):
     return (
         '<div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 '
         'inline-block max-w-full overflow-x-auto">'
-        '<span class="text-gray-500 text-sm mr-3 whitespace-nowrap">'
-        '<i class="fa fa-pie-chart"></i> 来源统计</span>'
+        f'<span class="text-gray-500 text-sm mr-3 whitespace-nowrap">'
+        f'<i class="fa fa-pie-chart"></i> {escape(title)}</span>'
         '<table class="text-sm">'
         f'<thead><tr><th class="px-3 py-1.5"></th>{header_cells}</tr></thead>'
         '<tbody>'

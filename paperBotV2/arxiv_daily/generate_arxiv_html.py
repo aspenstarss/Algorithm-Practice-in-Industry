@@ -20,18 +20,22 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
 import daily_store
 from page_logic import (
+    TRACK_LABELS,
     build_arxiv_url,
     build_category_tags,
     category_stats,
     coerce_score,
     fold_display_class,
     paper_stats,
+    paper_track,
     render_category_stats_html,
     sanitize_arxiv_id,
     sanitize_date,
     sanitize_url,
     score_color,
     sort_papers,
+    split_papers_by_track,
+    track_badge,
     truncate_authors,
 )
 
@@ -143,6 +147,7 @@ def generate_papers_html(papers, frontend_dir, static_dir=None):
             'TITLE': paper.get('title', ''),
             'SCORE': score_display,
             'SCORE_COLOR': color,
+            'TRACK_BADGE': track_badge(paper_track(paper)),
             'ABSTRACT': paper.get('abstract', paper.get('summary', '暂无摘要')),
             'ORI_SUMMARY': paper.get('ori_summary', paper.get('abstract', paper.get('summary', '暂无摘要'))),
             'AUTHORS': authors,
@@ -209,9 +214,26 @@ def generate_html(papers, date_str, script_dir, output_file=None):
         return None
 
     display_date = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-    total_papers, selected_papers, avg_score = paper_stats(papers)
-    category_stats_html = render_category_stats_html(
-        category_stats(papers, config.load().target_categories)
+    settings = config.load()
+
+    # 双列表：core/related 两轨各自成榜，未过粗排或 off 的论文不入榜（只计总数）
+    core_list, related_list, off_count = split_papers_by_track(
+        papers, settings.rough_score_threshold
+    )
+    core_list = sort_papers(core_list)
+    related_all = sort_papers(related_list)
+    related_shown = related_all[:settings.related_max_papers]
+
+    core_total, core_selected, _ = paper_stats(core_list)
+    category_stats_html = (
+        render_category_stats_html(
+            category_stats(core_list, settings.target_categories),
+            title="核心榜单 · 来源统计",
+        )
+        + render_category_stats_html(
+            category_stats(related_shown, settings.target_categories),
+            title="沾边速览 · 来源统计",
+        )
     )
 
     frontend_dir = os.path.join(script_dir, "frontend")
@@ -238,7 +260,8 @@ def generate_html(papers, date_str, script_dir, output_file=None):
         print("无法读取HTML模板文件")
         return None
 
-    papers_html = generate_papers_html(papers, frontend_dir, static_dir)
+    core_papers_html = generate_papers_html(core_list, frontend_dir, static_dir)
+    related_papers_html = generate_papers_html(related_shown, frontend_dir, static_dir)
     date_options = generate_date_options(date_str)
 
     current_date_config_js = json.dumps({
@@ -253,12 +276,15 @@ def generate_html(papers, date_str, script_dir, output_file=None):
 
     html_content = _apply_tokens(html_template, {
         '{{DISPLAY_DATE}}': display_date,
-        '{{TOTAL_PAPERS}}': str(total_papers),
-        '{{SELECTED_PAPERS}}': str(selected_papers),
-        '{{AVG_SCORE}}': avg_score,
+        '{{CORE_COUNT}}': str(core_total),
+        '{{CORE_SELECTED}}': str(core_selected),
+        '{{RELATED_COUNT}}': str(len(related_shown)),
+        '{{RELATED_TOTAL}}': str(len(related_all)),
+        '{{TOTAL_FETCHED}}': str(len(papers)),
         '{{CATEGORY_STATS_HTML}}': category_stats_html,
         '{{DATE_OPTIONS}}': date_options,
-        '{{PAPERS_HTML}}': papers_html,
+        '{{CORE_PAPERS_HTML}}': core_papers_html,
+        '{{RELATED_PAPERS_HTML}}': related_papers_html,
         '{{CURRENT_DATE_CONFIG}}': current_date_config_js,
         '{{AVAILABLE_DATES}}': available_dates_js,
         '{{TIMESTAMP}}': str(timestamp),
