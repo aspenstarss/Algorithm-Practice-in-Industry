@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 每日论文精选</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css?v=1790067556">
+    <link rel="stylesheet" href="static/collapse.css?v=1790067556">
+    <script src="static/tailwind.config.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 顶部导航与统计信息合并 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
+                <div class="flex items-center">
+                    <i class="fa fa-book text-primary text-xl mr-2"></i>
+                    <h1 class="text-lg md:text-xl font-bold text-gray-800">arXiv 每日论文精选</h1>
+                </div>
+                <div class="flex items-center mt-2 md:mt-0">
+                    <span id="current-date" class="text-gray-600 text-sm">
+                        <i class="fa fa-calendar-o mr-1"></i>2026-09-22
+                    </span>
+                    <div class="ml-3 relative" id="date-picker-container">
+                        <button id="date-picker-toggle" class="bg-light border border-gray-300 text-gray-700 py-1 px-3 pr-6 rounded text-sm leading-tight focus:outline-none focus:bg-white inline-flex items-center">
+                            <i class="fa fa-calendar mr-2"></i>
+                            <span id="selected-date-text">2026-09-22</span>
+                            <i class="fa fa-chevron-down ml-2 text-xs"></i>
+                        </button>
+                        <div id="date-picker" class="hidden absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg p-2 z-20 w-56">
+                            <div class="flex justify-between items-center mb-2">
+                                <button id="prev-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-left"></i></button>
+                                <h4 id="current-month">2026-09-22</h4>
+                                <button id="next-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-right"></i></button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
+                                <div class="text-gray-500">日</div>
+                                <div class="text-gray-500">一</div>
+                                <div class="text-gray-500">二</div>
+                                <div class="text-gray-500">三</div>
+                                <div class="text-gray-500">四</div>
+                                <div class="text-gray-500">五</div>
+                                <div class="text-gray-500">六</div>
+                            </div>
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                                <!-- 日历格子将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="flex flex-wrap gap-4 text-sm">
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
+                    <span id="core-count" class="font-semibold text-primary">8 篇（精选 8）</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
+                    <span id="related-count" class="font-semibold text-secondary">5 篇</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">252</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-5">
+        <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
+        <div id="category-stats">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.AI</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">7</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">7</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">2</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
+        </div>
+
+        <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div class="text-gray-700 text-sm mb-2 sm:mb-0">
+                <span id="display-count" class="font-medium">核心 8 篇 · 沾边 5 篇</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="show-core"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-star mr-1"></i>只看核心
+                </button>
+                <button id="show-related"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-tags mr-1"></i>只看沾边
+                </button>
+            </div>
+        </div>
+
+        <!-- 核心榜单 -->
+        <section id="core-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
+                <span class="text-sm font-normal text-gray-500 ml-2">8 篇 · 精选 8</span>
+            </h2>
+            <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
+                
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23718v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>UNIQUE：面向大规模信息流推荐的一体化检索与排序系统
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            UNIQUE: A Unified Retrieval and Ranking System for Large-Scale Feed Recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhuang Liu, Yongkang Fu, Zuodong Yang, Guangxing Chen, Zonggang Wu, Yuqi Lu, Sho...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文针对工业级推荐中分层量化不稳定以及召回与排序阶段分离导致的信息损失问题，提出UNIQUE框架，将生成式编码召回与目标感知排序融合进单一架构，在共享表示下实现端到端训练，并通过平衡量化机制缓解码本不均衡以改善长尾表示。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文提出检索与排序统一的早期融合架构及单层平坦量化，直接涉及排序模型设计与工业级召回-排序系统优化，与我的核心关注点高度相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-20 15:54:06
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23718v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23718v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Industrial mobile feed systems rely on a retrieval-ranking pipeline to serve large-scale, heterogeneous, and fast-changing content under strict latency constraints. However, existing pipelines still suffer from two critical issues: hierarchical quantization instability in candidate retrieval and information loss between separated retrieval and ranking stages. These issues hurt long-tail and cold-start recommendation and complicate efficient serving. To address them, we present UNIQUE, a unified retrieval and ranking recommendation framework with single-layer flat quantization. UNIQUE integrates generative code-based retrieval and target-aware ranking into one early-fusion architecture, enabling end-to-end training under a shared representation while preserving efficient candidate generation. A balanced quantization mechanism is further introduced to mitigate codebook imbalance and improve long-tail representation. Offline experiments evaluate UNIQUE from both retrieval and ranking perspectives, while codebook analysis shows more balanced resource allocation than hierarchical quantization. We deploy UNIQUE in the homepage feed, discovery-page, and short-video recommendation scenarios of Mobile Baidu, serving large-scale real-world traffic. Online A/B tests achieve a 0.96% gain in total watch duration and a 1.08% gain in total distribution volume, with notable improvements for new users and highly active users. Serving measurements show 89 ms P99 latency and 44.23% online inference MFU. These results show that UNIQUE provides a stable, efficient, and production-ready framework for unified retrieval and ranking in industrial recommendation.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23880v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>Q-TIE：面向时序信息检索的轻量级可泛化重排序框架
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Q-TIE: A Lightweight and Generalizable Re-ranking Framework for Temporal Information Retrieval
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Soyeon Kim, Hyunjin Kim, JinYeong Bak, Steven Euijong Whang
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">核心问题：时序信息检索中，现有检索器难以显式建模时间约束，而重排序器依赖预定义规则导致泛化性差。核心思想：通过训练时序意图提取模型，将查询的时间约束统一映射为区间表示⟨t_start, t_end⟩，并以此为独立信号进行模型化重排序，兼具灵活查询理解与显式约束建模。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文直接针对重排序（re-ranking）问题，提出基于时序意图提取的轻量级重排序框架，与我的重排序和机制公式优化方向高度相关，但聚焦于时间信息检索场景而非通用电商排序，故扣分。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-20 21:30:31
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23880v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23880v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CL</span><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Temporal Information Retrieval (TIR) has been increasingly critical given the rise of Retrieval-Augmented Generation (RAG). Since temporally mismatched evidence can be highly misleading, TIR aims to retrieve documents that are both semantically and temporally relevant to a query. Two TIR paradigms have emerged - temporal retrievers and temporal re-rankers - differing in how temporal relevance is modeled. While these paradigms provide complementary strengths, our analysis reveals that each alone falls short of robust TIR: temporal retrievers provide flexible query understanding via learned representations, but often fail to explicitly account for temporal constraints; temporal re-rankers can enforce such constraints more explicitly, but often rely on predefined re-ranking rules. To address this, we propose Q-TIE, a re-ranking framework based on learned Temporal Intent Extraction (TIE). By introducing a TIE model that maps each query&#39;s temporal constraint into a unified interval representation (i.e., $\langle t_{start}, t_{end} \rangle$), Q-TIE generalizes beyond predefined rules via model-based learning while explicitly modeling temporal constraints as a separate signal - jointly achieving what each paradigm typically trades off. Experiments demonstrate that Q-TIE consistently outperforms existing TIR methods with stronger generalizability across temporal query types, and provides a lightweight yet effective add-on for temporally-aware RAG pipelines. Code: https://github.com/ssoy0701/Q-TIE.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.22651v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>超越单一最优设计：带凸成本的在线分配的动力系统刻画
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Beyond a Single Optimal Design: A Dynamical Systems Characterization of Online Allocation with Convex Costs
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Haoxin Sang, Bo Sun, Xiaoqi Tan
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">核心问题：在凸成本在线分配（OACC）中，如何刻画最优预留函数（归一化定价规则）的设计空间。核心思想：用动力系统方法将最优在线算法转化为非线性特征值问题，最优竞争比对应主特征值、特征函数决定最优预留函数，由此证明存在无穷多个最优设计并统一推广了现有算法。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究在线分配中预留函数（定价规则）的最优设计空间，直接关联排名机制中的得分公式与拍卖/计费机制优化，且提供结构性刻画而非单一算法。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-18 23:54:43
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.22651v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.22651v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We study online allocation with convex costs (\OACC), a generalization of limited-supply models in which additional resources can be produced dynamically at convex cost. Prior work largely focuses on constructing a single algorithm that achieves strong competitive guarantees. In contrast, our main contribution is a structural characterization of the optimal design space of reserve functions (i.e., normalized pricing rules) for \OACC, yielding a family of optimal online algorithms. Using a principled dynamical-systems approach, we show that optimal online algorithms arise as solutions of a nonlinear eigenvalue problem: the optimal competitive ratio corresponds to the dominant eigenvalue, and the associated eigenfunction determines the optimal reserve function. This perspective establishes the existence of infinitely many optimal designs attaining the best possible competitive ratio, thereby unifying and generalizing a broad class of prior algorithms. Beyond unification, our characterization uncovers new structural phenomena, including the ability to flexibly mix dynamic and static pricing without loss of optimality and the construction of universally competitive algorithms under unknown or stochastic costs. We further extend the analysis to more structured settings such as supply-oblivious arrivals and hard supply constraints, obtaining sharper guarantees that improve upon previous bounds.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23677v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>MuSeR：基于多兴趣建模的可扩展长序列推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            MuSeR: Scalable Long-sequence Recommendation with Multi-interest Modeling
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yongkang Fu, Beining Bao, Yu Jiang, Xiangyu Zhao, Hongyang Wei, Guangxing Chen, ...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对工业推荐中用户历史被截断、稀疏ID难以表达跨模态多意图的问题，提出MuSeR系统：用分层时间压缩把10^4-10^5行为压进固定服务预算，用正交正则化解耦多查询兴趣，并用LLM蒸馏文本摘要做多模态语义对齐，配合异步刷新与分层beam检索实现可部署的长序列多兴趣检索。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文聚焦超长用户行为序列建模与多兴趣提取，属于精排/召回建模范畴，对序列建模和多目标兴趣表示有直接参考价值，但未涉及re-ranking、机制公式或拍卖优化。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-20 14:36:07
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23677v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23677v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Ultra-long user behavior sequences carry rich signals of stable and diverse preferences, yet industrial recommender systems typically truncate histories to a few hundred actions under strict latency and memory budgets, leaving long-term interests under-utilized. Users also pursue multiple heterogeneous intents across modalities such as news, Q&amp;A, and short video, which sparse ID embeddings alone struggle to represent. We present Multi-interest Sequence Representation (MuSeR), a retrieval framework built on the deployed MGS system, which integrates three components: (i) hierarchical temporal compression, which retains recent actions at full resolution while progressively pooling older segments, so that per-user histories of $10^{4}$-$10^{5}$ interactions fit within a fixed serving budget; (ii) disentangled multi-query interest extraction with orthogonality regularization; and (iii) multimodal semantic alignment, which augments sparse item IDs with textual summaries distilled from a large language model. For industrial deployment, MuSeR further adopts asynchronous user-representation refresh with adaptive caching and hierarchical beam-search retrieval across heterogeneous hardware. On three public benchmarks and a large-scale industrial dataset, MuSeR consistently improves Recall@$K$ over strong long-sequence and multi-interest baselines. In online A/B tests on Baidu APP&#39;s homepage feed, discovery feed, and short-video scenarios, MuSeR yields +0.26% daily active users and +0.89% total session duration (both statistically significant, p&lt;0.05), alongside reduced serving latency and cost. Rather than proposing a new modeling primitive, our contribution is a system-level integration that makes long-term, multi-interest, and multimodal modeling jointly deployable in a real-time production pipeline, together with the engineering practices required to sustain it.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.22747v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>超越原始交互：Netflix推荐系统的反事实可观测性框架
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Beyond Raw Engagement: A Counterfactual Observability Framework for Recommender Systems at Netflix
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Chaoran Guo, Ding Tong, Ting-Po Lee, Scarlet Chen
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究大规模推荐系统中原始互动信号难以归因于内容质量、模型行为还是曝光偏差的问题，提出将推荐系统可观测性建模为反事实测量问题，估计在移除某内容项或模型决策后推荐系统行为与后续互动的变化，并给出偏差缩减、相对性与增量性的测量方法，面向内容创作者和模型开发者提供统一评估基础。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文将推荐系统可观测性建模为反事实测量问题，用于归因内容缺失或模型决策的增量效应，与通排/重排及流量分配的效果评估和归因分析相关，但不是重排算法本身。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-19 04:11:56
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.22747v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.22747v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Understanding the performance of large-scale recommender systems remains an underexplored challenge, especially for content creators and model developers. The raw engagement signals available to them, such as views and clicks, conflate content quality, model behavior, presentation bias, and audience reach, making it hard to attribute outcomes to the right cause. In this work, we present a general evaluation framework that enhances observability across multiple recommender systems at Netflix and demonstrate its effectiveness through several production deployments. The framework treats recommender-system observability as a counterfactual measurement problem: estimating what the recommender would have done, and what engagement would have followed, in the absence of a specific content item or model decision. We articulate three stakeholder-centered observability principles for content creators and model developers, and propose measurement methodologies covering bias reduction, relativity, and incrementality, applicable to both single-stage and cascading recommender systems and serving both audiences from a single measurement foundation.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23849v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>一种用于可控序列推荐的多余度削减方法
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            A Redundancy Reduction Approach for Controllable Sequential Recommendations
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Veronika Ivanova, Marina Munkhoeva, Ivan Razvorotnev, Evgeny Frolov
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究如何缓解序列推荐中的流行度集中问题，通过引入基于Barlow Twins的冗余减少辅助损失对用户表征去相关，并以桶对齐集中度指标量化其对热门物品全局打分优势的抑制；去相关强度可作为控制旋钮在头部与尾部物品间重新分配准确率，实现准确率-曝光权衡。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文提出的去相关正则化能通过调节强度控制头部与尾部物品的曝光比例，直接服务于重排中的流量分配和曝光公平性优化，但其核心是序列表征学习而非重排算子本身。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-20 20:05:14
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23849v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23849v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Sequential recommendation must operate under long-tailed item distributions and popularity-driven concentration, often forcing practitioners to trade short-list accuracy against long-tail exposure. In this work, we study feature decorrelation as a mechanism for shaping representation geometry in dot-product sequential recommenders, and analyze how this, in turn, affects popularity-driven concentration. We propose a decorrelation-regularized training framework that augments next-item prediction with an auxiliary redundancy-reduction term, and instantiate it with BT-SR, which uses the Barlow Twins objective. To form label-consistent positive pairs without synthetic corruptions, we pair user histories that share the same next-item target. Beyond accuracy, we provide a geometric analysis showing how decorrelation suppresses shared low-rank directions in the user representation space that can give popular items a global scoring advantage, and we introduce a bucket-based alignment concentration metric to quantify this effect. Experiments on five public benchmarks show that BT-SR consistently improves next-item ranking quality, while the decorrelation strength acts as a simple control knob that reallocates accuracy across head and tail items, enabling accuracy-exposure trade-offs. Our analysis also reveals that the impact on head-vs-tail exposure differs across datasets, reflecting interactions between decorrelation and data temporal structure.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.22880v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>面向多跳检索的LLM重排器查询级门控
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Per-Query Gating of LLM Rerankers for Multi-Hop Retrieval
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Andre Bacellar
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对LLM重排器推理成本与延迟高的问题，提出仅用调用前的分数/词法统计和查询嵌入PCA学习逐查询门控，以决定是否跳过重排；门控及回退策略均在训练折内选择，并区分有害与有益跳过，发现危害概率校准后缺乏区分度，且量化了阈值选择的乐观偏差。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究LLM重排器的按需门控以节省开销，属于重排效率优化，但针对多跳检索而非电商排序/拍卖，且与生成式重排、多样性、流量机制等核心方向关联弱。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-19 08:35:24
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.22880v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.22880v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.CL</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    LLM rerankers add of the order of \$0.2-0.3 per 1,000 queries and about a second of tail latency on top of a graph-augmented dense pipeline such as HippoRAG2, and on three multi-hop benchmarks they improve final-hop top-K coverage on seven of nine (dataset, K) cells, by up to +34.8 pp. We ask whether a learned per-query gate can skip the reranker where it will not help, using only features available before the LLM call (27 score and lexical statistics of the two retrieval lists plus a PCA of a small query embedding) with an executable fallback. Every choice, including the fallback and the threshold, is made inside the training fold and applied once to held-out queries, and harmful skips (the rerank would have found the target, the fallback did not) are reported next to the aggregate coverage. Across nine cells on 2WikiMultiHopQA, MuSiQue and HotpotQA the gate skips 51% of calls at an average held-out LastHop@K cost of 1.2 pp; four cells meet a pre-registered 1 pp rule, harmful skips occur in eight (190 harmful against 136 beneficial), and a random gate at the same skip rate loses 2 to 11 pp on the high-lift cells. A second rule sets each cell&#39;s threshold from a pre-specified budget on the expected harmful-skip rate over Platt-calibrated harm probabilities (ECE 0.025 after calibration, 0.094 before): at a 1 pp budget the gate skips 42% at -0.8 pp with 66 harmful skips and six cells within 1 pp, but realised harm exceeds the promise in six cells (mean 1.45 vs 0.83 pp), a selection optimism we quantify; a 0.5 pp budget realises about 1 pp. The harm probabilities are calibrated but barely discriminative (AUC 0.16 to 0.70). An earlier version reported 73% &#34;lossless&#34; savings; that figure rested on an oracle fallback and a wrong MuSiQue target, and we document both.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.24407v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>审计百度和谷歌AI搜索中的来源曝光
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Auditing Source Exposure in Baidu and Google AI Search
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yibo Li, Enci Guan, Yuedan Cai, Geng Liu, Francesco Pierri
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究问题：跨语言审计百度与Google的AI生成搜索摘要中来源曝光的触发、域名集中度与重叠度。核心方法：使用MS MARCO英文查询及中文翻译，对比触发条件、可见来源域名分布和答案嵌入相似度，发现平台-语言设置间来源曝光重叠低而答案语义相似度中等，表明需分别评估答案内容与来源可见性。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该paper审计AI搜索摘要的来源曝光和跨语言差异，属于信息检索的社会技术审计，与电商排序、重排、机制公式优化或曝光公平性等核心方向无直接技术关联。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-21 10:57:24
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.24407v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.24407v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    AI-generated overviews are becoming an increasingly prominent layer of search interfaces, yet their behavior in Chinese-language search remains underexplored. We conduct a cross-lingual audit of AI overview behavior on Baidu and Google using English queries sampled from MS MARCO and their translated Chinese counterparts. Our analysis examines when overviews are triggered across platform-language settings, which host domains receive visible exposure in Chinese-language overviews, how concentrated that exposure is, and how source overlap varies across settings. We also compare the embedding-based semantic similarity of generated answers for matched query intents. The results reveal substantial differences across platform-language settings in overview availability and visible source exposure. At the aggregate level, the settings exhibit low overlap in visible host-domain inventories, while matched-query answers yield median cosine similarities ranging from 0.701 to 0.813. These findings indicate that answer-level semantic similarity and aggregate source exposure capture distinct dimensions of AI-mediated search. Evaluations of AI search should therefore consider not only the content of generated answers but also how source visibility is distributed across platforms, languages, and information environments.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+
+        <!-- 沾边速览 -->
+        <section id="related-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 5 / 共 5 篇</span>
+            </h2>
+            <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
+                
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23646v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>超越相关性：基于LLM增强标注的产品搜索结构化语义监督
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Beyond Relevance: Structured Semantic Supervision for Product Search with LLM-Augmented Annotations
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Girish A. Koushik, Swapnil Bhosale, Samarth Agrawal, Hadeel Sadany, Constantin O...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究如何利用LLM生成结构化查询与商品属性，并结合人工验证的相关性、解释和中心性标签来增强电商搜索的精排监督。核心思路表明LLM最适合暴露和近似结构化语义监督，而非直接替代人工判断，从而更有效区分“仅相关”与“满足购物意图”的商品。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文利用LLM生成结构化属性与人工验证信号来增强排序监督，提升了低质查询的相关性区分，与精排模型中的样本/损失设计及查询-商品语义匹配直接相关，但未涉及重排列表级优化或机制公式设计。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-20 13:49:02
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23646v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23646v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    E-commerce search requires distinguishing products that are merely related to a query from those that directly satisfy the user&#39;s shopping intent. We augment query-product pairs with structured LLM-generated query and product attributes and human-validated relevance, explanations, and centrality judgments, and evaluate these signals using a simple dual-encoder retriever and MLP re-ranker. On an augmented subset of ESCI, a human-feature oracle reaches $0.9382$ nDCG@10, while a human-free trained $Q+P$ configuration reaches $0.9258$. Synthetic approximations of the human signals reach $0.9150$ overall but provide substantial gains for difficult, low-performing queries. Ablations show that most of the oracle improvement comes from post-edited explanations and annotator comments rather than the scalar centrality feature, suggesting that LLMs are most useful for exposing and approximating structured semantic supervision rather than replacing human judgment directly.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23111v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>Inherit4Rec：面向推荐模型高效扩展的参数继承
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Inherit4Rec: Parameter Inheritance for Efficient Scaling of Recommendation Models
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Ruihao Zhang, Bo Chen, Xiao Wang, Jinlong Jiao, Tijian Hu, Qinglin Jia, Xiuqiang...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对工业推荐模型扩容需从零重训且计算受限的问题，提出参数继承框架Inherit4Rec：D2D通过混合增长与不对称训练在扩展时保持前向函数并维持更新连续性，D2S基于共激活感知分区与负载均衡损失构建SMoE网络，在动态推荐数据下保留稠密模型能力并促进专家均衡激活。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究推荐模型参数继承以实现稠密扩展与稀疏转换，属于排序模型容量扩展与计算效率优化，触及精排模型的基础设施层面但未涉及排序机制或重排。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-19 16:27:51
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23111v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23111v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Scaling model capacity has emerged as an effective approach to overcoming performance bottlenecks in industrial recommender systems. However, repeatedly training larger dense models from scratch demands substantial data and time, while their growing computation conflicts with the strict serving budgets of industrial systems. Parameter inheritance provides a promising route for both dense model growth and sparse conversion, yet existing methods are primarily designed for static corpora and can suffer sharp performance drops under dynamically evolving recommendation data. To address these challenges, we propose Inherit4Rec, a parameter-inheritance framework that supports both Dense-to-Dense (D2D) growth and Dense-to-Sparse (D2S) conversion. Inherit4Rec-D2D combines hybrid growth with asymmetric training to preserve the forward function at expansion and maintain update continuity. Inherit4Rec-D2S constructs SMoE networks through co-activation-aware partitioning and a load-balancing loss, preserving dense-model capabilities while promoting balanced expert activation. Experiments on KuaiRand-1K and an industrial short-video recommendation dataset show that both transformations consistently outperform the evaluated inheritance baselines across all prediction objectives. These results demonstrate the effectiveness of Inherit4Rec for continual capacity expansion and computation-efficient sparse conversion in industrial recommender systems.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.22227v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>引导语义ID的粗粒度层级使细粒度层级变得可学习
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Guiding the coarse levels of semantic IDs makes the fine levels learnable
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Bin Wang, Zhengyu Zhang
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对生成式检索中语义ID与下游任务不对齐的问题，提出Guided SID方法：通过确定性监督索引分配强制粗粒度RQ-VAE层编码预定义的任务相关文本属性，保持码本可学习；并利用trie-merge构造将高基数或集合值属性映射到固定码本预算，使关键层级在构造上即具有任务意义。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文聚焦生成式检索中Semantic ID的构建，提出引导粗粒度码本编码预定义属性，直接提升推荐排序效果，与细排模型中的生成式推荐和语义ID技术紧密相关，但未涉及重排、机制公式或公平性。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-03 01:54:14
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.22227v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.22227v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.CL</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative retrieval represents each item by a short Semantic ID and casts recommendation as autoregressive generation of that sequence. Because the tokenizer is trained independently to reconstruct an item embedding, its codes are aligned with neither the downstream LLM nor the end task. Nearly every SID system therefore spends extra effort to bridge this gap--alignment corpora, reasoning/RL, or per-token encoders to make codes legible, or learned tokenizer supervision to make them task-aware--yet the recovered meaning is content-derived and may not be the meaning the task needs. We introduce Guided SID, which instead makes the levels that matter most meaningful by construction: we force the coarse RQ-VAE levels to encode a predefined categorical attribute--chosen to be text-grounded (hence legible to the LLM) and task-relevant--by deterministic supervised index assignment (overriding nearest-neighbor selection with the attribute label) while keeping the codebooks learnable (they still receive reconstruction gradients). A trie-merge construction maps any high-cardinality or set-valued attribute onto the fixed code budget while keeping merged buckets semantically coherent. Guiding costs nothing intrinsically: collision and reconstruction match or beat the vanilla baseline despite pinning the coarse level. In a matched end-to-end A/B differing only in the SID encoding, the guided retriever improves recall@k at every list length we measure (1.36x at k=1, 1.39x at k=10), raises mean reciprocal rank from 0.0260 to 0.0355, and predicts the pre-defined attribute 4.2x more often.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.23354v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>从排序文档到可靠上下文：面向答案的AI搜索上下文构建框架
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            From Ranked Documents to Reliable Contexts: An Answer-Oriented Context Construct Framework for AI Search
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yunfei Zhong, Yinqiong Cai, Lixin Su, Haosheng Qian, Lixin Zou, Yixing Fan, Shen...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究AI搜索中检索目标从文档排序转向为生成模型构建可靠上下文的问题，提出三阶段框架：识别答案支持文档、从来源/时效/事实维度评估内容可信度、在有限预算下组织上下文，并建立工业工作流与评估协议。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究AI搜索中为生成模型构建可靠上下文，而非传统重排序或机制公式优化，与我的核心方向（重排序、机制设计、精排模型）仅有间接关联。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-20 04:41:42
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.23354v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.23354v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Traditional Web search follows a human-facing paradigm in which users inspect ranked documents and synthesize information themselves. In AI Search, retrieved documents instead serve as inputs to a generation model, shifting the retrieval objective from ranking documents by Search Satisfaction to constructing reliable context for correct answer generation. We formulate this shift as answer-oriented context construction through a three-stage framework: (1) Answer Support identifies candidate documents that contribute information to answer generation; (2) Content Trustworthiness assesses whether this information provides a reliable basis for correct answers from source, temporal, and factual perspectives; and (3) Context Organization selects, consolidates, and structures retained information under a finite context budget for consistent and robust generation. We further develop an industrial workflow spanning prior and posterior optimization and establish a systematic evaluation protocol covering both retrieval-side context and final answers. Experiments show consistent improvements at both Retrieval and Answer levels, demonstrating the effectiveness of the framework and its industrial implementation.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.24430v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>什么是好的生成式推荐语义ID？一项可复现性研究
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            What Makes a Good Semantic ID for Generative Recommendation? A Reproducibility Study
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yufei Chen, Junchen Fu, Jujia Zhao, Yukun Zhao, Zhaochun Ren
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文系统探究生成式推荐中语义ID设计对推荐性能的影响，核心发现是设计效果非单调，无普适最优方案，且平衡的码本利用率和更长的码长未必带来更好推荐，不同设计在局部语义保持上各有优劣。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究生成式推荐中语义ID的设计影响，虽与生成式推荐和物品表示相关，但未涉及重排序、机制公式或拍卖优化等核心方向，相关性有限。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-21 11:26:49
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.24430v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.24430v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative recommendation has emerged as an active research direction, where items are commonly represented by semantic IDs (SIDs): discrete codes generated token by token. Despite strong empirical results, SID designs vary widely in construction strategy, codebook organization, and code length, making their true impact on recommendation performance unclear. We conduct a large-scale reproducibility study to systematically investigate the impact of semantic ID design on generative recommendation under a unified experimental framework. We focus on a fundamental question: What makes a good semantic ID for generative recommendation? To answer this question, we examine four aspects: the relative effectiveness of different semantic ID designs, the connection between codebook utilization and recommendation quality, the effect of semantic code length, and the influence of semantic ID design on local item semantic preservation. Through a unified evaluation and additional cross-dataset controlled analyses, we find that the effects of SID design are largely non-monotonic: no single SID design is universally best, and commonly used RQ-VAE- and OPQ-based designs can behave inconsistently across datasets. The method with the most balanced first-level codebook is not consistently the best recommender, showing that utilization is diagnostic but insufficient. Scaling either the generative backbone or the SID length is also not always beneficial. Finally, semantic-neighborhood analysis reveals that no single SID design dominates all notions of local semantic preservation; instead, different designs exhibit complementary strengths that remain stable across datasets and neighborhood sizes. Our study provides a controlled and reproducible understanding of semantic ID design and offers practical insights for future generative recommender systems.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 加载论文数据和JavaScript逻辑 -->
+    <script>
+        // 后端注入：业务日配置与有数据的日期列表（calendar.js 读取）
+        window.CALENDAR_CONFIG = {
+            currentDateConfig: {"ymd": "20260922", "display": "2026-09-22", "year": 2026, "month": 9, "day": 22},
+            availableDates: ["20260919", "20260920", "20260921", "20260922"]
+        };
+    </script>
+    <script src="static/app.js"></script>
+    <script src="static/collapse.js"></script>
+    <script src="static/calendar.js"></script>
+</body>
+
+</html>

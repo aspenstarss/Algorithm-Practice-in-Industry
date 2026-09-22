@@ -57,16 +57,16 @@
             <!-- 统计信息 -->
             <div class="flex flex-wrap gap-4 text-sm">
                 <div class="flex items-center">
-                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 总论文数:</span>
-                    <span id="total-papers" class="font-semibold text-primary">{{TOTAL_PAPERS}}</span>
+                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
+                    <span id="core-count" class="font-semibold text-primary">{{CORE_COUNT}} 篇（精选 {{CORE_SELECTED}}）</span>
                 </div>
                 <div class="flex items-center">
-                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 精选论文数:</span>
-                    <span id="selected-papers" class="font-semibold text-accent">{{SELECTED_PAPERS}}</span>
+                    <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
+                    <span id="related-count" class="font-semibold text-secondary">{{RELATED_COUNT}} 篇</span>
                 </div>
                 <div class="flex items-center">
-                    <span class="text-gray-500 mr-1"><i class="fa fa-line-chart"></i> 平均评分:</span>
-                    <span id="avg-score" class="font-semibold text-secondary">{{AVG_SCORE}}</span>
+                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">{{TOTAL_FETCHED}}</span>
                 </div>
             </div>
         </div>
@@ -74,32 +74,49 @@
 
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 py-5">
-        <!-- 分类来源统计（表格卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
+        <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
         <div id="category-stats">
             {{CATEGORY_STATS_HTML}}
         </div>
 
-        <!-- 筛选器 -->
+        <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="text-gray-700 text-sm mb-2 sm:mb-0">
-                <span id="display-count" class="font-medium">显示 {{TOTAL_PAPERS}} 篇论文 (共 {{TOTAL_PAPERS}} 篇)</span>
+                <span id="display-count" class="font-medium">核心 {{CORE_COUNT}} 篇 · 沾边 {{RELATED_COUNT}} 篇</span>
             </div>
             <div class="flex space-x-2">
-                <button id="show-all"
-                    class="px-3 py-1 bg-primary text-white rounded text-sm hover:bg-primary/90 transition-colors">
-                    全部论文
-                </button>
-                <button id="show-selected"
+                <button id="show-core"
                     class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
-                    仅显示精选
+                    <i class="fa fa-star mr-1"></i>只看核心
+                </button>
+                <button id="show-related"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-tags mr-1"></i>只看沾边
                 </button>
             </div>
         </div>
 
-        <!-- 论文列表 -->
-        <div id="papers-container" class="grid grid-cols-1 gap-4">
-            {{PAPERS_HTML}}
-        </div>
+        <!-- 核心榜单 -->
+        <section id="core-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
+                <span class="text-sm font-normal text-gray-500 ml-2">{{CORE_COUNT}} 篇 · 精选 {{CORE_SELECTED}}</span>
+            </h2>
+            <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
+                {{CORE_PAPERS_HTML}}
+            </div>
+        </section>
+
+        <!-- 沾边速览 -->
+        <section id="related-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 {{RELATED_COUNT}} / 共 {{RELATED_TOTAL}} 篇</span>
+            </h2>
+            <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
+                {{RELATED_PAPERS_HTML}}
+            </div>
+        </section>
     </main>
 
     <!-- 加载论文数据和JavaScript逻辑 -->
