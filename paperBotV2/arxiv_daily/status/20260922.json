@@ -2,54 +2,59 @@
   "date": "20260922",
   "status": "success",
   "stage": "completed",
-  "workflow": "arxiv_daily_recovery",
-  "run_id": "35625273856",
+  "workflow": "arxiv_daily_full",
+  "run_id": "35706028446",
   "run_attempt": "1",
   "trigger": "schedule",
-  "started_at": "2026-09-21T16:23:46+00:00",
-  "ended_at": "2026-09-21T16:33:13+00:00",
+  "started_at": "2026-09-22T08:40:20+00:00",
+  "ended_at": "2026-09-22T08:59:14+00:00",
   "fetch": {
     "success": true,
-    "total_papers": 0,
+    "total_papers": 262,
     "by_category": {
       "cs.IR": {
         "success": true,
-        "papers": 0,
-        "pages": 0,
+        "papers": 44,
+        "pages": 2,
         "error": ""
       },
       "cs.CL": {
         "success": true,
-        "papers": 0,
-        "pages": 0,
+        "papers": 100,
+        "pages": 3,
         "error": ""
       },
       "cs.CV": {
         "success": true,
-        "papers": 0,
-        "pages": 0,
+        "papers": 100,
+        "pages": 3,
         "error": ""
       },
       "cs.GT": {
         "success": true,
-        "papers": 0,
-        "pages": 0,
+        "papers": 18,
+        "pages": 1,
         "error": ""
       }
     }
   },
   "llm": {
-    "rough_rank_total": 0,
-    "rough_rank_success": 0,
+    "rough_rank_total": 252,
+    "rough_rank_success": 252,
     "rough_rank_failed": 0,
-    "fine_rank_total": 0,
-    "fine_rank_success": 0,
+    "rough_tracks": {
+      "core": 8,
+      "related": 5
+    },
+    "fine_rank_total": 13,
+    "fine_rank_success": 13,
     "fine_rank_failed": 0,
-    "avg_rough_score": 0,
-    "avg_fine_score": 0
+    "fine_rank_related_filled": 5,
+    "avg_rough_score": 1.36,
+    "avg_fine_score": 5.54
   },
   "output": {
-    "daily_json_written": false,
+    "daily_json_written": true,
     "html_generated": true,
     "feishu_should_send": true
   },
