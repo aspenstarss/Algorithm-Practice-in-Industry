@@ -50,14 +50,17 @@ def test_json_call_missing_key_raises():
         llm.json_call("x", attempts=1)
 
 
-def _patch_openai(monkeypatch, content):
+def _patch_openai(monkeypatch, content, usage=None):
     monkeypatch.setenv("LLM_API_KEY", "test-key")
     calls = {}
 
     def fake_create(**kwargs):
         calls.update(kwargs)
         message = types.SimpleNamespace(content=content)
-        return types.SimpleNamespace(choices=[types.SimpleNamespace(message=message)])
+        response = types.SimpleNamespace(choices=[types.SimpleNamespace(message=message)])
+        if usage is not None:
+            response.usage = usage
+        return response
 
     client = types.SimpleNamespace(
         chat=types.SimpleNamespace(completions=types.SimpleNamespace(create=fake_create))
@@ -70,6 +73,23 @@ def test_json_call_parses_json_response(monkeypatch):
     calls = _patch_openai(monkeypatch, '{"score": 5}')
     assert llm.json_call("请输出 json", attempts=1) == {"score": 5}
     assert calls["response_format"] == {"type": "json_object"}
+
+
+def test_json_call_records_usage(monkeypatch):
+    usage = types.SimpleNamespace(
+        prompt_tokens=100, completion_tokens=30, prompt_cache_hit_tokens=90,
+    )
+    _patch_openai(monkeypatch, '{"score": 5}', usage=usage)
+    llm.drain_usage_stats()  # 清空基线
+    llm.json_call("x", attempts=1)
+    llm.json_call("y", attempts=1)
+    stats = llm.drain_usage_stats()
+    assert len(stats) == 2
+    assert stats[0] == {
+        "prompt_tokens": 100, "completion_tokens": 30, "cache_hit_tokens": 90,
+    }
+    assert llm.drain_usage_stats() == []  # drain 取走即清空
+    llm.drain_usage_stats()  # 无 usage 响应不记录，保持为空
 
 
 def test_json_call_invalid_json_raises_fast(monkeypatch):

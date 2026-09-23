@@ -155,12 +155,14 @@ def test_falls_back_when_listing_structure_changed(monkeypatch):
 
 
 def test_fine_rank_quota_transfers_to_related_when_core_short(monkeypatch):
-    """core 不足精排配额时，related 按粗排分递补剩余配额。"""
+    """RELATED_FILL_MAX>0 且 core 不足配额时，related 按粗排分递补、受上限封顶。"""
     import dataclasses
 
     monkeypatch.setattr(
         arxiv, "SETTINGS",
-        dataclasses.replace(arxiv.SETTINGS, fine_rank_papers=6),
+        dataclasses.replace(
+            arxiv.SETTINGS, fine_rank_papers=6, related_fill_max=3,
+        ),
     )
 
     def fake_fine_rank(papers_in, max_workers=10, paper_count=5):
@@ -176,20 +178,40 @@ def test_fine_rank_quota_transfers_to_related_when_core_short(monkeypatch):
 
     arxiv.perform_fine_ranking(list(all_papers.values()), all_papers)
 
-    # 进精排的顺序与配额：core 全进（c0..c2），related 按分递补 3 篇（r0..r2）
+    # core 全进（c0..c2），related 递补受上限 3 封顶（r0..r2）
     fine_ids = [all_papers[i]["arxiv_id"] for i in all_papers if all_papers[i]["is_fine_ranked"]]
     assert fine_ids == ["c0", "c1", "c2", "r0", "r1", "r2"]
-    # 未递补的 related 不标精排
     assert all_papers["r3"]["is_fine_ranked"] is False
 
 
+def test_fine_rank_related_not_ranked_by_default(monkeypatch):
+    """默认 RELATED_FILL_MAX=0：related 不进精排，精排只跑 core。"""
+    def fake_fine_rank(papers_in, max_workers=10, paper_count=5):
+        return [dict(p, rerank_relevance_score=10) for p in papers_in]
+
+    papers = (
+        [{"arxiv_id": f"c{i}", "title": f"core {i}", "track": "core", "relevance_score": 9 - i, "is_fine_ranked": False} for i in range(2)]
+        + [{"arxiv_id": f"r{i}", "title": f"related {i}", "track": "related", "relevance_score": 9, "is_fine_ranked": False} for i in range(5)]
+    )
+    all_papers = {p["arxiv_id"]: dict(p) for p in papers}
+    monkeypatch.setattr(arxiv, "fine_rank_papers", fake_fine_rank)
+
+    arxiv.perform_fine_ranking(list(all_papers.values()), all_papers)
+
+    fine_ids = [i for i in all_papers if all_papers[i]["is_fine_ranked"]]
+    assert sorted(fine_ids) == ["c0", "c1"]
+    assert all(p["is_fine_ranked"] is False for i, p in all_papers.items() if i.startswith("r"))
+
+
 def test_fine_rank_quota_full_core_excludes_related(monkeypatch):
-    """core 已占满精排配额时，related 完全不进精排。"""
+    """core 已占满精排配额时，related 即使允许递补也不进精排。"""
     import dataclasses
 
     monkeypatch.setattr(
         arxiv, "SETTINGS",
-        dataclasses.replace(arxiv.SETTINGS, fine_rank_papers=4),
+        dataclasses.replace(
+            arxiv.SETTINGS, fine_rank_papers=4, related_fill_max=3,
+        ),
     )
     monkeypatch.setattr(
         arxiv, "fine_rank_papers",

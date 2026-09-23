@@ -9,7 +9,8 @@ def test_defaults_match_ci_behavior():
     assert s.target_categories == ["cs.IR", "cs.CL", "cs.CV", "cs.GT"]
     assert s.max_papers == 100
     assert s.rough_score_threshold == 4
-    assert s.fine_rank_papers == 50
+    assert s.fine_rank_papers == 20
+    assert s.related_fill_max == 0
     assert s.return_papers == 20
     assert s.lookback_hours == 36
     assert s.max_pages == 20

@@ -23,6 +23,28 @@ DEFAULT_MODEL = "deepseek-chat"
 JSON_CALL_ATTEMPTS = 5
 TRANSLATE_ATTEMPTS = 3
 
+# 每次 LLM 调用的 token usage（含 DeepSeek 缓存命中数），由调用方在阶段结束时
+# drain 聚合（list.append 线程安全，粗排/精排的并发线程可直接记录）
+_USAGE_LOG = []
+
+
+def drain_usage_stats():
+    """取走并清空累计的 usage 记录，返回 [{prompt_tokens, completion_tokens,
+    cache_hit_tokens}, ...]；非 DeepSeek 端点缺缓存字段时记 0。"""
+    stats, _USAGE_LOG[:] = list(_USAGE_LOG), []
+    return stats
+
+
+def _record_usage(response):
+    usage = getattr(response, "usage", None)
+    if usage is None:
+        return
+    _USAGE_LOG.append({
+        "prompt_tokens": getattr(usage, "prompt_tokens", 0) or 0,
+        "completion_tokens": getattr(usage, "completion_tokens", 0) or 0,
+        "cache_hit_tokens": getattr(usage, "prompt_cache_hit_tokens", 0) or 0,
+    })
+
 _TRANSLATE_SYSTEM_PROMPT = {
     "role": "system",
     "content": (
@@ -71,6 +93,7 @@ def json_call(prompt, *, model=None, base_url=None, api_key=None, attempts=None)
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
         )
+        _record_usage(response)
         return json.loads(response.choices[0].message.content)
 
     return _call()

@@ -28,7 +28,8 @@ class Settings:
     target_categories: list
     max_papers: int                  # 单类抓取论文数上限
     rough_score_threshold: int       # 粗排分数线
-    fine_rank_papers: int            # 进入精排的篇数上限（按粗排分取前 N）
+    fine_rank_papers: int            # 进入精排的 core 篇数上限（按粗排分取前 N）
+    related_fill_max: int            # related 递补进精排的篇数上限（0=沾边不精排，最省）
     return_papers: int               # 精排后返回篇数
     related_max_papers: int          # 沾边榜单页展示篇数上限（防刷屏）
     lookback_hours: int              # 抓取回看窗口
@@ -102,7 +103,8 @@ def load(env=None):
         ],
         max_papers=get_int("MAX_PAPERS", 100),
         rough_score_threshold=get_int("ROUGH_SCORE_THRESHOLD", 4),
-        fine_rank_papers=get_int("FINE_RANK_PAPERS", 50),
+        fine_rank_papers=get_int("FINE_RANK_PAPERS", 20),
+        related_fill_max=get_int("RELATED_FILL_MAX", 0),
         return_papers=get_int("RETURN_PAPERS", 20),
         related_max_papers=get_int("RELATED_MAX_PAPERS", 40),
         lookback_hours=get_int("ARXIV_LOOKBACK_HOURS", 36),

@@ -97,6 +97,7 @@ class ArxivDailyStatus:
                 "fine_rank_related_filled": 0,
                 "avg_rough_score": 0,
                 "avg_fine_score": 0,
+                "usage": {},
             },
             "output": {
                 "daily_json_written": False,
@@ -139,6 +140,19 @@ class ArxivDailyStatus:
         self.data["llm"]["fine_rank_failed"] = max(int(total or 0) - int(success or 0), 0)
         self.data["llm"]["fine_rank_related_filled"] = int(related_filled or 0)
         self.data["llm"]["avg_fine_score"] = _safe_avg(scores)
+        self.write()
+
+    def record_llm_usage(self, stats):
+        """聚合 LLM token 用量（llm.drain_usage_stats 的输出）写入 status，
+        供后续调参看真实消耗与缓存命中率。"""
+        if not stats:
+            return
+        self.data["llm"]["usage"] = {
+            "calls": len(stats),
+            "prompt_tokens": sum(s.get("prompt_tokens", 0) for s in stats),
+            "completion_tokens": sum(s.get("completion_tokens", 0) for s in stats),
+            "cache_hit_tokens": sum(s.get("cache_hit_tokens", 0) for s in stats),
+        }
         self.write()
 
     def mark_daily_json_written(self, written):

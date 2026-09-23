@@ -4,6 +4,9 @@
 """
 存储所有用于分析和排序论文的prompt模板
 面向画像:电商搜广推 · 精排模型 + 重排 + 排序/拍卖机制公式优化
+
+模板结构约定：全部固定指令在前、{title}/{summary} 变量放最末尾，
+让每次调用共享稳定前缀，吃满 DeepSeek 自动 context caching（命中价约 1/10）。
 """
 
 # 粗排prompt模板
@@ -50,9 +53,6 @@ Based ONLY on the paper's title, provide a quick evaluation.
 3. **Relevance Score (1-10)**: rate relevance WITHIN its track — for "core", value to **My Core Focus**; for "related", how direct and concrete the application to ranking models or mechanism formula design is; for "off", give 1-2.
 4. **Reasoning**: A 2-3 sentence explanation for your score. **For "related" papers, you MUST explain their concrete application to ranking models or mechanism formula design.**
 
-# Input Paper
-- **Title**: {title}
-
 # Output Format
 Provide your analysis strictly in the following JSON format.
 {{
@@ -61,6 +61,9 @@ Provide your analysis strictly in the following JSON format.
   "relevance_score": <integer>,
   "reasoning": "..."
 }}
+
+# Input Paper
+- **Title**: {title}
 """
 
 # 精排prompt模板
@@ -95,10 +98,6 @@ Based on the paper's **Title** and **Abstract**, provide a comprehensive analysi
     **STRICTLY IGNORE EXPERIMENTAL RESULTS:** Do not include any information about performance, SOTA, dataset metrics, or numerical improvements.
     **FOCUS ON THE "IDEA":** Your sole purpose is to clearly convey the paper's "core idea," not its "experimental achievements."
 
-# Input Paper
-- **Title**: {title}
-- **Abstract**: {summary}
-
 # Output Format
 Provide your analysis strictly in the following JSON format.
 {{
@@ -106,4 +105,8 @@ Provide your analysis strictly in the following JSON format.
   "rerank_reasoning": "...",
   "summary": "..."
 }}
+
+# Input Paper
+- **Title**: {title}
+- **Abstract**: {summary}
 """

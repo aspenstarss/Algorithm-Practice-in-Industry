@@ -533,8 +533,9 @@ def perform_rough_ranking(all_papers, run_status=None):
 def perform_fine_ranking(filtered_papers, all_papers, run_status=None):
     """执行精排并标记精排状态。
 
-    精排配额 fine_rank_papers 优先给 core 过线论文；core 不足配额时由
-    related 过线论文按粗排分递补。精排后按精排分返回前 return_papers 篇。
+    精排只跑 core 过线论文（按粗排分取前 fine_rank_papers 篇）；related 默认
+    不精排（速览只展示标题+粗排分），RELATED_FILL_MAX>0 时按粗排分递补进精排、
+    最多该篇数。精排后按精排分返回前 return_papers 篇。
     """
     quota = SETTINGS.fine_rank_papers
     threshold = SETTINGS.rough_score_threshold
@@ -546,13 +547,14 @@ def perform_fine_ranking(filtered_papers, all_papers, run_status=None):
         p for p in filtered_papers
         if paper_track(p, threshold) == TRACK_RELATED
     ]
-    # filtered_papers 已按粗排分降序，递补取 related 的最高分部分
-    related_fill = related_pool[:max(0, quota - len(core_pool))]
+    # filtered_papers 已按粗排分降序；递补受 related_fill_max 封顶（0=沾边不精排）
+    fill_slots = min(max(0, quota - len(core_pool)), SETTINGS.related_fill_max)
+    related_fill = related_pool[:fill_slots]
     fine_input = core_pool + related_fill
 
     print(
         f"🎯 精排配额 {quota}：core {len(core_pool)} 篇"
-        + (f" + related 递补 {len(related_fill)} 篇" if related_fill else "")
+        + (f" + related 递补 {len(related_fill)} 篇" if related_fill else "（related 不精排）")
         + f" = {len(fine_input)} 篇进精排。"
     )
 
@@ -607,6 +609,7 @@ def process_papers():
         run_status.update_stage("save_json")
         daily_json_written = save_results_to_json(all_papers)
         run_status.mark_daily_json_written(daily_json_written)
+        run_status.record_llm_usage(_llm.drain_usage_stats())
         run_status.mark_success()
 
         print("✅ 论文处理流程已全部完成！")
