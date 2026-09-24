@@ -45,13 +45,13 @@ Screen new papers based on my core focus. **DO NOT include irrelevant topics**.
 
 # Task
 Based ONLY on the paper's title, provide a quick evaluation.
-1. **Academic Translation**: Translate the title into professional Chinese, prioritizing accurate technical terms and faithful meaning.
+1. **Academic Translation**: Translate the title into professional Chinese, prioritizing accurate technical terms and faithful meaning. For "off" papers, output "" instead — they are never displayed.
 2. **Track**: Classify the paper into exactly one track:
    - "core": it hits **My Core Focus** (fine-rank models, re-ranking, ranking/auction mechanism & formula optimization, e-commerce ranking scenarios, exposure fairness & traffic control).
    - "related": it misses the core focus but is a directly applicable enabling tech — generative recommendation, semantic IDs, LLM-based user behavior understanding for ranking features, LLM-simulated users or auction simulation, Transformer architecture efficiency (attention variants, MoE), etc. The application to ranking models or mechanism formula design must be concrete and direct; speculative links are "off".
    - "off": everything else, including all **Irrelevant Topics**.
 3. **Relevance Score (1-10)**: rate relevance WITHIN its track — for "core", value to **My Core Focus**; for "related", how direct and concrete the application to ranking models or mechanism formula design is; for "off", give 1-2.
-4. **Reasoning**: A 2-3 sentence explanation for your score. **For "related" papers, you MUST explain their concrete application to ranking models or mechanism formula design.**
+4. **Reasoning**: A 2-3 sentence explanation for your score. **For "related" papers, you MUST explain their concrete application to ranking models or mechanism formula design. For "off" papers, give one short clause of at most 15 words.**
 
 # Output Format
 Provide your analysis strictly in the following JSON format.
