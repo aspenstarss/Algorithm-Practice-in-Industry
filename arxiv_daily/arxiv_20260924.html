@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 每日论文精选</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css?v=1790240671">
+    <link rel="stylesheet" href="static/collapse.css?v=1790240671">
+    <script src="static/tailwind.config.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 顶部导航与统计信息合并 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
+                <div class="flex items-center">
+                    <i class="fa fa-book text-primary text-xl mr-2"></i>
+                    <h1 class="text-lg md:text-xl font-bold text-gray-800">arXiv 每日论文精选</h1>
+                </div>
+                <div class="flex items-center mt-2 md:mt-0">
+                    <span id="current-date" class="text-gray-600 text-sm">
+                        <i class="fa fa-calendar-o mr-1"></i>2026-09-24
+                    </span>
+                    <div class="ml-3 relative" id="date-picker-container">
+                        <button id="date-picker-toggle" class="bg-light border border-gray-300 text-gray-700 py-1 px-3 pr-6 rounded text-sm leading-tight focus:outline-none focus:bg-white inline-flex items-center">
+                            <i class="fa fa-calendar mr-2"></i>
+                            <span id="selected-date-text">2026-09-24</span>
+                            <i class="fa fa-chevron-down ml-2 text-xs"></i>
+                        </button>
+                        <div id="date-picker" class="hidden absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg p-2 z-20 w-56">
+                            <div class="flex justify-between items-center mb-2">
+                                <button id="prev-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-left"></i></button>
+                                <h4 id="current-month">2026-09-24</h4>
+                                <button id="next-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-right"></i></button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
+                                <div class="text-gray-500">日</div>
+                                <div class="text-gray-500">一</div>
+                                <div class="text-gray-500">二</div>
+                                <div class="text-gray-500">三</div>
+                                <div class="text-gray-500">四</div>
+                                <div class="text-gray-500">五</div>
+                                <div class="text-gray-500">六</div>
+                            </div>
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                                <!-- 日历格子将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="flex flex-wrap gap-4 text-sm">
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
+                    <span id="core-count" class="font-semibold text-primary">6 篇（精选 6）</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
+                    <span id="related-count" class="font-semibold text-secondary">2 篇</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">227</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-5">
+        <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
+        <div id="category-stats">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
+        </div>
+
+        <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div class="text-gray-700 text-sm mb-2 sm:mb-0">
+                <span id="display-count" class="font-medium">核心 6 篇 · 沾边 2 篇</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="show-core"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-star mr-1"></i>只看核心
+                </button>
+                <button id="show-related"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-tags mr-1"></i>只看沾边
+                </button>
+            </div>
+        </div>
+
+        <!-- 核心榜单 -->
+        <section id="core-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
+                <span class="text-sm font-normal text-gray-500 ml-2">6 篇 · 精选 6</span>
+            </h2>
+            <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
+                
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.27953v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>LLM推荐重排序的召回上限
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            The Recall Ceiling of LLM Recommendation Reranking
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhaohui Wang
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文指出LLM重排序评测中，若保证真实物品出现在候选集中（oracle协议），会因现实检索召回率仅2-19%而高估NDCG@10达92-95%，理论上重排序的NDCG上限受限于召回率。为此提出召回感知评估协议（RAEP），先分类召回区间再评估重排序，并发现低召回下提升检索比增强重排序模型更有效。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文直接研究LLM重排序的召回上限问题，提出评估协议，并揭示召回对重排序有效性的决定性作用，与重排序和评估方法高度相关，但对排序公式或机制优化无直接贡献。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-08-27 13:11:40
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.27953v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.27953v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Some LLM-based recommendation rerankers are evaluated under an oracle protocol that guarantees the ground-truth item is present in the scored set, either by injecting it into the candidate list or by scoring it against sampled negatives. Across three primary Amazon datasets, we show that this protocol overestimates realistic NDCG@10 by 92--95%. The cause is a recall ceiling: realistic retrieval covers only 2--19% of relevant items at $K=100$ across eight datasets in three domains, imposing a deterministic upper bound on any closed-candidate reranker&#39;s top-$k$ NDCG. Under leave-one-out evaluation, $\mathbb{E}[\mathrm{NDCG}@k] \leq \mathrm{Recall}@|W_π|$, where $W_π$ is the reranker&#39;s candidate window. Under realistic retrieval, none of the tested optimisation strategies significantly improves over the collaborative-filtering baseline on our primary Amazon datasets. These strategies include prompt engineering, model scaling over a 168$\times$ parameter range, sequential models, supervised neural rerankers, LoRA fine-tuning, hybrid retrieval, score-aware prompting, and LLM+CF fusion. Text-aware retrieval increases recall on one dataset but does not improve end-to-end NDCG, while providing upstream CF scores mainly makes the LLM reproduce the CF order. We therefore propose the Recall-Aware Evaluation Protocol (RAEP): first classify the retrieval-recall regime, then evaluate reranking where the ceiling permits meaningful differentiation. In the low-recall regimes measured here, improving retrieval is more consequential than increasing reranker sophistication; this ordering need not hold in production systems with higher recall, richer features, or online feedback.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.27213v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>BoundaryMORPH：面向扩散检索的基于主动集选择的有预算重排序
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            BoundaryMORPH: Budgeted Reranking via Active Set Selection for Diffuse Retrieval
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Eylon Caplan, Shamik Roy, Shib Sankar Dasgupta, Yingfan Wang, Rashmi Gangadharai...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究开放域RAG中交叉编码器预算B严格小于LLM上下文容量k时，传统重排序浪费预算验证明显顶部候选、忽略边界相关文档的问题；核心方法BoundaryMORPH利用高斯过程将初始双编码器排序作为结构先验，将CE调用定向用于确定top-k集合边界成员，并使未评分文档通过信息传播受益，从而在有限预算下最大化集合检索质量。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究预算受限下的重排序问题，针对RAG场景中有限交叉编码器预算与上下文容量不匹配的结构性缺陷，提出主动集选择算法，核心是重排序中的预算分配与列表级集合选择，与重排序及机制公式优化中的资源分配高度相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-23 01:22:22
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.27213v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.27213v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Open-ended queries in modern Retrieval-Augmented Generation (RAG) are increasingly &#34;diffuse,&#34; requiring a large set of documents to be assembled into a finite LLM context window. To ensure retrieval quality, systems use fast dual-encoders and more expensive cross-encoders (CEs) to score candidates. However, the CE budget $B$ is strictly bounded by latency and is often smaller than the context window capacity $k$. This mismatch makes standard reranking structurally flawed: it wastes compute verifying obvious top candidates while ignoring relevant documents further down the initial ranking. To address this, we introduce BoundaryMORPH, a novel algorithm that allocates CE budget specifically for the LLM&#39;s context capacity $k$. Using a Gaussian Process, BoundaryMORPH treats the initial dual-encoder ranking as a structural prior and intelligently spends CE calls on resolving top-$k$ set membership at the boundary, rather than seeking a single most-relevant document. Information from each CE call propagates to unscored documents, maximizing the utility of the budget. We demonstrate that BoundaryMORPH achieves state-of-the-art set retrieval quality across multiple models and datasets with open-ended queries ($+5.4$ nCG@100 over the strongest baseline).
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.27285v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>抽象机制中的节拍均衡
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Pacing Equilibria in Abstract Mechanisms
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Salam Afiouni, Christian Kroer
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">主题：探究在丰富的平台机制（如位置拍卖、抽象机制）中，乘性预算平滑（multiplicative pacing）的均衡性质是否依然成立。核心思想：提出统一的平滑均衡理论，识别出一类“出价最大化、按出价支付”的机制，该类机制下平滑均衡存在且唯一，并具有Eisenberg-Gale型凸规划表征；对于满足支付单调性的抽象机制，通过平滑不连续性证明均衡存在，并在额外条件下得到唯一性、收益最大性和抗女巫实现性。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究机制设计中的预算平滑均衡，直接涉及拍卖机制、定价规则和流量分配，与我的机制公式优化和竞价策略高度相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-23 03:22:10
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.27285v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.27285v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Digital platforms increasingly rely on automated budget-management systems to regulate participation across allocation opportunities. A common tool is multiplicative pacing, which scales buyers&#39; bids so that campaign-level budgets are spent gradually. Although pacing is operationally simple, its aggregate behavior depends on the underlying mechanism. In first-price single-item auction markets, pacing enjoys strong structural and computational properties that often fail in second-price auctions. It is unclear whether these properties extend to richer platform mechanisms. We develop a unified theory of pacing equilibria across a hierarchy of mechanisms. We first show that, even in first-price position auctions, the market-equilibrium interpretation of the single-item benchmark can fail. We then identify bid-maximizing pay-your-bid mechanisms as a broad class in which pacing equilibria exist, are unique, and admit an Eisenberg-Gale-type convex-program characterization. This implies efficient computation, Pareto-efficiency, and liquid-welfare guarantees, enabling pacing integration into large-scale optimization-based allocation routines. Finally, for abstract mechanisms satisfying a payment monotonicity condition, we prove equilibrium existence by smoothing discontinuities. With additional conditions and appropriate tie-breaking, we obtain uniqueness, revenue maximality among budget-feasible pacing vectors, and shill-proof implementability, and provide convergent budget-adjustment dynamics for approximate equilibria. Overall, many favorable properties of first-price pacing extend beyond single-item auctions under appropriate mechanism-level conditions.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.28383v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>超越标量：用于观看时长预测的分布化服务接口
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Beyond a Scalar: Distributional Serving Interfaces for Watch-Time Prediction
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Xuan Liu, Jingbin Qian, Zhanyu Liu, Hefeng Zhou
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">解决现有观看时长预测仅输出单点估计、忽略完成/过度播放等分布信息的问题；提出分布化服务接口（DSI），联合建模四类观看状态分布，经规则裁剪和恢复损失保留秒级精度，再压缩为事件概率、时长相对尺度和不确定性统计供下游排序与价值模型轻量使用。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文提出时长预测的分布化服务接口，直接提升短视频排序中的曝光与排序质量，与精排模型和机制公式优化高度相关，但未涉及重排、拍卖或激励设计。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-23 16:57:08
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.28383v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.28383v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Watch time is the primary engagement signal in short video feeds, and its prediction directly affects ranking and exposure. Existing methods improve watch time prediction by correcting duration bias or modeling richer distributions, but most expose only an expected or debiased watch time at serving time. Even when video duration is available to later models, the interface gives only one estimate of watch time and no probabilities for completion, overplay, or other regions relevant to downstream tasks. To address this limitation, we propose the Distributional Serving Interface (DSI), which has a distribution provider, a compact, low-dimensional summary, and lightweight readouts tailored to each task. The provider learns a joint distribution over four watch states derived from watch ratio and their event times; rules based on video duration remove incompatible combinations, while a restoration loss preserves accuracy in seconds. The summary reduces this distribution to a small set of event probabilities, time scales relative to duration, and uncertainty statistics. After training the provider, we fix its parameters and train value and ranking readouts that combine the summary with raw context. Across KuaiRec, KuaiRand-1K, and WeChat21, the complete DSI system achieves the lowest MAE on all three datasets, beating the strongest result among nine baselines by 1.9% to 8.5%, and achieves the best XAUC on two. It also leads retrieval metrics that account for video duration when complete systems are compared. With matched readouts held constant, the summary retains information relevant to each task beyond a predicted mean paired with video duration. Using the same lightweight linear heads for each new target, it also performs best on two new watch-time targets and improves a separately logged engagement target, while a randomly initialized provider does not reproduce this gain.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.27998v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>面向个体与群体的灵活推荐系统
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            A Flexible Recommendation System for Individuals and Groups
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yacine Mokhtari, Grégory Smits
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">问题：群体推荐中静态聚合策略与群历史数据稀疏导致推荐不准；核心思路：用GNN为每个用户学习个体偏好与集体成员偏好的双表示，通过二者差分刻画用户加入群体后的行为画像，再据此定义偏好聚合策略，从而统一个体与任意群体的推荐。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦群体推荐中的偏好聚合与双表示学习，属于推荐系统建模，与重排序、排序公式机制优化等核心方向无直接关联，仅弱相关于用户/群体行为建模。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-23 12:27:27
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.27998v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.27998v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Group recommender systems typically rely on either aggregating individual preferences or treating groups as distinct meta-users. However, these methods often suffer from static aggregation strategies or data sparsity issues within group histories. This paper introduces a novel approach, that relies on a GNN-based architecture to learn a dual representation of each user&#39;s preferences, capturing their behavior as an independent individual from one side and as a member of a collective from the other side. By performing a differential analysis of these individual and group-oriented preferences, our system then determines the behavioral profile of each user when joining a group. Finally, specific preference aggregation strategies are defined to cope with the behavioral profiles of the users composing a group. Consequently, the system is equally capable of delivering precise recommendations to individuals and to arbitrary groups, effectively unifying the two traditional paradigms of recommendation. Experiments on synthetic data simulating diverse group settings and behaviors confirm the flexibility and relevance of the proposed approach compared to state-of-the-art methods.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.26921v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>将词汇级产品关联蒸馏到深度Transformer中：一种用于自然语言电商搜索的极端多标签方法
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Distilling Lexical Product Associations into Deep Transformers: An Extreme Multi-Label Approach for Natural Language E-Commerce Search
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Sunnidhya Roy, Samarpita Bhaumik
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究电商搜索中的词汇不匹配问题，核心思路是将TF-IDF计算的商品间最近邻（K=50）通过伪标签知识蒸馏注入DistilBERT，以极端多标签分类损失替代传统的排序/匹配范式，使神经学生模型在无显式检索结构下仍能恢复词法教师的商品关联拓扑。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文将分散的查询-商品匹配重构为极端多标签分类（XMLC）问题，与精排、重排或拍卖机制公式优化等核心焦点关联极弱；蒸馏TF-IDF的item-to-item相似度到DistilBERT没有涉及多任务排序建模、列表级重排或排序分数公式设计。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-22 18:16:41
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.26921v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.26921v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Traditional e-commerce search platforms rely heavily on inverted indices and token-level lexical matching algorithms (e.g., BM25 and TF-IDF), which frequently fail on conversational, intent-driven, or paraphrased user queries -- the classic vocabulary mismatch problem. We formulate conversational product recommendation as an Extreme Multi-Label Classification (XMLC) problem over an e-commerce catalog of N = 54,000 products spanning 27 balanced retail categories from the Amazon Reviews &#39;23 benchmark. Using a pre-trained DistilBERT transformer encoder, we distill dense item-to-item similarity topologies (generated via TF-IDF cosine similarity over cumulative metadata with K = 50 nearest neighbours) into a deep contextual representation via a pseudo-label knowledge distillation framework. Evaluated on an exact 85/15 train/validation split (8,089 held-out products across C = 53,923 output classes) with strict self-exclusion enforced, the DistilBERT neural student achieves P@1 = 93.15%, P@5 = 90.08%, NDCG@10 = 0.8845, and MRR@10 = 0.9545, closely recovering the empirical ceiling established by the corrected TF-IDF teacher (P@1 = 98.10%, NDCG@10 = 0.9419, MRR@10 = 0.9882). Furthermore, a qualitative benchmark across ten structured natural language query archetypes -- encompassing situational, cross-category, paraphrased, and negative-constraint queries -- demonstrates that the transformer student generalises substantially beyond keyword matching, successfully resolving implicit user intent where lexical models fail completely. Finally, we analyse the architectural and memory scalability trade-offs of extreme classification projection layers at industrial catalog scale (&gt; 10^6 items) and present a concrete deployment trajectory toward Dual-Encoder (Two-Tower) vector search. Code: https://github.com/Sunnidhya/Distilling-Lexical-Product-Associations-into-Deep-Transformers.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+
+        <!-- 沾边速览 -->
+        <section id="related-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 2 / 共 2 篇</span>
+            </h2>
+            <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
+                <!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.27183v1" target="_blank" rel="noopener noreferrer">
+                当基于LLM的用户画像在线上流媒体推荐中产生价值时
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            When LLM-Based User Profiling Adds Value in Production Streaming Recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Milad Sabouri, Neeraj Sharma, Sardar Hamidian, Shaghayegh Agah
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究基于LLM的用户画像在流媒体推荐生产环境中的实际价值，直接关联排序系统中的用户特征建模。用户画像常作为排序模型（如CTR/CVR预估）的关键输入特征，其改进可提升排序质量，与核心关注点的用户行为序列建模和特征设计有具体应用联系。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-23 00:42:36
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.27183v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.27183v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Personalized recommendation depends critically on how user representations are constructed from historical behavior. Two paradigms have emerged for constructing semantic user profiles in content-based recommendation. First, aggregate methods derive user representations as numerical aggregates of semantic item embeddings. Second, LLM-based methods generate natural-language summaries of user preferences and encode them through a text encoder. Each paradigm can be combined with temporal disentanglement of recent versus historical behavior. LLM-based profile generation is significantly more expensive than aggregate approaches, raising the question of when this additional cost is justified. We present a systematic comparison of four semantic user-profiling strategies, factorially crossed across representation type and temporal handling, evaluated on a real-world production dataset. The comparison reveals how these strategies differ across user behavior types, across both accuracy and beyond-accuracy dimensions of recommendation quality, and across the temporal-window setting that governs the disentanglement.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.28053v1" target="_blank" rel="noopener noreferrer">
+                面向混合专家模型的精确分位数均衡与负载误差注入
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Exact Quantile Balancing and Load-Error Injection for Mixture-of-Experts
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Pit Neitemeier, Jiaze Li, Alessio Serra, Philipp Scholl, Sohir Maskey
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究MoE负载均衡与误差注入，属于Transformer架构效率与专家利用优化。若其均衡方法能提升电商推荐/广告排序中MoE稀疏模型的训练稳定性和效果，则对排序模型有直接应用价值，但论文本身未涉及排序机制或公式设计。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-23 13:07:05
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.28053v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.28053v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.LG</span><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Mixture-of-Experts (MoE) training requires global load balance to prevent expert under-utilization and local balance for efficient expert-parallel execution. Existing distributed Quantile Balancing (QB) uses shard-dependent or approximate global quantiles, while token-independent expert biases cannot ensure microbatch-level balance. We introduce Exact Quantile Balancing (EQB), which computes exact global-batch BF16 quantiles with negligible communication, and Load-Error Injection (LEI), which injects local load errors directly into router-score gradients. On 7.5B-parameter MoEs trained for up to 500B tokens, EQB improves global balance and downstream performance over naive QB, while LEI improves local balance and outperforms the GShard loss at comparable quality.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 加载论文数据和JavaScript逻辑 -->
+    <script>
+        // 后端注入：业务日配置与有数据的日期列表（calendar.js 读取）
+        window.CALENDAR_CONFIG = {
+            currentDateConfig: {"ymd": "20260924", "display": "2026-09-24", "year": 2026, "month": 9, "day": 24},
+            availableDates: ["20260919", "20260920", "20260921", "20260922", "20260923", "20260924"]
+        };
+    </script>
+    <script src="static/app.js"></script>
+    <script src="static/collapse.js"></script>
+    <script src="static/calendar.js"></script>
+</body>
+
+</html>
