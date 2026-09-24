@@ -12,6 +12,7 @@ def test_defaults_match_ci_behavior():
     assert s.fine_rank_papers == 20
     assert s.related_fill_max == 0
     assert s.return_papers == 20
+    assert s.llm_max_workers == 3
     assert s.lookback_hours == 36
     assert s.max_pages == 20
     assert s.request_interval == 60

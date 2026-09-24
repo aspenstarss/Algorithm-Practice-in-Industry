@@ -32,6 +32,7 @@ class Settings:
     related_fill_max: int            # related 递补进精排的篇数上限（0=沾边不精排，最省）
     return_papers: int               # 精排后返回篇数
     related_max_papers: int          # 沾边榜单页展示篇数上限（防刷屏）
+    llm_max_workers: int             # LLM 粗排/精排并发数（低并发让前缀缓存先建好，提命中率）
     lookback_hours: int              # 抓取回看窗口
     page_size: int                   # arXiv API 单页条数
     max_pages: int                   # 分类未单列时的最大页数
@@ -107,6 +108,7 @@ def load(env=None):
         related_fill_max=get_int("RELATED_FILL_MAX", 0),
         return_papers=get_int("RETURN_PAPERS", 20),
         related_max_papers=get_int("RELATED_MAX_PAPERS", 40),
+        llm_max_workers=get_int("LLM_MAX_WORKERS", 3),
         lookback_hours=get_int("ARXIV_LOOKBACK_HOURS", 36),
         page_size=get_int("ARXIV_PAGE_SIZE", 100),
         max_pages=get_int("ARXIV_MAX_PAGES", 20),

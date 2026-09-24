@@ -500,7 +500,7 @@ def perform_rough_ranking(all_papers, run_status=None):
     filtered_papers, analyzed_papers = rough_rank_papers(
         all_papers,
         filter_threshold=SETTINGS.rough_score_threshold,
-        max_workers=10,
+        max_workers=SETTINGS.llm_max_workers,
     )
     if run_status:
         track_counts = {"core": 0, "related": 0}
@@ -558,7 +558,9 @@ def perform_fine_ranking(filtered_papers, all_papers, run_status=None):
         + f" = {len(fine_input)} 篇进精排。"
     )
 
-    ranked_papers = fine_rank_papers(fine_input, paper_count=quota)
+    ranked_papers = fine_rank_papers(
+        fine_input, max_workers=SETTINGS.llm_max_workers, paper_count=quota,
+    )
     final_papers = ranked_papers[:SETTINGS.return_papers]
     if run_status:
         run_status.record_fine_rank(
