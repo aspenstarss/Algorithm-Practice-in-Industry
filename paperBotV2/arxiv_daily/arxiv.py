@@ -300,14 +300,26 @@ def rough_analyze_paper(arxiv_id, paper):
 
 def rough_analyze_papers_cocurrent(results, max_workers=10):
     analyzed_papers = []
+    items = list(results.items())
+    # 缓存预热：首篇串行执行，让 DeepSeek 前缀缓存先写入，其余并发请求全部命中
+    # （预热失败不终止，退化为普通并发）
+    if items:
+        print("🔥 串行执行首篇论文以预热 LLM 前缀缓存...")
+        try:
+            warmed = rough_analyze_paper(*items[0])
+            if warmed:
+                analyzed_papers.append(warmed)
+        except Exception as exc:
+            print(f"⚠️ 缓存预热请求失败，继续并发执行: {exc}")
+        items = items[1:]
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_paper = {
             executor.submit(rough_analyze_paper, arxiv_id, paper): paper
-            for arxiv_id, paper in results.items()
+            for arxiv_id, paper in items
         }
-        print(f"\n🚀 开始并发分析 {len(results)} 篇论文，使用 {max_workers} 个工作线程...")
+        print(f"\n🚀 开始并发分析 {len(items)} 篇论文，使用 {max_workers} 个工作线程...")
         progress_bar = tqdm(as_completed(future_to_paper),
-                            total=len(results), desc="分析进度")
+                            total=len(items), desc="分析进度")
         failed = 0
         for future in progress_bar:
             try:
@@ -382,14 +394,25 @@ def fine_analyze_paper(arxiv_id, paper):
 
 def fine_analyze_papers_cocurrent(papers, max_workers=10):
     analyzed_papers = []
+    # 缓存预热：精排前缀与粗排不同，首篇串行执行建立精排前缀缓存
+    rest = []
+    if papers:
+        rest = papers[1:]
+        print("🔥 串行执行首篇论文以预热精排前缀缓存...")
+        try:
+            warmed = fine_analyze_paper(papers[0]['arxiv_id'], papers[0])
+            if warmed:
+                analyzed_papers.append(warmed)
+        except Exception as exc:
+            print(f"⚠️ 精排缓存预热请求失败，继续并发执行: {exc}")
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_paper = {
             executor.submit(fine_analyze_paper, paper['arxiv_id'], paper): paper
-            for paper in papers
+            for paper in rest
         }
-        print(f"\n🚀 开始并发精排 {len(papers)} 篇论文，使用 {max_workers} 个工作线程...")
+        print(f"\n🚀 开始并发精排 {len(rest)} 篇论文，使用 {max_workers} 个工作线程...")
         progress_bar = tqdm(as_completed(future_to_paper),
-                            total=len(papers), desc="精排进度")
+                            total=len(rest), desc="精排进度")
         failed = 0
         for future in progress_bar:
             try:

@@ -249,3 +249,47 @@ def test_rough_rank_filters_off_track_even_with_score(monkeypatch):
     filtered, analyzed_out = arxiv.rough_rank_papers([], filter_threshold=4)
 
     assert sorted(p["arxiv_id"] for p in filtered) == ["a", "b"]
+
+
+def test_rough_analyze_warms_cache_with_first_paper(monkeypatch):
+    """首篇串行预热：先于并发执行，其余论文照常并发完成。"""
+    calls = []
+
+    def fake_analyze(arxiv_id, paper):
+        calls.append(arxiv_id)
+        return dict(paper, relevance_score=5)
+
+    papers = {
+        "warm": {"arxiv_id": "warm", "title": "w"},
+        "a": {"arxiv_id": "a", "title": "t-a"},
+        "b": {"arxiv_id": "b", "title": "t-b"},
+    }
+    monkeypatch.setattr(arxiv, "rough_analyze_paper", fake_analyze)
+
+    analyzed = arxiv.rough_analyze_papers_cocurrent(papers, max_workers=2)
+
+    assert calls[0] == "warm"                    # 首篇最先执行（缓存预热）
+    assert len(calls) == 3 and len(analyzed) == 3
+    assert analyzed[0]["arxiv_id"] == "warm"     # 预热结果在返回列表首位
+
+
+def test_rough_analyze_survives_warmup_failure(monkeypatch):
+    """预热请求失败不终止流程，其余论文继续并发处理。"""
+    calls = []
+
+    def fake_analyze(arxiv_id, paper):
+        calls.append(arxiv_id)
+        if arxiv_id == "warm":
+            raise RuntimeError("LLM down")
+        return dict(paper, relevance_score=5)
+
+    papers = {
+        "warm": {"arxiv_id": "warm", "title": "w"},
+        "a": {"arxiv_id": "a", "title": "t-a"},
+    }
+    monkeypatch.setattr(arxiv, "rough_analyze_paper", fake_analyze)
+
+    analyzed = arxiv.rough_analyze_papers_cocurrent(papers, max_workers=2)
+
+    assert sorted(calls) == ["a", "warm"]
+    assert [p["arxiv_id"] for p in analyzed] == ["a"]
