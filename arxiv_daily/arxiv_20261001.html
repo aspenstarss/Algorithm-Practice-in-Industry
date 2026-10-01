@@ -7,8 +7,8 @@
     <title>arXiv 每日论文精选</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="static/styles.css?v=1790786306">
-    <link rel="stylesheet" href="static/collapse.css?v=1790786306">
+    <link rel="stylesheet" href="static/styles.css?v=1790850508">
+    <link rel="stylesheet" href="static/collapse.css?v=1790850508">
     <script src="static/tailwind.config.js"></script>
 </head>
 
@@ -58,15 +58,15 @@
             <div class="flex flex-wrap gap-4 text-sm">
                 <div class="flex items-center">
                     <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
-                    <span id="core-count" class="font-semibold text-primary">0 篇（精选 0）</span>
+                    <span id="core-count" class="font-semibold text-primary">8 篇（精选 8）</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
-                    <span id="related-count" class="font-semibold text-secondary">1 篇</span>
+                    <span id="related-count" class="font-semibold text-secondary">7 篇</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
-                    <span id="total-fetched" class="font-semibold text-gray-700">200</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">246</span>
                 </div>
             </div>
         </div>
@@ -76,13 +76,13 @@
     <main class="container mx-auto px-4 py-5">
         <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
         <div id="category-stats">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.LG</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">3</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">3</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">2</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">6</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
         </div>
 
         <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="text-gray-700 text-sm mb-2 sm:mb-0">
-                <span id="display-count" class="font-medium">核心 0 篇 · 沾边 1 篇</span>
+                <span id="display-count" class="font-medium">核心 8 篇 · 沾边 7 篇</span>
             </div>
             <div class="flex space-x-2">
                 <button id="show-core"
@@ -100,10 +100,450 @@
         <section id="core-section" class="mb-8">
             <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
                 <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
-                <span class="text-sm font-normal text-gray-500 ml-2">0 篇 · 精选 0</span>
+                <span class="text-sm font-normal text-gray-500 ml-2">8 篇 · 精选 8</span>
             </h2>
             <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
                 
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.40267v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>双边市场设计与自动竞价
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>9/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Two-sided Market Design Meets Autobidding
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yang Cai, Christopher Liaw, Aranyak Mehta, Xizhi Tan, Mingfei Zhao
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究双边市场中存在自动竞价者（如RoS价值最大化器）时的机制设计问题：首先证明在无先验环境下，即使双边拍卖中，广泛的效用真实、预算平衡机制对LGFT目标具有无界PoA；随后给出正面结果——在重复双边拍卖中McAfee贸易减少机制对LGFT无界但对RoS竞价的流动福利有常数PoA，且在有分布信息时设计出一种双边机制，在至少一侧为RoS价值最大化者时实现第一最优流动福利，并满足激励兼容、个体理性和事前弱预算平衡。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">直接研究自动竞价下的双边市场机制设计，涉及RoS价值最大化、激励兼容、预算平衡和福利保证，与机制公式优化、拍卖计价、流量分配和平台多目标平衡等核心方向强相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 17:43:41
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.40267v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.40267v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Autobidding has become a dominant paradigm in online advertising by enabling advertisers to set high-level goals while algorithms handle real-time bid optimization. A prominent example is the Return-on-Spend (RoS) value maximizer, which maximizes total value subject to an aggregate value-per-spend constraint. While most work on mechanism design for autobidders focuses on one-sided markets, many real-world platforms involve strategic behavior on both sides. We initiate the study of two-sided markets with autobidders. We first establish a stark negative result: for the challenging objective of liquid gains from trade (LGFT) in the prior-free setting, broad classes of utility-truthful, budget-balanced mechanisms have unbounded Price of Anarchy (PoA) once value-maximizing agents are present, even in double-auction environments. We then give two positive results. In the prior-free repeated double-auction setting, McAfee&#39;s Trade Reduction mechanism has unbounded PoA for LGFT but achieves constant PoA for liquid welfare under RoS bidding, showing that off-the-shelf mechanisms retain meaningful welfare guarantees. With distributional information regarding the private costs and values, we design a two-sided mechanism that is incentive compatible for each agent under its corresponding objective, individually rational, ex-ante weakly budget balanced, and achieves first-best liquid welfare, equivalently optimal LGFT, whenever at least one side of the market consists of RoS value maximizers. This result applies to matching markets with general downward-closed feasibility constraints. It contrasts sharply with the Myerson--Satterthwaite impossibility theorem~\citep{MS83}, which rules out first-best efficiency with incentive compatibility, individual rationality, and budget balance even in bilateral trade when both the buyer and the seller are quasi-linear utility maximizers.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.38698v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>自动出价下广义比例首价拍卖的效率
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>9/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Efficiency of Generalized Proportional First-Price Auctions Under Auto-bidding
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yang Cai, Vineet Gupta, Yanchen Jiang, Christopher Liaw, Aranyak Mehta, Grigoris...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究自动出价环境下比例首价拍卖的最坏情况效率损失，证明两投标者时最优PoA为1.5，且对n个投标者采用指数r=2n可突破确定性机制效率上界2，渐近达到理论下界。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究自动出价下广义比例首价拍卖的机制设计，直接涉及拍卖机制、效率损失（PoA）和公式优化，与我的机制与公式优化核心焦点高度匹配。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 00:27:24
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.38698v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.38698v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Auto-bidding is now widely adopted in online advertising platforms, allowing advertisers to specify high-level campaign objectives--such as maximizing total value subject to a return-on-spend (ROS) constraint--rather than manual per-query bids. A central question in algorithmic mechanism design is characterizing the worst-case efficiency loss, or Price of Anarchy (PoA), across auction formats in this prior-free setting. While randomized auctions are known to strictly improve efficiency over deterministic mechanisms for two bidders, two fundamental questions have remained open: (1) what is the optimal PoA for two bidders, and (2) can any mechanism beat the barrier of 2 for general $n \ge 3$ bidders? We resolve both questions using the family of $r$-proportional first-price auctions ($\text{pFPA}_r$), in which each bidder wins with probability proportional to their bid raised to an exponent $r &gt; 0$ and pays their bid upon winning. First, for two bidders, we prove that the standard proportional first-price auction ($r = 1$) achieves a tight $\text{PoA} \le 1.5$, complemented by a matching lower bound showing that no anonymous, monotone mechanism can do better. Second, for general $n \ge 2$ bidders, setting $r = 2n$ achieves $\text{PoA} \le 2 - \frac{1}{4n+1} = 2 - Ω(1/n)$ across all undominated bid profiles, breaking the deterministic barrier of 2 for every finite $n$ and asymptotically matching the known $2 - Θ(1/n)$ lower bound.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.40241v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>面向决策的推荐重排序：Jev的实证研究
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Decision-Oriented Recommendation Reranking: An Empirical Study of Jev
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Hanjia Lyu, Yinglong Xia
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究推荐重排序中LLM的质量-效率权衡问题，核心思路是将重排序视为对预定义候选项的结构化选择，采用决策导向的Jev模型（“System One Model”）进行个性化重排，并与推荐专用模型及点式/列表式Qwen重排器对比，发现Jev在保持效果的同时延迟增长更平缓。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文直接研究推荐重排序任务，比较决策导向模型与点式/列表式LLM重排器的效果和延迟，与重排序和效率权衡紧密相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 17:33:43
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.40241v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.40241v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Large language models (LLMs) have shown promise for recommendation reranking, but their use introduces an important tradeoff between recommendation quality and serving efficiency. We investigate whether a decision-oriented model provides a useful alternative when the reranking task is fundamentally a structured choice among predefined candidate items. Specifically, we conduct a controlled empirical study of Jev, described by TypeSafe AI as a ``System One Model,&#39;&#39; for personalized recommendation reranking and compare it with recommendation-specific models and pointwise and listwise Qwen rerankers across multiple Amazon Reviews domains and candidate-set sizes, evaluating both recommendation effectiveness and observed serving latency. Our results show that Jev maintains strong recommendation effectiveness relative to the evaluated baselines while exhibiting substantially more gradual latency growth than the pointwise Qwen rerankers, although its observed serving latency remains substantially higher than that of recommendation-specific models. Together, these characteristics place Jev in a distinct quality--latency operating regime across candidate sizes and domains. These findings motivate further investigation of decision-oriented models for recommendation and other ranking tasks with structured output spaces.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39532v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>基于LP对偶的预算约束拍卖的紧致液态福利保证
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Tight Liquid Welfare Guarantees for Auctions with Budgets via LP Duality
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Twan Kroll, Guido Schäfer, Artem Tsikiridis
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究预算约束下拍卖的效率（液态福利），通过LP对偶将PoA证明归约为寻找对偶可行解，并引入针对预算约束的平滑性概念，统一分析了第一/第二/全支付、多单位及GFP位置拍卖，并推广至无预算GSP和统一价格拍卖的界。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">本文虽为机制设计与拍卖理论，但其关于预算约束下拍卖的紧界分析（如GFP位置拍卖、GSP）与我的机制公式优化和eCPM/竞价策略直接相关，且LP对偶框架可迁移至排序分数公式设计。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 11:35:45
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39532v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39532v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We study the efficiency of auctions with budget-constrained bidders and derive tight price of anarchy (PoA) bounds for coarse correlated equilibria (CCE). To this end, we develop a general framework that reduces proving PoA guarantees to finding feasible solutions to the dual of a linear program. The LP is formulated over a small number of per-bidder equilibrium statistics, incorporates constraints implied by the auction setting and equilibrium behavior, and captures a novel smoothness notion tailored to budget-constrained environments; we provide a reduction from classical smoothness to this new notion. Our approach enables simple and tight PoA analyses across a broad range of auction formats. Using our framework, we obtain tight liquid welfare guarantees for simultaneous first-price, second-price, and all-pay auctions, simultaneous auctions with restricted uniform bidding interfaces, discriminatory and uniform price multi-unit auctions, and generalized first-price position auctions. Beyond budget-constrained settings, we derive new lower bounds for the budget-free uniform price auction and generalized second-price auction; in particular, our lower bound for the uniform price auction matches the upper bound of $3.146$ by de Keijzer et al. (2013).
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.38554v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>带价格预测的拍卖
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Auctions with Price Predictions
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Muthu Sundar, Alec Sun, Siddharth Prasad, Dravyansh Sharma
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对单物品无限供应场景，仅给定一个收益最大化统一价格的预测，研究如何设计拍卖机制；核心结论是随机化在预测价格与最优无先验后备拍卖之间切换的机制可达一致性-鲁棒性帕累托最优，并进一步实现随预测精度优雅降级的收益，同时从学习理论角度探讨如何从历史市场数据获取该预测。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究基于价格预测的拍卖机制设计，直接涉及拍卖公式优化与机制设计，与我的机制与公式优化方向高度相关，但未涉及排序模型或重排技术。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-29 21:14:49
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.38554v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.38554v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We design auctions for the sale of a single item with unlimited supply given a single prediction of the revenue-maximizing uniform price. This departs from prior work on auctions with predictions which typically assumes predictions of every bidder&#39;s value. Our main result is a characterization of the Pareto frontier for consistency and robustness attainable by any universally truthful auction. We show that a mechanism that randomizes between posting the predicted price and conducting an optimal prior-free fallback auction is Pareto-optimal. We then extend our results to achieve graceful degradation of revenue as a function of the prediction accuracy. Finally, we study how such a prediction can be obtained from historical market data through the lens of learning theory. Together, our results give an end-to-end account of how a price prediction can be learned and used robustly to maximize auction revenue.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39007v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>RouteRec：行为引导的稀疏路由用于序列推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>5/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            RouteRec: Behavior-Guided Sparse Routing for Sequential Recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Junyeong Song, Jaemin Yoo
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">问题：现有序列推荐对所有会话用同一参数化模块处理，未按行为差异做条件计算，MoE中“用什么指导专家分配”尚不明确。核心思想：从会话历史中提取交互节奏、品类聚焦、重复携带、热门倾向四类行为证据，在宏观/中观/微观三级路由，先由线索分数选专家组、再由骨干状态细化专家选择，使行为线索直接指导专家分配。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文将MoE条件计算引入序列推荐，核心是用会话行为线索进行稀疏路由，属于排序模型的前沿架构优化，与精排建模相关；但其路由依据是行为统计摘要，并非聚焦重排、列表级多样性或机制公式设计，因此相关性中等。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 05:18:00
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39007v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39007v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Sessionized interaction histories contain behavioral patterns that can improve sequential recommendation. However, existing models process all sessions through the same parameterized blocks, regardless of their behavioral differences. Mixture of Experts (MoE) enables conditional computation, but it leaves open what should guide expert allocation. We propose RouteRec, a sequential recommender that uses observed session behavior as the routing criterion. RouteRec summarizes four types of behavioral evidence from sessionized histories: interaction tempo, item-group focus, repetition and carryover, and popularity tendency. It uses these cues to route computation at macro, mid, and micro scopes. Cue-derived scores first select expert groups; within each selected group, the current backbone state then refines expert selection. Across six public datasets and 18 dataset-metric combinations, RouteRec ranks first in 12 and second in three, yielding the best overall average rank of 1.61 compared with 4.11 for the next-best baseline. Additional analyses suggest that the behavioral cues guide expert allocation beyond added capacity and produce routing patterns aligned with observed behavior. Our code is available at https://github.com/jy1559/RouteRec
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.40098v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>为时间定价，而非仅为Token：面向LLM推理的延迟感知机制设计
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Pricing Time, Not Just Tokens: Latency-Aware Mechanism Design for LLM Inference
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Ian McDougall, Karthikeyan Sankaralingam
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对LLM推理服务市场，论文考虑买家的支付意愿、任务量和时间偏好三维私有信息，提出离散硬件层可诱导时间偏好自选择，将三维筛选简化为每层一维筛选，并利用GPU推理物理推导成本结构，通过虚拟价值技术刻画最优分层机制。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究LLM推理服务的定价与机制设计，虽涉及经济机制和延迟感知，但核心是云服务市场资源分配，与电商排序、重排、广告拍卖等聚焦业务不直接相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 16:34:17
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.40098v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.40098v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    The economic theory of LLM pricing treats tokens as a homogeneous commodity considering aggregate token count as the main features buyers and sellers consider. We model inference as a service market where buyers have three-dimensional private information - willingness-to-pay, task volume, and time preference - and utility depends on latency slack alongside token quantities. Our main result is a separation theorem: discrete hardware tiers induce endogenous self-selection on time preferences, reducing three-dimensional screening to standard one-dimensional screening within each tier. We derive the cost structure from GPU inference physics - compute-bound prefill and bandwidth-bound decode - and characterize optimal tiered mechanisms via virtual-value techniques. Optimal per-task prices are volume-independent, providing theoretical grounding for flat per-token API pricing. We verify the mechanism empirically by calibrating to 8-GPU clusters of H100 and B200 hardware. The separation theorem holds in 83% of 105 tested configurations overall, rising to 96% at economically relevant WTP scales. A seller adopting two-tier pricing under the optimal mechanism captures 26-66% higher profit than the best single-tier alternative, with gains driven by efficient cross-tier allocation in regimes where hardware costs are a significant fraction of per-request value.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.38473v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>重排序与后期交互驱动检索质量：面向科学问答的RAG策略受控比较
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Re-ranking and Late Interaction Drive Retrieval Quality: A Controlled Comparison of RAG Strategies for Scientific Question Answering
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Bhagyesh Rathi, Eshan Chawla, William B. Andreopoulos
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文针对科学问答场景，系统对比了六种检索增强生成策略（包括稠密检索、查询改写、LLM重排序、多查询融合、智能体工具调用和ColBERTv2后期交互），并构建了大规模合成问题数据集和统一评估协议。核心发现是重排序与后期交互能提升检索质量，为RAG设计选择提供了成本-质量权衡的开放测试平台。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文是RAG检索策略的对比基准研究，虽涉及重排序和后期交互，但属于NLP问答领域，未触及电商排序、拍卖机制或曝光公平等核心关注点。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-29 20:04:29
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.38473v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.38473v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Retrieval-Augmented Generation (RAG) is now the standard way to ground Large Language Models (LLMs) in external knowledge, yet the design space of retrieval pipelines is large and the trade-offs between variants are not well understood, especially on domain-specific corpora at realistic scale. In this work, we present a controlled comparison of six retrieval strategies for scientific question answering: (i) classic top-k dense retrieval, (ii) LLM-based query rephrasing, (iii) query rephrasing followed by LLM-based reranking, (iv) multi-query fusion via Reciprocal Rank Fusion (RRF), (v) an agentic tool-call pipeline in which the generator decides for itself whether to retrieve, and (vi) late-interaction retrieval with ColBERTv2. All six pipelines share the same generator (Meta-Llama/Llama-3.1-8B-Instruct), prompt, and evaluation protocol; the five single-vector pipelines additionally share SPECTER2 embeddings and a Chroma vector store; and all six retrieve from the full corpus of 463,971 arXiv papers dated 2024-2025. To support reproducible, large-scale evaluation, we also release a synthetic question dataset of 19,484 problem-statement and methodology questions generated by Llama-3.1-8B-Instruct from a random sample of 10,000 papers across academic domains (query generation succeeded for 9,742 of them), and every strategy is evaluated on this same query set. We describe the architecture and implementation of each pipeline, release the code and the synthetic question dataset, and evaluate each strategy with an LLM-as-a-judge protocol along multiple quality dimensions, together with direct gold-paper retrieval metrics. The result is an open testbed for studying the cost and quality trade-offs of RAG design choices on a research-literature corpus, and a basis for future work on faithfulness, retrieval robustness, and agentic retrieval.
+                </div>
+            </details>
+    </div>
+</div>
             </div>
         </section>
 
@@ -111,10 +551,295 @@
         <section id="related-section" class="mb-8">
             <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
                 <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
-                <span class="text-sm font-normal text-gray-500 ml-2">显示 1 / 共 1 篇</span>
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 7 / 共 7 篇</span>
             </h2>
             <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
                 <!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39327v1" target="_blank" rel="noopener noreferrer">
+                抖音的生成式端到端广告检索
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Generative End-to-end Ad Retrieval at Douyin
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Shaowen Zeng, Yanhua Huang, Jiacheng Sun, Jiarui Liu, Qian Dai, Zhikai Yang, Han...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文提出生成式模型用于广告检索，该检索阶段直接为下游排序/竞价机制提供候选集，其生成式架构可影响后续排序与机制公式的设计（如候选质量、eeCPM预估）。属于面向排序模型的生成式推荐技术，应用路径具体直接。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 09:00:47
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39327v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39327v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative retrieval reformulates recommendation as the generation of discrete item tokens. However, scaling this paradigm to real-world recommender systems reveals two critical bottlenecks: 1) Representation collapse, where the item tokenizer converges to degenerate results under continuous distribution shifts, fundamentally hindering stable end-to-end adaptation. 2) Item collisions, where the massive candidate pool causes distinct items to share identical token sequences, compromising the final retrieval precision. Crucially, these bottlenecks are inherently coupled: expanding codebook capacity to mitigate collisions inevitably exacerbates collapse. To address them simultaneously, we propose GEAR, an end-to-end framework that jointly optimizes the tokenizer, generator, and reranker. To mitigate representation collapse, we introduce BasisVQ, which re-parameterizes the codebook via an orthogonal basis to enable global gradient sharing and rigid spatial rotation of the latent space, effectively stabilizing gradient dynamics without ad-hoc heuristics. We further extend it to prefix-aware BasisRQ, substantially enhancing the codebook&#39;s expressiveness with the same asymptotic time complexity. To resolve item collisions, GEAR integrates a context-conditioned reranking head into the generative process, efficiently disambiguating colliding items with minimal computational overhead. By unifying stable tokenization and joint reranking within an end-to-end generative framework, GEAR establishes a fully differentiable and scalable paradigm. It currently serves hundreds of millions of daily active users on Douyin Ads, yielding substantial empirical improvements in extensive online A/B tests.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39312v1" target="_blank" rel="noopener noreferrer">
+                学习多分辨率相关性用于分层生成式检索
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Learning Multiresolution Relevance for Hierarchical Generative Retrieval
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Weihao Shen, Wei Chen, Fuwei Zhang, Guojun Liu, Qingsong Hua, Wei Lin, Fuzhen Zh...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦生成式检索的分层多分辨率相关性建模，其方法可直接应用于生成式推荐或排序中的层次化生成与相关性估计，对生成式排序模型有具体的技术借鉴价值，因此归为相关技术。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 08:51:38
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39312v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39312v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative retrieval with semantic identifiers (SIDs) makes successive decisions over a document hierarchy. Relevant documents for the same query may share coarse prefixes and diverge at finer depths, with branching patterns varying across queries. These paths reveal how relevance is distributed across successive refinements, yet standard full-SID supervision treats them as separate training targets. To make this allocation explicit, we formulate multiresolution relevance as consistent conditional distributions induced by a single document-level relevance measure across the SID hierarchy. We introduce \textbf{RARS}, \textbf{R}esolution-\textbf{A}ligned \textbf{R}elevance \textbf{S}upervision, which uses the resulting refinement-level distributions to supervise a shared query representation. RARS aggregates document relevance over prefixes and trains a prefix-conditioned predictor to allocate relevance among sibling branches. All relevance-bearing children participate in local competition, and each local loss is weighted by the relevance mass reaching its parent. This objective trains the query encoder to capture both the coarse structure shared by relevant documents and their finer branch allocations. The predictor is discarded after training, preserving standard autoregressive retrieval at inference. Experiments on three multilingual ESCI locales show consistent improvements over matched full-SID training under autoregressive decoding. RARS also outperforms grouped soft-target, decoder soft-target, and sampled-tree supervision under a common retrieval rule. The gains persist across alternative identifier structures and relevance definitions. Code is available at: https://github.com/Nevaeh7/RARS
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.38999v1" target="_blank" rel="noopener noreferrer">
+                当LLM推断的用户上下文在生产级流式推荐中增加价值时
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            When LLM-Inferred User Context Adds Value in Production Streaming Recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Milad Sabouri, Neeraj Sharma, Sardar Hamidian, Shaghayegh Agah
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文探讨LLM推断的用户上下文在流式推荐中的价值，属于LLM-based用户行为理解用于排序特征，可直接应用于推荐系统排序模型，提升上下文感知能力，与核心关注点中的用户行为序列建模和多场景统一建模相关，但并非直接针对电商搜索/广告的排序或机制优化。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 05:12:57
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.38999v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.38999v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Contextual information in recommender systems is shifting from static, predefined variables toward latent representations inferred from behavior. Large language models support this shift by rendering an unstructured interaction history as a natural-language summary, which yields a thematic user context that can be encoded and used in place of an aggregate profile. The conditions under which such generated profiles outperform aggregate embeddings have received limited characterization mainly at the domain level. We evaluate semantic user-profiling strategies on a production streaming platform, ranking against the full catalog. The evaluation covers a 2*2 design space crossing representation type (aggregate or LLM-generated) with contextual scope (holistic history or attention-fused short-term and long-term contexts). The relative ordering of the two representation types is conditional on the user&#39;s consumption regime. Aggregate profiles are consistently stronger under habitual consumption, which characterizes approximately four-fifths of the population, while LLM-generated profiles are stronger for exploratory users whose subsequent interactions diverge semantically from their history. We also observe a popularity-attractor effect in LLM-generated profiles, which modestly raises within-list diversity while substantially lowering catalog coverage and reducing novelty. These results indicate that a context-aware system can select a profiling strategy from the inferred consumption regime rather than applying one representation to all users.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39828v1" target="_blank" rel="noopener noreferrer">
+                快手探索者 LLM-Rec 挑战赛 2026：推理式生成推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            KUAISHOU Explorer LLM-Rec Challenge 2026: Reasoning Generative Recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Jiangxia Cao, Hao Peng, Wenlong Xu, Jiaxin Deng, Zhixin Ling, Xingmei Wang, Kun ...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">这是一项关于基于LLM的生成式推荐（以推理为核心）的挑战赛/基准，这与面向排序应用的生成式推荐高度相关。其推理与生成式公式直接适用于推荐/排序模型设计。不过，由于它只是一个挑战赛公告，并未提出具体的排序机制或公式改进，因此价值明确但偏间接。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 14:28:37
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39828v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39828v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative recommendation, has been attracted a surge of attentions in industrial and academic research community, towards to build more smart system to build next-generation recommender. Under the significant developing wave of large language model, our team have been developed Semantic ID based OneRec/OneRec-V2. These models have been widely deployed in production and demonstrate the scaling potential of the autoregressive next-item prediction paradigm for industrial recommender systems. Building on the success of OneRec, we further explored a series of models, including OneRec-Think, OpenOneRec, and OneReason, that connect item Semantic IDs with natural language in a unified representation space and seek to unlock the potential of natural-language chain-of-thought (CoT) reasoning for recommendation. However, our preliminary works found that introducing reasoning CoT does not always improve the recommendation performance. To address this issue, OneReason strengthens the semantic alignment between items and language, introduces structured template-based supervision for interest reasoning, and applies advanced reinforcement learning techniques to make reasoning more beneficial to recommendation. As a frontier topic to building recommendation foundation models, we believe this topic has significant research value and hope to encourage more researchers to explore it together. To this end, together with the SIGIR 2026 community, we organized the KUAISHOU Explorer LLM-Rec Challenge 2026: Reasoning Generative Recommendation.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39043v1" target="_blank" rel="noopener noreferrer">
+                生成式与协同用户画像之间的路由：面向可控新颖性的服务时门控
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Routing Between Generative and Collaborative User Profiles: A Serving-Time Gate for Controllable Novelty
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Milad Sabouri, Neeraj Sharma, Sardar Hamidian, Shaghayegh Agah
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该文提出在生成式与协同式用户画像之间进行服务时门控路由，以控制推荐新颖性。用户画像融合与可控新颖性直接应用于排序模型中的用户行为建模与多目标权衡，门控机制可集成到生成式推荐或排序特征中，为排序中的多样性与新颖性控制提供具体方案。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 05:53:08
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39043v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39043v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Large language models (LLMs) enable rich semantic user profiles for recommendation, but such profiles are more expensive to generate and are not necessarily desirable to deploy uniformly. We study whether LLM-generated profiles can instead be invoked selectively within a production recommendation pipeline. Using a real-world streaming dataset covering movies, TV shows, and sports content, we train a serving-time routing gate that assigns each user to either a collaborative sequential recommendation model or a recommendation model driven by an LLM-generated profile. The gate uses only serving-time features and learns to identify users for whom profile-based routing can increase Novelty@10 while preserving ranking relevance. A routing threshold controls how aggressively users are sent to the generative model, exposing a tunable novelty--relevance trade-off. At an overall NDCG-loss budget of 5\%, the learned gate increases Novelty@10 by 6.5\% while routing 12.5\% of users, outperforming simple heuristic and random routing policies at comparable relevance cost. These results show that LLM-generated user profiles can serve as a controllable complement to collaborative recommendation, while results with non-generative semantic profiles indicate that the benefit stems from selective routing rather than LLM generation alone.
+                </div>
+            </details>
+    </div>
+</div><!--
  * @Author: Doragd doragd@users.noreply.github.com
  * @Date: 2025-10-09 23:23:38
  * @LastEditors: Doragd doragd@users.noreply.github.com
@@ -129,8 +854,8 @@
                 ATTUNER：通过查询侧自适应实现免重计算的KV缓存复用
             </a>
         </h3>
-        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
-            <i class="fa fa-star mr-1"></i>5/10
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
         </span>
     </div>
     
@@ -148,7 +873,7 @@
         
         <div class="mb-2">
             <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
-            <p class="text-gray-600 text-sm mt-1">该论文提出查询侧自适应以复用KV缓存，避免重计算，属于Transformer架构效率优化（如注意力机制变体）。在排序场景中，LLM用于用户行为序列建模时，长序列推理延迟是瓶颈，此方法可加速自注意力计算，对基于LLM的排序特征提取有直接应用潜力。</p>
+            <p class="text-gray-600 text-sm mt-1">该论文提出查询侧自适应的KV缓存复用方法，可显著提升长序列推理效率，直接适用于基于Transformer的排序模型（如用户行为序列建模），降低在线延迟，且免重计算特性对实时排序系统有明确工程价值。</p>
         </div>
         
         <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
@@ -168,6 +893,63 @@
                  </summary> 
                  <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
                     Large language model (LLM) agents repeatedly load reusable content, such as skills, documents, and memory entries, into the current context. Re-encoding this content for every request wastes computation. Position-independent caching (PIC) alleviates this by encoding each artifact independently and reusing its key-value (KV) states at arbitrary positions, but it incurs a quality loss relative to full-context prefill. Existing methods repair this loss by restoring global position IDs or recomputing selected tokens. In this work, we isolate the source of the loss, finding that the positional mismatch has minor effect, and independently cached artifacts retain faithful representations: reading a provided artifact stays largely accurate, and performance degrades only when the model must select among multiple artifacts. Moreover, replacing PIC&#39;s attention scores with full-prefill scores recovers performance with the cached KV unchanged, localizing the failure to the attention rather than KV recomputation. Motivated by this, we propose \textsc{Attuner}, a query-side adaptation method that learns to read a frozen artifact cache. \textsc{Attuner} inserts low-rank adapters into the query projections and is trained by distilling full-prefill distribution into the student. It trains fewer than 0.05\% of the model parameters and, at inference, requires neither cache recomputation nor a full-context reference. On Qwen3-4B and Qwen3-8B across seven benchmarks covering skills, documents, memory, and code, \textsc{Attuner} substantially outperforms prior PIC baselines in both in-domain and out-of-domain settings, matches full-context prefill quality while providing up to $3.73\times$ speedup.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2609.39319v1" target="_blank" rel="noopener noreferrer">
+                用于生成式检索的残差轨迹蒸馏
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>5/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Residual Trajectory Distillation for Generative Retrieval
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Weihao Shen, Wei Chen, Fuwei Zhang, Guojun Liu, Qingsong Hua, Wei Lin, Fuzhen Zh...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">The paper addresses generative retrieval, which is directly related to generative recommendation and semantic ID-based ranking. However, it focuses on distillation for retrieval rather than ranking models or mechanism formula design, making the application somewhat indirect.</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-09-30 08:59:09
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2609.39319v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2609.39319v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative retrieval has emerged as a general retrieval paradigm, representing items with discrete Semantic IDs (SIDs) and retrieving them through autoregressive identifier generation. When SIDs are constructed with residual quantization (RQ), standard retrieval training supervises only the selected codes and discards the residual trajectories that produce them. The same hard code can nevertheless arise from different preferences over competing codewords, while the residual trajectory also contains information about subsequent quantization decisions. As a result, hard SID supervision collapses distinct quantization behaviors into identical targets and leaves information available during indexing unused in retrieval training. We introduce ResTD, a Residual Trajectory Distillation framework that transfers this discarded indexing information into retrieval training. Treating the frozen RQ indexer as a process teacher, it distills residual-induced codeword preferences into SID-decoding states. This supervision recovers distinctions hidden by hard assignments and allows earlier decoder states to capture information about subsequent quantization decisions before the corresponding SID suffix is generated. In this way, richer information from SID construction is incorporated into retrieval learning while preserving the original retrieval index and inference procedure. Experiments on multilingual e-commerce retrieval show consistent improvements over strong baselines and matched training controls. Controlled comparisons show that residual-derived targets outperform the tested codebook-only soft targets. Representation probes further show that future codebook preferences become more recoverable from earlier decoder states. ResTD can also be readily extended beyond retrieval to generative recommendation. Code is available at: https://github.com/Nevaeh7/iclr2027_ResTD.git.
                 </div>
             </details>
     </div>
