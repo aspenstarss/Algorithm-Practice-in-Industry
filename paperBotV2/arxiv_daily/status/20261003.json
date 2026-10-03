@@ -2,15 +2,15 @@
   "date": "20261003",
   "status": "success",
   "stage": "completed",
-  "workflow": "arxiv_daily_recovery",
-  "run_id": "37032349515",
+  "workflow": "arxiv_daily_full",
+  "run_id": "37112515016",
   "run_attempt": "1",
   "trigger": "schedule",
-  "started_at": "2026-10-02T16:12:57+00:00",
-  "ended_at": "2026-10-02T16:31:10+00:00",
+  "started_at": "2026-10-03T09:17:21+00:00",
+  "ended_at": "2026-10-03T09:27:38+00:00",
   "fetch": {
     "success": true,
-    "total_papers": 200,
+    "total_papers": 206,
     "by_category": {
       "cs.IR": {
         "success": true,
@@ -20,14 +20,14 @@
       },
       "cs.CL": {
         "success": true,
-        "papers": 100,
-        "pages": 3,
+        "papers": 105,
+        "pages": 0,
         "error": ""
       },
       "cs.CV": {
         "success": true,
-        "papers": 100,
-        "pages": 3,
+        "papers": 101,
+        "pages": 0,
         "error": ""
       },
       "cs.GT": {
@@ -55,7 +55,7 @@
     "usage": {
       "calls": 200,
       "prompt_tokens": 198884,
-      "completion_tokens": 9743,
+      "completion_tokens": 9820,
       "cache_hit_tokens": 153600
     }
   },
