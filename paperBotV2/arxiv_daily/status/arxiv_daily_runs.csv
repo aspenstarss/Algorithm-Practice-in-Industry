@@ -1,6 +1,4 @@
 date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,duration_seconds,total_papers,cs_ir_papers,cs_cl_papers,cs_cv_papers,rough_rank_total,rough_rank_success,rough_rank_failed,fine_rank_total,fine_rank_success,fine_rank_failed,avg_rough_score,avg_fine_score,daily_json_written,html_generated,error
-20260905,33953380227,1,arxiv_daily_full,schedule,success,completed,2026-09-05T07:45:21+00:00,2026-09-05T07:52:46+00:00,445,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
-20260905,33968509535,1,arxiv_daily_recovery,schedule,success,completed,2026-09-05T13:19:09+00:00,2026-09-05T13:26:39+00:00,450,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
 20260906,34020576860,1,arxiv_daily_full,schedule,success,completed,2026-09-06T07:59:50+00:00,2026-09-06T08:06:03+00:00,373,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
 20260906,34036180859,1,arxiv_daily_recovery,schedule,success,completed,2026-09-06T13:28:51+00:00,2026-09-06T13:33:41+00:00,290,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
 20260907,34100684963,1,arxiv_daily_full,schedule,success,completed,2026-09-07T08:28:23+00:00,2026-09-07T08:35:33+00:00,430,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
@@ -55,3 +53,4 @@ date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,durati
 20261004,37193748055,1,arxiv_daily_full,schedule,success,completed,2026-10-04T09:56:52+00:00,2026-10-04T10:48:13+00:00,3081,168,0,68,100,163,163,0,0,0,0,1.02,0,true,true,
 20261005,37297944102,1,arxiv_daily_full,schedule,success,completed,2026-10-05T10:39:46+00:00,2026-10-05T10:57:00+00:00,1034,216,11,100,100,212,212,0,0,0,0,1.1,0,true,true,
 20261006,37361658470,1,arxiv_daily_recovery,schedule,success,completed,2026-10-05T19:12:33+00:00,2026-10-05T19:21:38+00:00,545,38,0,11,27,38,38,0,0,0,0,1.11,0,true,true,
+20261006,37450458473,1,arxiv_daily_full,schedule,success,completed,2026-10-06T10:32:55+00:00,2026-10-06T10:44:12+00:00,677,104,33,11,27,104,104,0,5,5,0,1.71,6.6,true,true,
