@@ -1,5 +1,4 @@
 date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,duration_seconds,total_papers,cs_ir_papers,cs_cl_papers,cs_cv_papers,rough_rank_total,rough_rank_success,rough_rank_failed,fine_rank_total,fine_rank_success,fine_rank_failed,avg_rough_score,avg_fine_score,daily_json_written,html_generated,error
-20260909,34328073218,1,arxiv_daily_full,schedule,success,completed,2026-09-09T08:15:48+00:00,2026-09-09T08:23:10+00:00,442,195,14,79,102,187,187,0,20,20,0,1.81,7.4,true,true,
 20260910,34454066082,1,arxiv_daily_full,schedule,success,completed,2026-09-10T08:15:07+00:00,2026-09-10T08:22:27+00:00,440,177,10,80,87,168,168,0,20,19,1,2.04,6.21,true,true,
 20260911,34577776532,1,arxiv_daily_full,schedule,success,completed,2026-09-11T08:10:07+00:00,2026-09-11T08:17:19+00:00,432,174,14,82,78,164,164,0,20,20,0,2.01,6.9,true,true,
 20260912,34682130578,1,arxiv_daily_full,schedule,success,completed,2026-09-12T08:00:55+00:00,2026-09-12T08:08:34+00:00,459,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
@@ -55,3 +54,4 @@ date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,durati
 20261009,37815782233,1,arxiv_daily_recovery,schedule,success,completed,2026-10-08T17:20:47+00:00,2026-10-08T17:36:53+00:00,966,200,0,100,100,199,199,0,0,0,0,1.1,0,true,true,
 20261009,37919383365,1,arxiv_daily_full,schedule,success,completed,2026-10-09T10:44:16+00:00,2026-10-09T10:54:57+00:00,641,232,19,100,102,229,229,0,6,6,0,1.21,6.67,true,true,
 20261010,37962669863,1,arxiv_daily_recovery,schedule,success,completed,2026-10-09T16:56:41+00:00,2026-10-09T17:14:30+00:00,1069,200,0,100,100,200,200,0,1,1,0,1.1,2.0,true,true,
+20261010,38043320823,1,arxiv_daily_full,schedule,success,completed,2026-10-10T09:59:45+00:00,2026-10-10T10:11:10+00:00,685,208,0,102,106,200,200,0,1,1,0,1.13,1.0,true,true,
