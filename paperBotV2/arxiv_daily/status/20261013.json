@@ -1,0 +1,68 @@
+{
+  "date": "20261013",
+  "status": "success",
+  "stage": "completed",
+  "workflow": "arxiv_daily_recovery",
+  "run_id": "38299694776",
+  "run_attempt": "1",
+  "trigger": "schedule",
+  "started_at": "2026-10-12T19:45:26+00:00",
+  "ended_at": "2026-10-12T19:55:35+00:00",
+  "fetch": {
+    "success": true,
+    "total_papers": 64,
+    "by_category": {
+      "cs.IR": {
+        "success": true,
+        "papers": 0,
+        "pages": 0,
+        "error": ""
+      },
+      "cs.CL": {
+        "success": true,
+        "papers": 14,
+        "pages": 1,
+        "error": ""
+      },
+      "cs.CV": {
+        "success": true,
+        "papers": 50,
+        "pages": 2,
+        "error": ""
+      },
+      "cs.GT": {
+        "success": true,
+        "papers": 0,
+        "pages": 0,
+        "error": ""
+      }
+    }
+  },
+  "llm": {
+    "rough_rank_total": 62,
+    "rough_rank_success": 62,
+    "rough_rank_failed": 0,
+    "rough_tracks": {
+      "core": 0,
+      "related": 0
+    },
+    "fine_rank_total": 0,
+    "fine_rank_success": 0,
+    "fine_rank_failed": 0,
+    "fine_rank_related_filled": 0,
+    "avg_rough_score": 1.0,
+    "avg_fine_score": 0,
+    "usage": {
+      "calls": 62,
+      "prompt_tokens": 61678,
+      "completion_tokens": 2974,
+      "cache_hit_tokens": 47616
+    }
+  },
+  "output": {
+    "daily_json_written": true,
+    "html_generated": true,
+    "feishu_should_send": true
+  },
+  "error": ""
+}
