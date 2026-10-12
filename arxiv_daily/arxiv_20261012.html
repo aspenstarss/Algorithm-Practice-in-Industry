@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 每日论文精选</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css?v=1791804108">
+    <link rel="stylesheet" href="static/collapse.css?v=1791804108">
+    <script src="static/tailwind.config.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 顶部导航与统计信息合并 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
+                <div class="flex items-center">
+                    <i class="fa fa-book text-primary text-xl mr-2"></i>
+                    <h1 class="text-lg md:text-xl font-bold text-gray-800">arXiv 每日论文精选</h1>
+                </div>
+                <div class="flex items-center mt-2 md:mt-0">
+                    <span id="current-date" class="text-gray-600 text-sm">
+                        <i class="fa fa-calendar-o mr-1"></i>2026-10-12
+                    </span>
+                    <div class="ml-3 relative" id="date-picker-container">
+                        <button id="date-picker-toggle" class="bg-light border border-gray-300 text-gray-700 py-1 px-3 pr-6 rounded text-sm leading-tight focus:outline-none focus:bg-white inline-flex items-center">
+                            <i class="fa fa-calendar mr-2"></i>
+                            <span id="selected-date-text">2026-10-12</span>
+                            <i class="fa fa-chevron-down ml-2 text-xs"></i>
+                        </button>
+                        <div id="date-picker" class="hidden absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg p-2 z-20 w-56">
+                            <div class="flex justify-between items-center mb-2">
+                                <button id="prev-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-left"></i></button>
+                                <h4 id="current-month">2026-10-12</h4>
+                                <button id="next-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-right"></i></button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
+                                <div class="text-gray-500">日</div>
+                                <div class="text-gray-500">一</div>
+                                <div class="text-gray-500">二</div>
+                                <div class="text-gray-500">三</div>
+                                <div class="text-gray-500">四</div>
+                                <div class="text-gray-500">五</div>
+                                <div class="text-gray-500">六</div>
+                            </div>
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                                <!-- 日历格子将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="flex flex-wrap gap-4 text-sm">
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
+                    <span id="core-count" class="font-semibold text-primary">1 篇（精选 1）</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
+                    <span id="related-count" class="font-semibold text-secondary">1 篇</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">213</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-5">
+        <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
+        <div id="category-stats">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
+        </div>
+
+        <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div class="text-gray-700 text-sm mb-2 sm:mb-0">
+                <span id="display-count" class="font-medium">核心 1 篇 · 沾边 1 篇</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="show-core"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-star mr-1"></i>只看核心
+                </button>
+                <button id="show-related"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-tags mr-1"></i>只看沾边
+                </button>
+            </div>
+        </div>
+
+        <!-- 核心榜单 -->
+        <section id="core-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
+                <span class="text-sm font-normal text-gray-500 ml-2">1 篇 · 精选 1</span>
+            </h2>
+            <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
+                
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.13716v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>GSP赞助购物中自动出价均衡的复杂度
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Complexity of Autobidding Equilibria in GSP Sponsored Shopping
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Kristoffer Arnsfelt Hansen, Yuhao Li, Xinhao Nie
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究GSP赞助购物拍卖中自动出价（预算约束与ROI约束）的均衡存在性与计算复杂性，证明均衡总是存在且具有多项式规模支撑，计算精确均衡属于FIXP，近似均衡属于PPAD且是PPAD-hard。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究GSP赞助购物拍卖中自动出价均衡的计算复杂性，与机制与公式优化、竞价策略、eCPM等直接相关，对电商广告拍卖机制设计有理论指导意义。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-09 15:16:08
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.13716v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.13716v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.CC</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We revisit autobidding equilibria in GSP sponsored shopping auctions, recently proposed and studied in Dütting et al. On the existence side, we show that autobidding equilibria under both budget constraints (ABE-B) and return-on-investment constraints (ABE-R) always exist and, moreover, always admit equilibria with polynomial-size support over the allocation space. On the computational side, we show that computing an exact equilibrium is in FIXP, and that computing an approximate equilibrium is in PPAD. We also prove that computing an approximate equilibrium is PPAD-hard for both ABE-B and ABE-R. Together, these results provide a fairly comprehensive picture of the computational complexity of autobidding equilibria in GSP sponsored shopping auctions.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+
+        <!-- 沾边速览 -->
+        <section id="related-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 1 / 共 1 篇</span>
+            </h2>
+            <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
+                <!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.13617v1" target="_blank" rel="noopener noreferrer">
+                使用潜在内在反馈训练用户模拟器
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Training User Simulators with Latent Intrinsic Feedback
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Tarek Naous, Craig Boutilier, Wei Xu, Ofer Meshi
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文提出利用潜在内在反馈训练用户模拟器，可生成更真实的交互数据，直接用于排序模型的离线训练与评估以及拍卖机制模拟，因此与排序和机制公式设计有具体关联。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-09 14:00:36
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.13617v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.13617v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    User simulators are gaining attention as environments to train LLM assistants that can better cope with the nuances of multi-turn conversations with real users. Prior work on user simulation has emphasized generating realistic user utterances, leaving unexplored their potential as a source of direct feedback on the assistant&#39;s responses. Such evaluation signals may not be explicitly communicated in language, but can instead reside in the latent reasoning of users. In this work, we introduce user simulators with intrinsic feedback, namely, models equipped with latent evaluation states: internal thoughts, reactions, and scalar ratings that evaluate the assistant from a first-person user perspective at each conversation turn. We train LLM-based simulators using interaction logs between real users and assistants and demonstrate that intrinsic feedback improves simulation realism and critiquing behaviors versus prompted simulator baselines, while also providing turn-level evaluations that existing fine-tuned simulators lack. Further, evaluations generated by our trained simulators correlate better with human judgments than those of prompted simulators of the same size. Lastly, our experiments reveal that simulators with intrinsic feedback provide effective reward signals for multi-turn RL training, matching setups that rely on external judge LLMs for rewards while cutting RL compute by more than half.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 加载论文数据和JavaScript逻辑 -->
+    <script>
+        // 后端注入：业务日配置与有数据的日期列表（calendar.js 读取）
+        window.CALENDAR_CONFIG = {
+            currentDateConfig: {"ymd": "20261012", "display": "2026-10-12", "year": 2026, "month": 10, "day": 12},
+            availableDates: ["20260919", "20260920", "20260921", "20260922", "20260923", "20260924", "20260925", "20260926", "20260928", "20260929", "20260930", "20261001", "20261002", "20261003", "20261004", "20261005", "20261006", "20261007", "20261008", "20261009", "20261010", "20261011", "20261012"]
+        };
+    </script>
+    <script src="static/app.js"></script>
+    <script src="static/collapse.js"></script>
+    <script src="static/calendar.js"></script>
+</body>
+
+</html>
