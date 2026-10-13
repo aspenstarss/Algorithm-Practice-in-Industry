@@ -1,6 +1,4 @@
 date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,duration_seconds,total_papers,cs_ir_papers,cs_cl_papers,cs_cv_papers,rough_rank_total,rough_rank_success,rough_rank_failed,fine_rank_total,fine_rank_success,fine_rank_failed,avg_rough_score,avg_fine_score,daily_json_written,html_generated,error
-20260912,34682130578,1,arxiv_daily_full,schedule,success,completed,2026-09-12T08:00:55+00:00,2026-09-12T08:08:34+00:00,459,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
-20260912,34696431246,1,arxiv_daily_recovery,schedule,success,completed,2026-09-12T13:27:17+00:00,2026-09-12T13:33:41+00:00,384,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
 20260913,34747610487,1,arxiv_daily_full,schedule,failed,fetch,2026-09-13T08:25:35+00:00,2026-09-13T09:39:49+00:00,4454,0,0,,,0,0,0,0,0,0,0,0,false,false,"arXiv API 请求多次失败: HTTPSConnectionPool(host='export.arxiv.org', port=443): Read timed out. (read timeout=30)"
 20260913,34747610487,1,arxiv_daily_full,schedule,failed,fetch,2026-09-13T10:09:49+00:00,2026-09-13T11:23:46+00:00,4437,0,0,,,0,0,0,0,0,0,0,0,false,false,"arXiv API 请求多次失败: HTTPSConnectionPool(host='export.arxiv.org', port=443): Read timed out. (read timeout=30)"
 20260913,34747610487,1,arxiv_daily_full,schedule,failed,fetch,2026-09-13T12:23:46+00:00,2026-09-13T13:38:41+00:00,4495,0,0,,,0,0,0,0,0,0,0,0,false,true,"arXiv API 请求多次失败: HTTPSConnectionPool(host='export.arxiv.org', port=443): Read timed out. (read timeout=30)"
@@ -57,3 +55,4 @@ date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,durati
 20261012,38154598029,1,arxiv_daily_recovery,schedule,success,completed,2026-10-11T16:14:35+00:00,2026-10-11T16:24:35+00:00,600,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
 20261012,38240384351,1,arxiv_daily_full,schedule,success,completed,2026-10-12T11:05:38+00:00,2026-10-12T11:21:46+00:00,968,220,11,100,100,213,213,0,1,1,0,1.07,7.0,true,true,
 20261013,38299694776,1,arxiv_daily_recovery,schedule,success,completed,2026-10-12T19:45:26+00:00,2026-10-12T19:55:35+00:00,609,64,0,14,50,62,62,0,0,0,0,1.0,0,true,true,
+20261013,38385796795,1,arxiv_daily_full,schedule,success,completed,2026-10-13T10:48:12+00:00,2026-10-13T10:57:49+00:00,577,64,0,14,50,62,62,0,0,0,0,1.0,0,true,true,
