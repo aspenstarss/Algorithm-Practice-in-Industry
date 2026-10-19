@@ -1,6 +1,4 @@
 date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,duration_seconds,total_papers,cs_ir_papers,cs_cl_papers,cs_cv_papers,rough_rank_total,rough_rank_success,rough_rank_failed,fine_rank_total,fine_rank_success,fine_rank_failed,avg_rough_score,avg_fine_score,daily_json_written,html_generated,error
-20260918,35323979292,1,arxiv_daily_full,schedule,success,completed,2026-09-18T08:22:07+00:00,2026-09-18T08:31:27+00:00,560,193,16,77,100,184,184,0,20,20,0,2.1,7.1,true,false,
-20260918,35355565757,1,arxiv_daily_recovery,schedule,success,completed,2026-09-18T14:20:28+00:00,2026-09-18T14:26:59+00:00,391,162,12,62,88,156,156,0,19,19,0,2.08,7.37,true,false,
 20260919,35431242159,1,arxiv_daily_full,schedule,success,completed,2026-09-19T08:09:57+00:00,2026-09-19T08:16:31+00:00,394,0,0,0,0,0,0,0,0,0,0,0,0,false,false,
 20260919,35437700732,1,arxiv_daily_full,workflow_dispatch,success,completed,2026-09-19T10:33:14+00:00,2026-09-19T10:48:08+00:00,894,222,22,100,100,210,210,0,20,20,0,2.16,6.3,true,true,
 20260920,35458964767,1,arxiv_daily_full,workflow_dispatch,success,completed,2026-09-19T17:43:53+00:00,2026-09-19T17:52:16+00:00,503,44,0,4,24,43,43,0,0,0,0,1.26,0,true,true,
@@ -49,3 +47,4 @@ date,run_id,run_attempt,workflow,trigger,status,stage,started_at,ended_at,durati
 20261017,39015408448,1,arxiv_daily_full,schedule,success,completed,2026-10-17T07:55:29+00:00,2026-10-17T08:09:36+00:00,847,136,0,72,64,133,133,0,0,0,0,1.02,0,true,true,
 20261018,39110386663,1,arxiv_daily_full,schedule,success,completed,2026-10-18T08:10:20+00:00,2026-10-18T08:19:25+00:00,545,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
 20261018,39133626493,1,arxiv_daily_recovery,schedule,success,completed,2026-10-18T13:55:08+00:00,2026-10-18T14:05:09+00:00,601,0,0,0,0,0,0,0,0,0,0,0,0,false,true,
+20261019,39227493770,1,arxiv_daily_full,schedule,success,completed,2026-10-19T09:06:18+00:00,2026-10-19T09:24:05+00:00,1067,225,11,100,100,222,222,0,3,3,0,1.18,2.67,true,true,
