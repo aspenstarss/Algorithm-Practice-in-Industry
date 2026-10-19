@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv 每日论文精选</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css?v=1792401846">
+    <link rel="stylesheet" href="static/collapse.css?v=1792401846">
+    <script src="static/tailwind.config.js"></script>
+</head>
+
+<body class="bg-gray-50 font-sans text-dark">
+    <!-- 顶部导航与统计信息合并 -->
+    <header class="bg-white shadow-sm sticky top-0 z-10 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
+                <div class="flex items-center">
+                    <i class="fa fa-book text-primary text-xl mr-2"></i>
+                    <h1 class="text-lg md:text-xl font-bold text-gray-800">arXiv 每日论文精选</h1>
+                </div>
+                <div class="flex items-center mt-2 md:mt-0">
+                    <span id="current-date" class="text-gray-600 text-sm">
+                        <i class="fa fa-calendar-o mr-1"></i>2026-10-19
+                    </span>
+                    <div class="ml-3 relative" id="date-picker-container">
+                        <button id="date-picker-toggle" class="bg-light border border-gray-300 text-gray-700 py-1 px-3 pr-6 rounded text-sm leading-tight focus:outline-none focus:bg-white inline-flex items-center">
+                            <i class="fa fa-calendar mr-2"></i>
+                            <span id="selected-date-text">2026-10-19</span>
+                            <i class="fa fa-chevron-down ml-2 text-xs"></i>
+                        </button>
+                        <div id="date-picker" class="hidden absolute right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg p-2 z-20 w-56">
+                            <div class="flex justify-between items-center mb-2">
+                                <button id="prev-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-left"></i></button>
+                                <h4 id="current-month">2026-10-19</h4>
+                                <button id="next-month" class="text-gray-500 hover:text-gray-700"><i class="fa fa-chevron-right"></i></button>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
+                                <div class="text-gray-500">日</div>
+                                <div class="text-gray-500">一</div>
+                                <div class="text-gray-500">二</div>
+                                <div class="text-gray-500">三</div>
+                                <div class="text-gray-500">四</div>
+                                <div class="text-gray-500">五</div>
+                                <div class="text-gray-500">六</div>
+                            </div>
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
+                                <!-- 日历格子将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="flex flex-wrap gap-4 text-sm">
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
+                    <span id="core-count" class="font-semibold text-primary">3 篇（精选 3）</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
+                    <span id="related-count" class="font-semibold text-secondary">6 篇</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">222</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-5">
+        <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
+        <div id="category-stats">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.AI</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.LG</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">5</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">3</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
+        </div>
+
+        <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
+        <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div class="text-gray-700 text-sm mb-2 sm:mb-0">
+                <span id="display-count" class="font-medium">核心 3 篇 · 沾边 6 篇</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="show-core"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-star mr-1"></i>只看核心
+                </button>
+                <button id="show-related"
+                    class="px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                    <i class="fa fa-tags mr-1"></i>只看沾边
+                </button>
+            </div>
+        </div>
+
+        <!-- 核心榜单 -->
+        <section id="core-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
+                <span class="text-sm font-normal text-gray-500 ml-2">3 篇 · 精选 3</span>
+            </h2>
+            <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
+                
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23346v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>Jev作为评判者用于巴西葡萄牙语信息检索:相关性评估与重排序
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Jev-as-a-Judge for Brazilian Portuguese Information Retrieval: Relevance Assessment and Reranking
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Leandro Carísio Fernandes, Jayr Pereira
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究巴西葡萄牙语信息检索中的相关性评估与重排问题，核心思路是利用系统一模型Jev作为评判者生成相关性标签并直接重排BM25候选列表，发现其评估与人工标注在相邻等级上高度一致，且重排能显著提升排序效果。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文将特定的小模型（Jev）用作相关性评估器和重排器，属于重排范畴，但方法不涉及细排模型、机制公式优化、多样性或公平性等我核心关注点，且实验设置简单（BM25候选集上重排），创新性有限，因此相关性较低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 11:52:46
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.23346v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.23346v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    This study investigates Jev, a System One model designed for fast, structured decision-making, in information retrieval. We use Jev-as-a-judge to generate relevance judgments for four Brazilian Portuguese IR collections covering different domains and compare them with the official relevance judgments of each collection. We also evaluate Jev as a reranker. For relevance assessment, exact agreement ranged from 52.9% to 64.9%, while quadratic weighted Cohen&#39;s kappa ranged from 0.52 to 0.82. Most disagreements involved adjacent relevance levels, with at least 94.5% of annotations matching exactly or differing by only one relevance level. Despite differences at the individual query--document level, Jev-generated qrels produced similar retrieval system rankings, with Kendall&#39;s tau ranging from 0.90 to 0.93 for NormasTCU and Ulysses-RFCorpus across the two evaluation metrics. For reranking, Jev reordered the top 1,000 BM25 candidates for each of the 50 Quati test queries, increasing nDCG@10 from 0.3329 to 0.6331 (+90.2%) and MRR from 0.6852 to 0.9033 (+31.8%). These findings support Jev as a relevance assessor and show improved ranking effectiveness over BM25 in the evaluated reranking setting.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23510v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>LSNR：面向新闻推荐的学习型稀疏表示与注意力用户建模
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            LSNR: Learned Sparse News Recommendations with Attentive User Modeling
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>David Vos, Andrew Yates, Maarten de Rijke
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对新闻推荐中用户历史拼接导致兴趣扁平化和长度截断的问题，提出分别编码每篇文章，并通过注意力加权组合稀疏表示与稠密投影扩展来构建用户向量，实现学习稀疏新闻推荐。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究新闻推荐中的学习稀疏检索与用户注意力建模，属于召回/粗排阶段，未涉及精排、重排或拍卖机制，与核心关注点关联较弱。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 14:19:13
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.23510v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.23510v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Current learned sparse approaches for recommender systems, such as STAR, represent a user by concatenating their interaction history into a single query string. For news, this creates two bottlenecks: concatenation collapses a user&#39;s distinct reading interests into one flat query, and, because news articles are long-form text, concatenating several news articles quickly overruns the context window of the language model used as backbone and forces quality-degrading truncation. To address both bottlenecks, we introduce learned sparse news recommendations (LSNR). LSNR encodes each article independently and constructs a sparse user vector by combining learned, attention-based weighting of the per-article sparse representations with a dense-projected expansion at the user level. Experiments on the MIND and EBNeRD datasets show that LSNR significantly outperforms STAR, with these gains holding even in short-history settings where truncation is not a factor. Compared to state-of-the-art dense recommenders, LSNR is competitive in standard settings and it outperforms them when the user history is short. An ablation of the user encoder confirms that learned attention-based aggregation outperforms simpler pooling alternatives. Beyond effectiveness, an additional advantage of LSNR is that it serves from an index an order of magnitude smaller than an uncompressed dense baseline.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23193v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>排序压缩中的比例性
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Proportionality in Ranking Compression
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Daniel Halpern, Xinyu Liu, Evi Micha, Yu Peng Ng, Warut Suksompong
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究如何将一组排名压缩为更小的排名集合，以保持不同比例代表性（位置、成对、稳固联盟），并分析其可满足性与多项式时间算法。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究排名压缩中的比例代表性问题，属于社会选择理论范畴，与电商排序/重排、机制公式优化等核心关注点无直接关联。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 09:30:10
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.23193v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.23193v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.LG</span><span class="category-tag">econ.TH</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Motivated by applications in reinforcement learning from human feedback, we consider a setting where a given collection of rankings needs to be compressed into a smaller collection of rankings. This can also be seen as a combination of two fundamental social choice frameworks: ranking aggregation and multiwinner voting. We propose three proportionality notions that capture different types of representation in this setting: positional proportionality, pairwise proportionality, and proportionality for solid coalitions (PSC). On the one hand, we show that positional proportionality and PSC are always satisfiable for any input rankings and target compression size, and a desired output can be found in polynomial time. On the other hand, we prove that pairwise proportionality cannot be satisfied in general, but can nevertheless be attained when the input rankings are single-peaked or single-crossing.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+
+        <!-- 沾边速览 -->
+        <section id="related-section" class="mb-8">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 6 / 共 6 篇</span>
+            </h2>
+            <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
+                <!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.22797v1" target="_blank" rel="noopener noreferrer">
+                以语义ID作为唯一物品表示的推理式重排序
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Reasoning Reranking with Semantic IDs as the Sole Item Representation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhenwei Tang, Jintao Liu, Di Bai, Xidong Wu, Xinwu Cheng
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文将语义ID作为唯一物品表示用于推理式重排序，直接关联重排序与生成式推荐两项重点方向。其核心应用是为重排序/生成式检索提供紧凑的物品表示与语义推理能力，可用于列表式或生成式重排序的特征与排序阶段，应用路径具体明确。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 01:21:47
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.22797v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.22797v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.CL</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Reasoning rerankers write a rationale before ranking a candidate slate, and existing systems read item metadata to do so, even though generative recommenders increasingly represent items as compact Semantic IDs (SIDs). Ranking from SIDs alone has two appeals: SID prompts are far shorter than the matched item text, and although item codes are fixed from content, the backbone learns their token embeddings in part from user-item interaction sequences, so the tokens can carry behavioral signal that item text lacks. That training targets next-item generation, and whether it supports ranking a supplied slate from SIDs alone is untested. We build ReRankID, a controlled testbed in which models reason and rank from a history and slate shown only as SIDs, varying item rendering, history length, and slate size one at a time. On this testbed, such models often copy the input order instead of reranking, and readable metadata does not repair the failure. We compare supervised fine-tuning, rejection-sampled self-training, on-policy distillation, and verifier-based reinforcement learning as post-training methods and find that they elicit the missing behavior. The strongest post-trained model, the 8B model trained with a graded ranking reward, gives the best SID-only ranking and matches strong text-reading LLMs whose prompts are about 20x longer. It ranks above random with no history at all, where a caption-reading reference does not, and it keeps its gains at long histories, where text prompts pass 50k tokens and the caption-reading reference stops improving. In a paired rationale audit, this model argues trade-offs better than that reference but describes items less accurately. The common post-training methods we test thus elicit ranking from SIDs but not faithful item descriptions, which calls for post-training that improves the reasoning itself, not only the ranking it produces.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23470v1" target="_blank" rel="noopener noreferrer">
+                QD-Rec：基于质量-多样性的开放式推荐进化
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>5/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            QD-Rec: Open-Ended Evolution of Recommendations via Quality-Diversity
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Takashi Ishida, Taro Makino, Issa Sugiura
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该文将质量-多样性（Quality-Diversity）进化搜索用于推荐，可能产出多样化的推荐列表集合，与多样性重排序和曝光/流量分配有间接关联。但标题未体现对精排模型或机制公式设计的具体直接应用，因此属于相关而非核心。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 13:49:22
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.23470v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.23470v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.AI</span><span class="category-tag">cs.LG</span><span class="category-tag">cs.NE</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Open-ended search combined with foundation models has produced advances such as faster algorithms, new results on open mathematical problems, and self-improving agents. We extend this paradigm to recommendation for decision-making, focusing on decisions where the set of possible choices is fixed but the reasons for choosing them are not. In high-stakes decisions, e.g., which company to acquire or which customer to target, comparing diverse, well-reasoned options can be more useful than a single ranked list. We formalize open-ended recommendation as building a diverse, high-quality set of recommendations, each an item together with a hypothesis, a natural-language reason why the item fits the needs of a decision maker. We propose QD-Rec, a quality--diversity method that selects items with a contextual bandit and generates hypotheses with a foundation model from earlier ones kept in an archive as stepping stones. A new recommendation enters the archive if it is novel or better than its nearest neighbor. Across M&amp;A, customer targeting, and paper and book recommendation, QD-Rec gives the highest mean quality and builds the largest archive in most settings.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.22807v1" target="_blank" rel="noopener noreferrer">
+                论大语言模型的位置偏差：一项综合研究
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>5/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            On the Position Bias of Large Language Models: A Comprehensive Study
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yining Li, Huayang Li, Lemao Liu, Taro Watanabe
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">位置偏差是排序系统的核心问题（曝光位置影响用户点击/转化），该研究对LLM位置偏差的分析可迁移到排序模型中的位置偏差建模与去偏，例如LLM作特征/模拟用户时的位置感知校准。但其应用需进一步具体化到排序或机制公式，属间接使能技术。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 01:35:43
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.22807v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.22807v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Recent studies have shown that position bias remains a critical vulnerability in large language models (LLMs), undermining both the integrity of multiple-choice evaluations and the reliability of retrieval-augmented generation. However, existing understanding of this phenomenon is largely derived from studies with limited model coverage and English-centric benchmarks, leaving the behavior of frontier models and diverse languages underexplored. In this work, we conduct a comprehensive investigation of position bias across model scales ranging from billion-level to trillion-level parameters, covering both multiple-choice and multi-document tasks in five languages. Our experiments reveal that while position bias remains noticeable in small-scale models and Non-English languages, increasing model scale and employing standard Chain-of-Thought prompting significantly mitigate this issue. Moreover, we demonstrate that emerging \emph{thinking models} with extended reasoning capabilities are nearly immune to position bias, suggesting a costly but general approach toward resolving this vulnerability.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.22518v1" target="_blank" rel="noopener noreferrer">
+                学习用户表示以提升模拟保真度
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>4/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Learning User Representations to Improve Simulation Fidelity
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Shuhaib Mehri, Philippe Laban, Michel Galley, Dilek Tür, Jennifer Neville, Jianf...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">用户表示学习可提升 LLM 模拟用户行为（点击/购买）的保真度，从而为排序模型和拍卖机制的仿真评估提供更真实的合成数据，属于 LLM 模拟用户这条相关技术路线。但标题未明确面向排序或机制优化，应用场景较为间接，故分数偏低。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-15 18:13:21
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.22518v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.22518v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    User simulators enable interactive training and evaluation of AI assistants at scale. Yet current simulators struggle to reproduce the diverse behaviors of real users, leading to assistants that generalize poorly to underrepresented users. We identify user representations as an underexplored bottleneck in user simulation. User representations are natural-language descriptions that condition simulators to reproduce a particular user&#39;s behavior. A representation&#39;s quality becomes apparent in hindsight, through the behavior it induces in a simulator. To evaluate and optimize user representations, we formulate a conversation reconstruction task: given an original conversation, we generate a representation, condition a simulator on it, simulate a conversation, and then measure fidelity by comparing user behavior in the original and simulated conversations. This comparison also yields hindsight feedback, which identifies where the representation falls short and how it can be improved. We introduce hindsight distillation, an online training procedure that distills feedback-conditioned improvements into the representation generator, enabling it to generate improved representations directly from the original conversation. We present UserRepGen-4B, a representation generator trained with hindsight distillation. Across 700 conversations spanning seven datasets, hindsight feedback helps improve user representations at test time, and UserRepGen-4B generates representations that enable more faithful simulation than those generated by GPT-5.5. Beyond conversation reconstruction, learned representations improve simulation fidelity for unseen tasks, better preserve the population-level diversity of real users, and better distinguish users across conversations.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.22985v1" target="_blank" rel="noopener noreferrer">
+                棱镜注意力：面向高效大语言模型推理的提案-精炼索引共享机制
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>4/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Prism Attention: Proposal-Refined Index Sharing Mechanism for Efficient LLMs Inference
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zhenxu Tian, Kebin Liu, Zhengwu Yang, Yi Su, Qingqing Dang, Yanlin Sha, Kaipeng ...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该文提出一种高效的注意力变体（索引共享机制），属于可迁移的Transformer效率技术。它可以降低基于LLM的排序模型（如生成式重排、基于LLM的用户行为建模）在推理时的注意力开销，但其应用较为通用，并不针对排序或机制公式设计。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 06:11:20
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.22985v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.22985v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CL</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Long-context decoding in large language models (LLMs) is increasingly bottlenecked by the memory and computation required to attend over an ever-growing Key-Value (KV) cache at each autoregressive step. Although token-level sparse attention reduces this burden by restricting computation to a small subset of relevant past tokens, its practical gains are often offset by repeatedly recomputing layer-wise sparse indices as the context grows. A common remedy is to share sparse indices across layers by computing them only at designated anchor layers, but such static reuse ignores the layer-wise evolution of attention patterns, causing the reused indices to progressively deviate from the layer-specific optima and incur substantial attention loss. By revisiting cross-layer sparsity from the perspective of attention dynamics, we find that inter-layer salient token shift is highly localized: although the exact top-$κ$ indices differ across layers, the core high-attention tokens remain stable, with changes concentrated near the expanded boundary of previously selected regions. Motivated by this, we propose Prism Attention, a proposal-refined sparse attention framework. It replaces rigid cross-layer index reuse with a coarse-to-fine strategy, preserving layer-wise adaptability while retaining the efficiency benefits of cross-layer sharing. Extensive experiments show that Prism Attention achieves state-of-the-art performance among mainstream sparse attention methods on both reasoning and long-context benchmarks, while attaining a $3.4\times$ end-to-end decoding speedup over FlashAttention at 128K context length.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23709v1" target="_blank" rel="noopener noreferrer">
+                GLOBE：在生成式搜索中为电商商品优化演化结构化智能体记忆
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>4/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            GLOBE: Evolving Structured Agentic Memory for E-commerce Product Optimization in Generative Search
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Hyunseo Kim, Suil Choe, Sukkyoung So, Daeyeon Yi
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文将结构化智能体记忆用于生成式搜索中的电商商品优化，与电商搜索场景和商品属性相关，并可能为排序特征或商品表示提供输入。但其主要聚焦于智能体记忆演化和生成式搜索优化，并非直接针对精排建模、重排或竞价机制公式设计，因此与核心关注点的关联仅为间接。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 16:33:17
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.23709v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.23709v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.CL</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Optimizing product listings for generative search requires language agents not only to rewrite effectively but also to continually self-improve by retaining successful strategies across diverse categories. However, existing approaches often treat structured listings as free-form text, leaving effective strategies implicit in prompts, search trajectories, or rewritten outputs rather than accumulating them as a reusable agentic memory. To address this limitation, we introduce GLOBE, an agentic framework that drives continual self-improvement by storing optimization knowledge in an evolving handbook of explicit, field-scoped behaviors. In each episode, an Editor applies relevant behaviors and receives rank-based feedback, which a Reflector converts into behavior updates. Crucially for dependable execution in real-world settings, a Moderator removes redundant proposals, a Curator commits accepted changes, and consistently harmful behaviors are deactivated. This cycle transforms episodic feedback into a persistent, field-scoped optimization memory. Experiments show that structured behaviors outperform monolithic prompt optimization, while feedback-driven evolution and moderation further improve effectiveness and reduce downside risk. The learned behaviors also remain effective on unseen product categories, suggesting that agentic memory evolution supports interpretable and transferable product optimization.
+                </div>
+            </details>
+    </div>
+</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 加载论文数据和JavaScript逻辑 -->
+    <script>
+        // 后端注入：业务日配置与有数据的日期列表（calendar.js 读取）
+        window.CALENDAR_CONFIG = {
+            currentDateConfig: {"ymd": "20261019", "display": "2026-10-19", "year": 2026, "month": 10, "day": 19},
+            availableDates: ["20260919", "20260920", "20260921", "20260922", "20260923", "20260924", "20260925", "20260926", "20260928", "20260929", "20260930", "20261001", "20261002", "20261003", "20261004", "20261005", "20261006", "20261007", "20261008", "20261009", "20261010", "20261011", "20261012", "20261013", "20261014", "20261015", "20261016", "20261017", "20261019"]
+        };
+    </script>
+    <script src="static/app.js"></script>
+    <script src="static/collapse.js"></script>
+    <script src="static/calendar.js"></script>
+</body>
+
+</html>
