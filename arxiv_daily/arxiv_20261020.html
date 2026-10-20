@@ -7,8 +7,8 @@
     <title>arXiv 每日论文精选</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="static/styles.css?v=1792429628">
-    <link rel="stylesheet" href="static/collapse.css?v=1792429628">
+    <link rel="stylesheet" href="static/styles.css?v=1792488577">
+    <link rel="stylesheet" href="static/collapse.css?v=1792488577">
     <script src="static/tailwind.config.js"></script>
 </head>
 
@@ -58,15 +58,15 @@
             <div class="flex flex-wrap gap-4 text-sm">
                 <div class="flex items-center">
                     <span class="text-gray-500 mr-1"><i class="fa fa-star"></i> 核心榜单:</span>
-                    <span id="core-count" class="font-semibold text-primary">1 篇（精选 1）</span>
+                    <span id="core-count" class="font-semibold text-primary">10 篇（精选 10）</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-gray-500 mr-1"><i class="fa fa-tags"></i> 沾边速览:</span>
-                    <span id="related-count" class="font-semibold text-secondary">0 篇</span>
+                    <span id="related-count" class="font-semibold text-secondary">5 篇</span>
                 </div>
                 <div class="flex items-center">
                     <span class="text-gray-500 mr-1"><i class="fa fa-file-text-o"></i> 抓取总数:</span>
-                    <span id="total-fetched" class="font-semibold text-gray-700">67</span>
+                    <span id="total-fetched" class="font-semibold text-gray-700">132</span>
                 </div>
             </div>
         </div>
@@ -76,13 +76,13 @@
     <main class="container mx-auto px-4 py-5">
         <!-- 分类来源统计（核心/沾边两张表卡片：源为列，粗排/精排两行；容器由 page_logic 输出） -->
         <div id="category-stats">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 核心榜单 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.LG</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">7</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">4</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">7</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">2</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">4</td></tr></tbody></table></div><div class="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-3 mb-4 inline-block max-w-full overflow-x-auto"><span class="text-gray-500 text-sm mr-3 whitespace-nowrap"><i class="fa fa-pie-chart"></i> 沾边速览 · 来源统计</span><table class="text-sm"><thead><tr><th class="px-3 py-1.5"></th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.IR</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CL</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.CV</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.GT</th><th class="px-3 py-1.5 font-medium text-gray-500 text-left whitespace-nowrap">cs.AI</th></tr></thead><tbody><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">粗排</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">4</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">1</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-primary whitespace-nowrap">2</td></tr><tr><td class="px-3 py-1.5 text-gray-500 whitespace-nowrap">精排</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td><td class="px-3 py-1.5 font-semibold text-accent whitespace-nowrap">0</td></tr></tbody></table></div>
         </div>
 
         <!-- 快捷筛选：点击只看该榜单，再点恢复全部 -->
         <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="text-gray-700 text-sm mb-2 sm:mb-0">
-                <span id="display-count" class="font-medium">核心 1 篇 · 沾边 0 篇</span>
+                <span id="display-count" class="font-medium">核心 10 篇 · 沾边 5 篇</span>
             </div>
             <div class="flex space-x-2">
                 <button id="show-core"
@@ -100,19 +100,404 @@
         <section id="core-section" class="mb-8">
             <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
                 <i class="fa fa-star text-yellow-400 mr-2"></i>核心榜单
-                <span class="text-sm font-normal text-gray-500 ml-2">1 篇 · 精选 1</span>
+                <span class="text-sm font-normal text-gray-500 ml-2">10 篇 · 精选 10</span>
             </h2>
             <div id="papers-container" class="paper-list grid grid-cols-1 gap-4">
                 
 <div class="paper-card p-4 expanded">
     <div class="flex justify-between items-start mb-2">
         <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
-            <a href="https://arxiv.org/abs/2610.23294v1" target="_blank" rel="noopener noreferrer">
-                <i class="fa fa-star text-yellow-400 mr-1"></i>二分类中两个排序分数之间的最优排序权衡
+            <a href="https://arxiv.org/abs/2610.26260v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>偏好不等于位置：在固定混合候选池上基于NevIR评估重排序
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Preference Is Not Position: Evaluating Reranking on NevIR in Fixed Hybrid Candidate Pools
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yuning Bian, Lele Xu, Yifan Yuan, Xinyu Yin, Chengyan Zhan
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对固定混合候选池中近重复段落可能被正确排序但位置靠后的问题，论文区分成对偏好与指定段落MRR两个指标，发现成对训练重排器提升严格偏好却大幅降低MRR，而限制性逐点重排和带融合平局打破的LLM重排能同时改善两者，并指出平局分支是剩余失败主因。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究重排阶段成对偏好与目标段落位置MRR的解耦，直接关联重排模型评估与候选池融合机制，但对机制公式设计和电商场景的涉及较浅。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-19 12:16:58
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.26260v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.26260v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Near-identical passages can differ in a decisive condition, such as negation. A ranker may order such a pair correctly while placing the preferred passage far down the retrieved list. We examine this distinction using official NevIR pairs jointly covered by fixed candidate pools from dense, learned sparse, and BM25 retrieval. On 2,736 Test query directions, a pairwise-trained ranker improves strict per-query preference over fixed fusion (56.62% versus 52.30%) while reducing preferred-passage mean reciprocal rank (MRR) from 0.5764 to 0.3055. An exploratory fixed-model replay of a variant with background sampling and revised supervision yields MRR of 0.5859 and strict preference of 54.53%. Bounded pointwise reranking of the fusion top 20 improves both outcomes. Qwen3-14B-AWQ with fusion tie-breaking reaches 77.45% strict preference, 58.99% NevIR-style paired accuracy across 1,363 complete pairs, and preferred-passage MRR of 0.7509. A BGE cross-encoder reaches 69.77% strict preference and MRR of 0.7404. A post-hoc analysis finds that the branch where equal Qwen grades for the two designated passages trigger fusion tie-breaking accounts for 27% of evaluated directions and contains most remaining strict-preference failures. These findings support joint evaluation of pairwise preference, designated-passage position, and computational cost, while distinguishing model judgments from the combined ranking procedure.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.25805v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>OneChord：蒸馏你所排序的内容，一次推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            OneChord: Distill What You Rank, Recommend in One Pass
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Zesheng Li, Chengchang Pan, Honggang Qi
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">问题：语义ID推荐中，推理时融合码概率与物品相似度导致最终排序依赖归一化与相对权重，训练与部署不一致。核心思想：提出OneChord，用单一可学习的目录归一化融合同时服务于下一项监督、精炼蒸馏和推理，通过共享并行解码器联合输出SID证据与匹配分数，并让学生模型在冻结去噪器提供的合法部分SID上构建精炼融合目标，从而将精炼能力蒸馏进一次推理，使服务排序分布成为推荐学习与蒸馏的共同对象。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文聚焦语义ID推荐中的排序分数融合与蒸馏一致性，直接关联推荐排序公式设计和重排中的分数归一化问题，但未涉及拍卖机制或公平性。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-19 05:16:36
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.25805v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.25805v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Accurate product discovery on the Web requires recommendation models that rank catalog candidates within tight inference budgets. In semantic-ID recommendation, deployment can fuse code probabilities with item similarities, making the final ranking depend on their normalization and relative weights. This motivates a direct training principle: \emph{distill what you rank}. We present OneChord, which uses one learned, catalog-normalized fusion for next-item supervision, refinement distillation, and inference. A shared parallel decoder produces joint SID evidence and item-matching scores. During training, a frozen denoiser supplies legal partial SIDs; the student evaluates these states to construct refined fused targets. Matching direct and refined predictions on shared hard candidates transfers refinement into one-pass recommendation. We characterize the fusion weights induced by candidate conditioning and establish sufficient conditions for preserving the refined predictor&#39;s full-catalog Top-$K$ selection. Across six Amazon datasets, OneChord achieves the highest Recall@5 and NDCG@5 among the compared methods on every dataset, with average relative gains of 6.30\% and 7.12\% over the strongest baseline. It also achieves a 1.04--1.18$\times$ full-test generation speedup over the fastest baseline. OneChord makes the served ranking distribution the common object of recommendation learning and distillation.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.24323v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>通过熵平滑大规模计算多槽位第一价格节奏均衡
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Computing Multi-Slot First-Price Pacing Equilibria at Scale via Entropic Smoothing
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yuchen Xie, Shenyinying Tu, Yuan Gao, Yi Zhang, Deepak Kumar
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对多槽位广告市场中预算约束广告主的第一价格竞价均衡（FPPE）计算难题（分配随分数交叉跳变），提出用二元熵正则化将每个请求的分配平滑为严格凸对偶，梯度恰为花费减预算，且可分解为逐请求一维阈值求解；平滑均衡以显式O(√T)速率收敛到硬均衡，并给出对偶间隙证书，进而高效计算生产级均衡价格锚点。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">研究多槽位第一价格竞价均衡的计算方法，直接服务于广告拍卖机制与预算平滑设计，属于机制与公式优化的核心范畴，虽偏算法实现但问题紧贴广告排序与计费。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 23:42:56
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.24323v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.24323v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">math.OC</span><span class="category-tag">cs.GT</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Pacing equilibria describe how budget-constrained advertisers clear an ad market, but computing one at production scale is hard when every request fills several slots: the allocation jumps whenever two campaigns&#39; scores cross. We consider the first-price pacing equilibrium (FPPE) of auctions with $K$ homogeneous slots and unit-demand campaigns, whose Eisenberg-Gale dual reduces, via a TopK identity, to a convex program over bids. Regularizing each request&#39;s allocation with the binary (Fermi-Dirac) entropy gives a smooth, strictly convex dual whose gradient is exactly spend minus budget and whose evaluation splits into independent one-dimensional threshold solves, one per request. The smoothed equilibrium converges to the hard one at an explicit $O(\sqrt{T})$ rate, and a duality gap certifies how far any bids are from the hard equilibrium. We implement an efficient multi-GPU solver and test it on a production ad workload. We use it to compute an equilibrium price anchor: each campaign&#39;s hindsight equilibrium cost per key result.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.25282v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>MEMORA：面向推理密集型检索的记忆增强多模态委员会重排序智能体
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            MEMORA: A Memory-Enhanced Multimodal Committee Reranking Agent for Reasoning-Intensive Retrieval
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Mohamed Mahmoud, Mostafa Farouk Senussi, Mahmoud Abdalla, Mahmoud SalahEldin Kas...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对多模态推理密集型检索中查询孤立处理、单体重排序器缺乏跨模态推理训练的问题，提出MEMORA代理：将查询分解为意图因子并提取结构化证据，通过记忆条件元裁决模型融合判断；引入情景记忆模块跨查询跟踪因子结果并动态调整优先级；并微调链式思维增强的密集检索器以支持跨模态推理。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文提出因子委员会重排序与记忆模块，直接涉及重排序机制设计，但面向多模态推理密集型检索，与电商场景和机制公式优化有距离。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-18 14:00:10
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.25282v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.25282v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Reasoning-intensive retrieval is fundamentally challenged when queries demand deep semantic inference and arrive in multimodal form. Existing systems treat each query in isolation, rely on monolithic rerankers, and lack retrievers trained for cross-modal reasoning. We introduce MEMORA, a Memory-Enhanced Multimodal Orchestrated Reranking Agent built around three contributions: (1) Collaborative Factor-Committee Reranking, which decomposes queries into intent factors, extracts factor-specific evidence into a structured matrix, and synthesizes judgments via a memory-conditioned meta-verdict model; (2) an Episodic Memory Module that tracks factor outcomes across queries and dynamically adjusts priorities at inference time; and (3) a Reasoning-Aware Dense Retriever fine-tuned with chain-of-thought augmentation on 20k+ reasoning-intensive pairs. Evaluated on MM-BRIGHT across 29 domains, MEMORA achieves nDCG@10 of 41.5 (text-to-text) and 38.9 (multimodal query-to-text), outperforming the strongest agentic text-only baseline by +8.3 points and the strongest agentic multimodal baseline by +7.9 points. Code and data are available at https://github.com/HarnessLab/MEMORA.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.26143v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>FLMNet：从掩码到种子的自集成蒸馏用于单塔CTR预测
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            FLMNet: Self-Ensemble Distillation from Masks to Seeds for Single-Tower CTR Prediction
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Yifan Wang, Yifei Du
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究CTR预测中自蒸馏（dropout采样平均）为何有效，证明当dropout模式数趋于无穷时目标等价于logit平均预测的标签损失加一项惩罚网络副本间不一致的项。基于此设计FLMNet，在特征门控不受dropout影响时闭式近似该惩罚，无需采样训练；并发现不同种子网络的不一致形式相同，将多个网络蒸馏为一个可恢复部分集成增益。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦CTR预测模型的自蒸馏训练方法，属于精排模型范畴，但核心是训练目标优化而非排序公式或重排机制，与我的主要关注点部分相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-19 10:27:04
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.26143v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.26143v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Click-through rate (CTR) prediction underpins recommender systems and online advertising, where high-dimensional categorical features interact in combinatorially many ways. Several recent CTR models, such as FinalNet and QNN, report higher accuracy when a network also learns from its own averaged predictions, for example by running the same network under different dropout patterns and training each run toward the average. Why this self-distillation helps, and whether its random sampling is needed, remains unclear. This work shows that as the number of dropout patterns grows without bound, the objective reduces exactly to the label loss of the logit-averaged prediction plus a penalty on how much the dropout copies of the network disagree. When dropout does not affect how a network gates its features, this penalty can be approximated in closed form, and FLMNet is designed on this principle and trains without sampling. Networks trained from different seeds disagree in the same form, and distilling several of them into one network recovers part of their ensemble gain. On five benchmarks against seventeen baselines, the resulting models take the top two places in accuracy with a single network at inference, and the gains of the penalty and of distillation, where measurable, largely add up.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.26024v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>通过语义与结构塑造的多模态解耦多样性推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>4/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Multimodal Decoupling for Diversified Recommendation through Semantic and Structural Shaping
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Changran He, Jiaming Wei, Jianghong Ma, Tianjun Wei, Haijun Zhang, Xiaofeng Zhan...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">针对多模态推荐中语义利用不足和准确率-多样性权衡问题，提出MOSS框架：通过MLLM解耦多模态特征、类别感知嵌入选择提取紧凑语义，并利用交替双图传播缓解表示坍塌、熵正则促进类别均衡曝光，以结构塑形实现多样性优化。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究推荐多样性问题，涉及多模态解耦和结构塑形，但与精排模型、重排序算法或拍卖机制公式优化无直接关系，仅间接相关于多样性目标。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-19 08:46:34
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.26024v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.26024v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Recommender systems often suffer from over-concentrated results when optimized for accuracy, limiting recommendation diversity. While diversity has become an important objective, existing methods still face fundamental limitations from both semantic and structural perspectives. On the one hand, multimodal recommender systems provide rich semantic signals, yet are often treated as auxiliary to ID embeddings, leading to ineffective semantic utilization for diversity. On the other hand, the accuracy--diversity trade-off persists during training, where accuracy gains often come at the cost of diversity. We show that this phenomenon is fundamentally governed by both the structural properties of learned representations and the dynamics of optimization. To address these challenges, we propose MOSS, a unified framework for multimodal decoupling through semantic and structural shaping. Specifically, we first introduce an MLLM-based Decoupled Feature Extraction module to disentangle multimodal content into informative representations. To enhance semantic utilization, we design a Category-aware Embedding Selection module that extracts compact, category-aware semantic features. To address structural limitations, we propose two complementary modules: Alternating Dual-Graph Propagation, which alleviates representation collapse by integrating collaborative and multimodal propagation, and Entropy-based Diversity Regularization, which mitigates optimization bias by promoting balanced category exposure. Extensive experiments on real-world datasets demonstrate that MOSS consistently achieves a superior accuracy--diversity trade-off over strong baselines.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.24341v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>最优融合权重应由区间而非点确定：一项关于查询自适应WRRF的延迟感知研究
             </a>
         </h3>
         <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
-            <i class="fa fa-star mr-1"></i>2/10
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Optimal Fusion Weights Form Intervals, Not Points: A Latency-Aware Study of Query-Adaptive WRRF
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Iris Ma, Zahra Shekarchi, Stuart Mcilroy, Mahtab Farrokh, Fattane Zarrinkalam, J...
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">问题：RRF混合稀疏与稠密检索时权重固定，查询级最优融合权重被假设为单点值；核心方法/结论：实证发现每查询最优权重实为区间（可多个、形状多样），动态融合方法质量与延迟存在差异，并提出按约束选择方法的层级决策框架。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究混合检索中查询自适应融合权重预测，属于检索融合而非电商排序/重排或机制设计，仅与多路召回结果融合有间接关联。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-17 00:18:41
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.24341v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.24341v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Reciprocal Rank Fusion (RRF) is widely used to combine sparse and dense retrievers in hybrid information retrieval, but a critical limitation is that it assigns a fixed, uniform weight to each retriever regardless of the query. Query-aware methods treat the per-query optimal weight as a single point, an assumption whose empirical validity has not been examined. We present an empirical study of eight dynamic fusion weight prediction strategies across four datasets and four sparse--dense retriever pairs. When we compare these approaches to static fusion and a per-query oracle that bounds achievable performance, several findings emerge. First, the per-query optimal fusion weight is typically an interval rather than a point. Queries can have multiple optimal intervals, and these can take on a variety of shapes. Second, 74 of 128 dynamic fusion methods tested were significantly better than standard RRF after false discovery rate correction. Third, dynamic fusion methods exhibit differing quality and latency characteristics that should be considered when choosing an appropriate fusion method. To address this last finding, we present a tiered decision framework that maps practitioner constraints, dataset properties, label availability, hardware, and latency budget to an appropriate method class. We release the code for our experiments at https://github.com/thomsonreuters/query-based-rrf.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23294v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>两类分类中两种排序分数间的最优排序权衡
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
         </span>
     </div>
     
@@ -129,13 +514,13 @@
         
         <div class="mb-2">
             <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
-            <p class="text-gray-600 text-sm mt-1">论文研究两类分类评价分数（如TPR/FPR等）诱导的分类器排序之间的最优权衡问题；核心思路是将这些分数统一为基于混淆矩阵四类结果重要性的连续参数化排序分数，并给出在类先验相同条件下，通过最小化Kendall距离的Fréchet方差来精确解析求解任意两分数的最优权衡排序分数，指出该分数通常不等于初始分数重要性的简单平均。</p>
+            <p class="text-gray-600 text-sm mt-1">问题：如何为多个分类器构建一个排名，使其在任意一对评价指标（如准确率、TPR、FPR等）的排名之间实现最优折中？核心思想：将所有评价指标视为由TN、FP、FN、TP重要性参数化的连续排名分数，在Kendall距离下的Fréchet方差最小化意义下，最优折中位于所有排名流形上最短测地线路径的中心，并给出类先验相同情况下的精确解析解，而非简单平均重要性参数。</p>
         </div>
         
         
         <div class="mb-2">
             <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
-            <p class="text-gray-600 text-sm mt-1">该论文研究分类器评价指标间的排序权衡与理论解，与电商排序模型/重排/机制公式优化无直接关联，仅抽象层面涉及排序概念。</p>
+            <p class="text-gray-600 text-sm mt-1">该论文讨论分类模型评价指标间的排名权衡与最优折中，属于模型评估与排序理论，与细排模型、重排、机制公式优化等核心方向无直接关联，仅涉及排序分数的理论分析。</p>
         </div>
         
         <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
@@ -159,6 +544,116 @@
             </details>
     </div>
 </div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.24240v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>通过神经网络插值将Myerson最优拍卖扩展到相关投标人
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>3/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Extending Myerson&#39;s Optimal Auctions to Correlated Bidders via Neural Network Interpolation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Mingyu Guo, Jiayuan Liu, Vincent Conitzer
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">论文研究相关出价者下单物品最优拍卖的机制设计问题：由于该问题NP难且存在非单调分配，作者提出用神经网络插值Myerson贪心分配（基于边际利润），并辅以神经网络验证强制策略证明性和构造性修复流程，首次将不可达的贪心收益作为经验上界进行定量评估。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究拍卖机制设计中的最优机制问题（相关出价者下的策略证明拍卖），属于机制设计理论，但未涉及电商排序、重排或广告竞价公式的具体优化，与我的核心关注点（排序分数公式、重排、电商场景）直接关联弱。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 21:10:03
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.24240v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.24240v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.GT</span><span class="category-tag">cs.LG</span><span class="category-tag">econ.TH</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    We aim to design revenue-maximizing single-item auctions that are deterministic, strategy-proof, and ex post individually rational --- the quintessential fundamental model for optimal mechanism design. While Myerson&#39;s seminal work solved this model for independent bidders, straightforward extensions to correlated settings often result in non-monotonic, and therefore non-strategy-proof allocations. Critically, optimal allocation design for correlated bidders is NP-hard to approximate, rendering theoretical optimality guarantees in this domain computationally intractable. We establish a new standard of empirical rigor for this theoretically hard model by proposing an empirical pipeline. We synthesize neural interpolation of Myerson&#39;s greedy allocation based on marginal profits (the correlated variant of virtual valuation), formal neural verification to enforce exact strategy-proofness, and a constructive repair procedure. Empirically, our method is highly effective, consistently achieves near-optimal revenue across a wide range of distributions, including synthetic, adversarial, and real-world (consumer, financial, and industrial) datasets. Compared to existing manual and neural baselines, our approach shows substantial improvement, often reducing the revenue gap by an order of magnitude. Our study is also the first to introduce (unattainable) greedy revenue as a rigorous upper bound for empirical benchmarking, providing a definitive quantitative performance measure where true optima remain theoretically elusive. We demonstrate the generality of our approach by extending it to multi-unit auctions with unit demand and integrating our verification techniques into RegretNet to achieve exact strategy-proofness.
+                </div>
+            </details>
+    </div>
+</div>
+<div class="paper-card p-4 expanded">
+    <div class="flex justify-between items-start mb-2">
+        <h3 class="text-lg font-semibold text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.24200v1" target="_blank" rel="noopener noreferrer">
+                <i class="fa fa-star text-yellow-400 mr-1"></i>候选依赖的残差路由在序列推荐中以牺牲列表顶部精度换取召回率
+            </a>
+        </h3>
+        <span class="track-badge track-badge-core">核心</span><span class="score-badge bg-gray-100 text-gray-800">
+            <i class="fa fa-star mr-1"></i>2/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Candidate-dependent residual routing trades top-of-list accuracy for recall in sequential recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Han Chen, Yingrui Li
+        </div>
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-lightbulb-o text-yellow-500 mr-1"></i>核心总结:</strong>
+            <p class="text-gray-600 text-sm mt-1">问题：候选依赖路由（为每个候选物品动态加权用户历史）能否提升顺序推荐性能？核心发现：在自注意力基线中加入小型残差路由模块后，NDCG@10几乎不变，但召回率提升而首位排序质量下降，新增命中集中在6-10位，且仅对目标在用户近期50个事件内的查询有效，本质是以顶部精度换取中后段召回。</p>
+        </div>
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究顺序推荐中候选依赖路由对排序指标的影响，属于召回与排序权衡分析，但未涉及重排序、机制设计或曝光公平等核心焦点，且实验规模小、结论有限。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 20:20:03
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.24200v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.24200v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.LG</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Candidate-dependent routing lets a sequential recommender weight a user&#39;s past behaviors differently for each item it scores. We test whether this flexibility helps by adding a small residual routing module to a self-attentive baseline, in two versions that differ only in what sets the routing weights: the user&#39;s history representation or the candidate item&#39;s embedding. Across five paired seeds on the REES46 cosmetics-shop dataset, with matched training for all three models, candidate-dependent routing leaves the primary metric, normalized discounted cumulative gain at cutoff ten (NDCG@10), essentially unchanged (mean relative change +0.003%). Secondary and exploratory analyses show that this flat average hides two effects that cancel. The candidate-dependent model places more relevant items in its top ten (recall +1.81%) but ranks the first one lower (mean reciprocal rank -1.09%), and most of its new hits land at positions six to ten. Its gains come from queries with at least one target among the user&#39;s last 50 events, while queries whose targets all lie outside that window get worse. In this form, candidate-dependent routing trades accuracy at the top of the list for recall further down.
+                </div>
+            </details>
+    </div>
+</div>
             </div>
         </section>
 
@@ -166,10 +661,295 @@
         <section id="related-section" class="mb-8">
             <h2 class="text-lg font-bold text-gray-800 mb-3 flex items-center">
                 <i class="fa fa-tags text-blue-400 mr-2"></i>沾边速览
-                <span class="text-sm font-normal text-gray-500 ml-2">显示 0 / 共 0 篇</span>
+                <span class="text-sm font-normal text-gray-500 ml-2">显示 5 / 共 5 篇</span>
             </h2>
             <div id="related-container" class="paper-list grid grid-cols-1 gap-4">
-                
+                <!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.26105v1" target="_blank" rel="noopener noreferrer">
+                不要重写SID映射：动态电商搜索中生成式检索的拓扑保持
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>8/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Don&#39;t Rewrite the SID Map: Topology Preservation for Generative Retrieval in Dynamic E-Commerce Search
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Jianbo Zhu, Xing Fang, Xiaopeng Chu, Mingmin Jin, Jing Wang, Bokang Wang, Jiaqi ...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文涉及面向电商搜索的生成式检索中的语义ID（SID）映射与拓扑保持，而语义ID与生成式推荐/检索明确属于相关赋能技术。其关于在动态商品目录下保持SID映射拓扑稳定性的洞见，可直接为排序落地提供信息（生成式检索索引、物品表示稳定性）。不过它主要针对检索而非细排或竞价机制。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-19 10:01:25
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.26105v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.26105v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span><span class="category-tag">cs.AI</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative retrieval assigns each item a discrete semantic identifier (SID) and retrieves items by autoregressively generating SID sequences. In dynamic environments such as e-commerce, new items arrive continuously, requiring periodic updates to the SID-to-Item mapping and model to maintain retrieval timeliness. Each update, however, can invalidate search paths already learned by the retriever, and the quantitative relationship between mapping change and retrieval quality has not been systematically characterized. We study this problem with extensive controlled experiments over 67 days of large-scale e-commerce search logs and obtain three core findings. (1) SID semantic drift causes severe retrieval degradation that may be masked by large beam sizes: mapping updates reduce HitRate by 41.78-62.05% at beam size 1 but only 8.33-10.85% at beam size 1000, as redundant candidate generation conceals the true severity of drift. (2) The fraction of changed SIDs is strictly monotonically related to retrieval quality: as the remapped fraction increases from 0% to 72.75%, HitRate decreases monotonically, dropping up to 42.66% at beam size 1. Full remapping remains substantially worse than the preservation policy under warm-start training, indicating that short-budget continued training alone cannot repair topology disruption. (3) The SID topology-preserving principle makes even the simplest warm-start strategy highly effective: fixing old-item SIDs, inserting new-items, and warm-starting from the previous model improves old-item HitRate by 10% and new-item HitRate by 109%, validated across two non-overlapping update cycles. These findings distill into a concise deployment principle: insert new-items, freeze old-items; warm-start when possible, otherwise freeze; never change SIDs the model has already learned. A three-week online A/B test on TmallAPP shows UCTCVR +0.29% and GMV +1.16%.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.25093v1" target="_blank" rel="noopener noreferrer">
+                面向生成式推荐的结构对齐历史学习与子空间结构化语义ID
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>7/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            Structure-Aligned History Learning with Subspace-Structured Semantic IDs for Generative Recommendation
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Kaiwen Wei, Kejun He, Jie Zhang, Xiaomian Kang, Yuming Yang, Aijia Zhou, Xie Zho...
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文研究生成式推荐中的语义ID与历史学习结构对齐，属于生成式推荐这一直接使能技术。其语义ID的子空间结构化设计可提升物品表示与用户行为建模，进而用于生成式排序/推荐模型，应用路径具体明确。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-18 07:58:35
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.25093v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.25093v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Generative recommendation constructs semantic IDs for catalog items and predicts the next ID from user interaction histories. However, existing methods face limitations in both stages. First, conventional quantizers may produce imbalanced code assignments and lack coherent intermediate semantic units between individual tokens and complete items, limiting history reconstruction. Second, recommendation models remain dominated by next-item prediction, treating historical interactions mainly as conditioning context and providing limited supervision for recovering persistent preferences across the historical path, particularly when relevant preference signals are distributed over distant interactions. To address these limitations, Structure-Aligned History Learning (SAHL) reconnects the two stages by using the structure created during quantization directly for history reconstruction. Its Semantic Residual Balanced Quantization (SRBQ) forms a balanced token-subspace-item hierarchy, and SAHL reconstructs history at these same granularities. Predictive entropy prioritizes uncertain transitions, while curriculum optimization progressively shifts training to inference-aligned next-item prediction. On four Amazon Review categories, SAHL improves NDCG@10 by 18.6%-30.0% over RPG and 2.7%-6.0% over strong method MHL. Controlled analyses verify balanced code use, the benefit of following quantizer-defined groups during reconstruction, and dependence on user history. The relevant code is available at https://github.com/CQU-MM-Intelligent-Lab/SAHL.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.24481v1" target="_blank" rel="noopener noreferrer">
+                DuoLM：快速有效的基于语言模型的个性化推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-green-100 text-green-800">
+            <i class="fa fa-star mr-1"></i>6/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            DuoLM: Fast and Effective Personalized Recommendation with Language Models
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Jiang Wu, Yutong Song, Hongbo Wang, Guanghe Cao, Jeff Liang
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">LLM-based personalized recommendation directly enables generative recommendation, applicable to ranking candidate generation/scoring. However, the title suggests a general recommendation framework rather than a specific fine-rank or mechanism contribution, so relevance to core ranking models is moderate.</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-17 05:56:40
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.24481v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.24481v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Language models can make personalized recommendations from rich item content, user history, and feedback. However, evaluating many candidates with full-text inputs incurs substantial online computation and limits serving throughput. We introduce DuoLM, a framework for fast and effective personalized recommendation that integrates a compact recommendation model with an efficient serving runtime. An encoder LLM learns compact item representations for offline reuse, while a personalized ranker LLM combines them with user history and feedback for recommendation. We train both models end to end with recommendation supervision and teacher distillation. The runtime further accelerates inference through virtual token IDs for embedding access, shared history computation, and CUDA Graph replay. Benchmark results show that our framework achieves recommendation quality comparable to that of the expert teacher model. On a single H100, it delivers approximately 26,400 candidate scores per second, about $60\times$ the throughput of the teacher served with vLLM and automatic prefix caching.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.25221v1" target="_blank" rel="noopener noreferrer">
+                当语义不足时：基于大语言模型的人设引导跨域序列推荐
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>5/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            When Semantics Fall Short: Persona-Guided Cross-Domain Sequential Recommendation with Large Language Models
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Jundong Chen, Honglei Zhang, Shuai An, Enneng Yang, Han Yu
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该文利用大语言模型构建用户人设以弥补跨域序列推荐中的语义不足，可作为用户行为序列建模与跨场景统一建模的赋能技术应用到排序/推荐模型中。但其聚焦推荐召回/序列建模而非排序模型或机制公式，应用为间接支撑，故为边缘相关。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-18 12:28:23
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.25221v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.25221v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.IR</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Cross-domain sequential recommendation (CDSR) alleviates data sparsity by transferring user behaviors across domains. Recent advances increasingly leverage large language models (LLMs) to bridge domains through global item semantics. However, this paradigm is inherently limited by two issues: I. semantic domain isolation, where item semantics remain domain-specific and hinder transferable modeling, and II. semantic-behavior inconsistency, where local semantic relations are more consistent with behavioral transitions, whereas such consistency often breaks down globally across domains. To this end, we propose PerCDR, an LLM-enhanced CDSR framework that shifts the focus from global semantic bridging to persona-guided behavioral modeling. Specifically, PerCDR leverages LLM-inferred personas to globally guide transferable cross-domain behavioral patterns, while exploiting local semantic relations to enhance intra-domain behavioral modeling, followed by domain preference adaptation for recommendation refinement. Extensive experiments demonstrate the superiority of PerCDR and validate its effectiveness.
+                </div>
+            </details>
+    </div>
+</div><!--
+ * @Author: Doragd doragd@users.noreply.github.com
+ * @Date: 2025-10-09 23:23:38
+ * @LastEditors: Doragd doragd@users.noreply.github.com
+ * @LastEditTime: 2025-10-10 00:41:41
+ * @FilePath: /Algorithm-Practice-in-Industry/paperBotV2/frontend/templates/normal_paper_template.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<div class="simple-paper-card p-3 collapsed-level-1">
+    <div class="flex justify-between items-start mb-1">
+        <h3 class="text-base font-medium text-primary hover:underline transition-colors">
+            <a href="https://arxiv.org/abs/2610.23443v1" target="_blank" rel="noopener noreferrer">
+                ScoutRoute：利用内部语言模型信号的高效混合专家路由
+            </a>
+        </h3>
+        <span class="track-badge track-badge-related">沾边</span><span class="score-badge bg-blue-100 text-blue-800">
+            <i class="fa fa-star mr-1"></i>4/10
+        </span>
+    </div>
+    
+    <div class="paper-details">
+        <div class="mb-2 text-base text-gray-700">
+            ScoutRoute: Efficient Mixture-of-Experts Routing Using Internal Language Model Signals
+        </div>
+        
+        <div class="mb-2 text-sm text-gray-600 italic">
+            <i class="fa fa-user-circle-o text-gray-500 mr-1"></i>Rajdeep Pandhare, Delzaan Bharucha
+        </div>
+        
+        
+        
+        
+        <div class="mb-2">
+            <strong class="text-gray-700 text-sm"><i class="fa fa-thumbs-up text-green-500 mr-1"></i>个性化推荐理由:</strong>
+            <p class="text-gray-600 text-sm mt-1">该论文聚焦于MoE路由效率优化，使用内部语言模型信号进行专家选择，属于Transformer架构效率这一相关技术方向。对于排序模型，MoE路由可提升大规模多任务排序模型（如MMoE/PLE变体）的推理效率与专家利用率，具有间接但可落地的应用价值，但论文本身未直接面向排序或机制公式设计，应用路径需额外适配。</p>
+        </div>
+        
+        <div class="flex flex-wrap items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <i class="fa fa-calendar-o mr-1"></i> 2026-10-16 13:25:53
+                <span class="mx-2">|</span>
+                <a href="https://arxiv.org/abs/2610.23443v1" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">
+                    arXiv:2610.23443v1
+                </a>
+                <span class="mx-2">|</span>
+                <div class="flex flex-wrap"><span class="category-tag">cs.AI</span><span class="category-tag">cs.CL</span></div>
+            </div>
+            
+            
+            <details class="border-t border-gray-200 pt-4 mt-4">
+                 <summary class="text-sm text-primary cursor-pointer"> 
+                     查看完整摘要 <i class="fa fa-chevron-down ml-1 text-xs"></i> 
+                 </summary> 
+                 <div class="abstract-content mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700">
+                    Efficient expert routing is a fundamental challenge in Mixture-of-Experts (MoE) systems, particularly for heterogeneous collections of independently trained Large Language Mod els (LLMs). Existing routing approaches typically rely on jointly trained gating networks, prompt-based predictors, or computationally expensive multi-model inference, limiting their flexibility and efficiency. This paper presents ScoutRoute, a lightweight post-hoc routing framework that predicts expert competence using internal language model signals extracted from a single forward pass through an inexpensive scout model. Hidden-state representations are used to estimate cross-model competence through lightweight logistic probes, while logit-derived confidence measures are incorporated within a domain-aware routing strategy for efficient expert selec tion without modifying the underlying language models. ScoutRoute isevaluatedon fiveopen-weightlanguagemodels across fourbenchmark datasets covering mathematical reasoning, code generation, commonsense reasoning, and multidis ciplinary knowledge. Experimental results show that ScoutRoute consistently outperforms individual routing signals while requiring only a single scout-model inference. The proposed competence probes also achieve superior calibration compared with conventional confidence measures, demonstrating that internal language model representations provide transferable information for accurate and efficient expert routing across heterogeneous language models
+                </div>
+            </details>
+    </div>
+</div>
             </div>
         </section>
     </main>
