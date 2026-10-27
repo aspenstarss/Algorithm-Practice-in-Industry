@@ -1,48 +1,68 @@
 {
   "date": "20261027",
-  "status": "failed",
-  "stage": "fetch",
-  "workflow": "arxiv_daily_recovery",
-  "run_id": "40361672053",
+  "status": "success",
+  "stage": "completed",
+  "workflow": "arxiv_daily_full",
+  "run_id": "40478732555",
   "run_attempt": "1",
   "trigger": "schedule",
-  "started_at": "2026-10-26T20:41:27+00:00",
-  "ended_at": "2026-10-26T21:56:40+00:00",
+  "started_at": "2026-10-27T09:10:31+00:00",
+  "ended_at": "2026-10-27T09:31:44+00:00",
   "fetch": {
-    "success": false,
-    "total_papers": 0,
+    "success": true,
+    "total_papers": 275,
     "by_category": {
       "cs.IR": {
         "success": true,
-        "papers": 0,
-        "pages": 0,
+        "papers": 47,
+        "pages": 2,
         "error": ""
       },
       "cs.CL": {
-        "success": false,
-        "papers": 0,
-        "pages": 0,
-        "error": "arXiv API 请求多次失败: 406 Client Error: Not Acceptable for url: https://arxiv.org/api/query?id_list=2610.32726%2C2610.32752%2C2610.32801%2C2610.32866%2C2610.32874&max_results=5"
+        "success": true,
+        "papers": 100,
+        "pages": 3,
+        "error": ""
+      },
+      "cs.CV": {
+        "success": true,
+        "papers": 100,
+        "pages": 3,
+        "error": ""
+      },
+      "cs.GT": {
+        "success": true,
+        "papers": 28,
+        "pages": 1,
+        "error": ""
       }
     }
   },
   "llm": {
-    "rough_rank_total": 0,
-    "rough_rank_success": 0,
+    "rough_rank_total": 269,
+    "rough_rank_success": 269,
     "rough_rank_failed": 0,
-    "rough_tracks": {},
-    "fine_rank_total": 0,
-    "fine_rank_success": 0,
+    "rough_tracks": {
+      "core": 12,
+      "related": 10
+    },
+    "fine_rank_total": 12,
+    "fine_rank_success": 12,
     "fine_rank_failed": 0,
     "fine_rank_related_filled": 0,
-    "avg_rough_score": 0,
-    "avg_fine_score": 0,
-    "usage": {}
+    "avg_rough_score": 1.48,
+    "avg_fine_score": 4.83,
+    "usage": {
+      "calls": 281,
+      "prompt_tokens": 279360,
+      "completion_tokens": 15297,
+      "cache_hit_tokens": 212736
+    }
   },
   "output": {
-    "daily_json_written": false,
+    "daily_json_written": true,
     "html_generated": true,
-    "feishu_should_send": false
+    "feishu_should_send": true
   },
-  "error": "arXiv API 请求多次失败: 406 Client Error: Not Acceptable for url: https://arxiv.org/api/query?id_list=2610.32726%2C2610.32752%2C2610.32801%2C2610.32866%2C2610.32874&max_results=5"
+  "error": ""
 }
